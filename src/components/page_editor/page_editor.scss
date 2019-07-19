@@ -1,0 +1,135 @@
+@mixin unify-parent($child) {
+    @at-root #{selector-nest(&, $child)} {
+        @content;
+    }
+}
+.page_editor {
+    font-size: 14px;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+    min-height: 500px;
+
+    color: #666;
+    border: 1px solid rgb(220, 220, 220);
+    background: #fff;
+    &_btn {
+        cursor: pointer;
+    }
+    &-body {
+        @at-root (with: rule) {
+            flex: 1 1 auto;
+        }
+    }
+    &-footer {
+        @at-root (with: rule) {
+            display: flex;
+            flex: 0 0 auto;
+
+            box-sizing: border-box;
+            height: 50px;
+            padding: 0 20px;
+
+            align-items: center;
+            justify-content: flex-end;
+            &_btns {
+                display: flex;
+            }
+            .page_editor_btn {
+                margin-right: 20px;
+                &:last-of-type {
+                    margin: 0;
+                }
+            }
+        }
+    }
+    &-hide {
+        @at-root (with: rule) {
+            display: none;
+        }
+    }
+    &-fool_screen {
+        @at-root (with: rule) {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+        }
+    }
+    &_toolsbar {
+        @at-root (with: rule) {
+            position: relative;
+
+            box-sizing: border-box;
+            min-height: 36px;
+            padding: 5px;
+
+            background: #f5f5f5;
+            &-tool {
+                @at-root (with: rule) {
+                    flex: 0 0 auto;
+
+                    margin-right: 5px;
+                    padding: 5px 7px;
+
+                    cursor: pointer;
+                    transition: 0.36s ease;
+                    &.disable {
+                        cursor: normal;
+
+                        opacity: 0.5;
+                    }
+                    .fa + span {
+                        margin-left: 5px;
+                    }
+                }
+                &:hover {
+                    @at-root (with: rule) {
+                        background: #fff;
+                    }
+                }
+            }
+            &-wrapper {
+                @at-root (with: rule) {
+                    display: flex;
+                }
+            }
+            .close_editor_btn {
+                line-height: 36px;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                width: 36px;
+                height: 36px;
+
+                cursor: pointer;
+                transition: 0.36s ease;
+                text-align: center;
+
+                justify-content: center;
+                align-items: center;
+                &:hover {
+                    color: #000;
+                }
+            }
+        }
+    }
+    .fa {
+        font-family: "ifont" !important;
+        font-size: inherit;
+        font-style: normal;
+
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+.page_editor_toolsbar-fool_screen .fa:before {
+    content: "\e83a";
+}
