@@ -1,3 +1,4 @@
+import dialog from "../dialog/dialog";
 import "./page_editor.scss";
 
 class Page_editor {
@@ -12,7 +13,7 @@ class Page_editor {
         }
     }
 
-    constructor(dom, option) {
+    constructor(dom, option = {}) {
         if ($(this.container).data("editor")) {
             return $(dom).data("editor");
         }
@@ -29,6 +30,7 @@ class Page_editor {
         this.set_rel_dom();
         this.container.html(this.editor_dom);
         this.init_done();
+        return this;
     }
 
     fool_screen(control) {
@@ -118,19 +120,30 @@ class Page_editor {
                         this.$editor_dom.find(".page_editor-footer").show();
                     },
                     init_done_ev: btn => {
+                        let confirm_dialog = dialog().init();
                         let close_editor_btn = $(
                             '<div class="close_editor_btn"  style="display: none"><i class="fa"></i>X</div>'
                         ).appendTo(this.$toolsbar);
 
                         close_editor_btn.on("click", ev => {
-                            btn.trigger("enable", true);
-                            this.fool_screen("close");
-                            $(ev.currentTarget).hide();
+                            confirm_dialog.show().then();
 
-                            this.$editor_dom.find(".page_editor-footer").hide();
-                            Object.values(this.tools).forEach(tool => {
-                                tool.show();
-                            });
+                            // .then(res => {
+                            //     if (res == "confirm") {
+                            //         btn.trigger("enable", true);
+                            //         this.fool_screen("close");
+                            //         $(ev.currentTarget).hide();
+
+                            //         this.$editor_dom
+                            //             .find(".page_editor-footer")
+                            //             .hide();
+                            //         Object.values(this.tools).forEach(tool => {
+                            //             tool.show();
+                            //         });
+                            //     }
+                            //     if (res == "cancel") {
+                            //     }
+                            // });
                         });
 
                         let editor_footer = $(`
