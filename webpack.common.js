@@ -9,69 +9,180 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
-module.exports = (env, argv) => {
-    return setConfig(env, argv);
-};
+class Webpack_config_creater {
+    constructor(option) {
+        this.option = Object.assign(this.default_option, option);
+        this.watch_html_dir = [];
+        this.watch_html_entry = {};
+        this.watch_htmls = [];
+    }
+    /**
+     *
+     * @param {string}  globPath  文件的路径
+     * @returns entries
+     */
+    get_file_info(target) {
+        let files = glob.sync(target);
+        let result = [];
 
-function setConfig(env, argv) {
-    const ASSET_PATH = (env && env.ASSET_PATH) || "/";
+        files.forEach(item => {
+            let entries = {};
+            let entry = item;
+            let dirname = path.dirname(entry); //当前目录;
+            let extname = path.extname(entry); //后缀
+            let basename = path.basename(entry, extname); //文件名
+            let pathname = path.join(dirname, basename); //文件路径
 
-    const webpack_config = {
-        entry: Object.assign(
-            {
-                main: path.resolve(__dirname, "./src/app.js")
-            },
-            get_watch_html("./src/pages/")
-        ),
-        output: {
-            filename: "js/[name].js",
-            path: path.resolve(__dirname, "./dist"),
-            publicPath: ASSET_PATH
-        },
-        resolve: {
-            alias: {
-                "@": path.resolve(__dirname, "./src")
-            }
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.html$/,
-                    use: [
-                        {
-                            loader: "html-loader",
-                            options: {
-                                interpolate: true,
-                                attrs: [
-                                    "img:src",
-                                    "video:src",
-                                    "video:poster",
-                                    ":data-src"
-                                ]
+            entries = {
+                entry,
+                dirname,
+                extname,
+                pathname,
+                basename
+            };
+            result.push(entries);
+        });
+        return result;
+    }
+
+    create_watch_html(watch_paths) {
+        watch_paths.forEach(watch_path => {
+            watch_path =
+                typeof watch_path === "object"
+                    ? watch_path.template
+                    : watch_path;
+            if (fs.lstatSync(watch_path).isDirectory()) {
+                if (
+                    !this.watch_html_dir.includes(watch_path) &&
+                    this.option.env === "development"
+                ) {
+                    watch.createMonitor(watch_path, monitor => {
+                        monitor.on("created", f => {
+                            let extname = path.extname(f); //后缀
+                            if (extname === ".html") {
+                                this.create_watch_html(watch_paths);
                             }
+                        });
+                    });
+                }
+
+                this.get_file_info(watch_path + "*.html").map(v => {
+                    this.watch_htmls.push(v.entry);
+                });
+            } else {
+                this.watch_htmls.push(watch_path);
+            }
+        });
+        // if (this.option.env !== "development") return {};
+
+        fs.writeFileSync(
+            "./watch_html.js",
+            this.watch_htmls
+                .map(v => {
+                    return `import '${v}';`;
+                })
+                .join("\n")
+        );
+        this.watch_html_entry.html_entry = path.resolve(
+            __dirname,
+            "./watch_html.js"
+        );
+    }
+
+    get entry() {
+        return Object.assign(
+            {
+                main: path.resolve(__dirname, "./src/app.js"),
+                body_editor: path.resolve(__dirname, "./src/body_editor.js")
+            },
+            this.watch_html_entry
+        );
+    }
+    get html_config() {
+        let html_paths = [];
+        this.option.watch_html_paths.forEach(html_path => {
+            if (typeof html_path === "object") {
+                html_paths.push(html_path);
+            } else {
+                if (fs.lstatSync(html_path).isDirectory()) {
+                    this.get_file_info(html_path + "*.html").forEach(v => {
+                        html_paths.push(v.entry);
+                    });
+                } else {
+                    html_paths.push(html_path);
+                }
+            }
+        });
+
+        return {
+            rule: {
+                test: /\.html$/,
+                use: [
+                    {
+                        loader: "html-loader",
+                        options: {
+                            interpolate: true,
+                            attrs: [
+                                "img:src",
+                                "video:src",
+                                "video:poster",
+                                ":data-src"
+                            ]
                         }
-                    ]
-                },
-                {
-                    test: /\.ejs$/,
-                    loader: "ejs-loader",
-                    query: {
-                        variable: "data",
-                        interpolate: "\\{\\{(.+?)\\}\\}",
-                        evaluate: "\\[\\[(.+?)\\]\\]",
-                        title: "index"
                     }
-                },
-                {
-                    test: /\.js$/,
-                    include: "/src/",
-                    exclude: "/node_modules/",
-                    use: [
-                        {
-                            loader: "babel-loader"
-                        }
-                    ]
-                },
+                ]
+            },
+            plugins: html_paths.map(html_path => {
+                let file_info = this.get_file_info(html_path)[0];
+                let chunks = [file_info.basename];
+
+                return new HtmlWebpackPlugin(
+                    typeof html_path === "string"
+                        ? {
+                              template: path.join(__dirname, html_path),
+                              filename: path.join(
+                                  __dirname,
+                                  html_path.replace("./src", "./dist")
+                              ),
+                              inject: "head",
+                              chunks: "main"
+                          }
+                        : {}
+                );
+            })
+        };
+    }
+    get ejs_config() {
+        return {
+            rule: {
+                test: /\.ejs$/,
+                loader: "ejs-loader",
+                query: {
+                    variable: "data",
+                    interpolate: "\\{\\{(.+?)\\}\\}",
+                    evaluate: "\\[\\[(.+?)\\]\\]",
+                    title: "index"
+                }
+            }
+        };
+    }
+    get js_config() {
+        return {
+            rule: {
+                test: /\.js$/,
+                include: "/src/",
+                exclude: "/node_modules/",
+                use: [
+                    {
+                        loader: "babel-loader"
+                    }
+                ]
+            }
+        };
+    }
+    get resources_config() {
+        return {
+            rules: [
                 {
                     test: /\.(png|svg|jpg|gif)$/,
                     use: [
@@ -128,186 +239,158 @@ function setConfig(env, argv) {
                     ]
                 }
             ]
-        },
-        plugins: [
-            new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin({
-                template: path.join(__dirname, "./src/index.html"),
-                filename: path.join(__dirname, "./dist/index.html"),
-                inject: "head",
-                // alwaysWriteToDisk: true,
-                chunks: "all"
-                // sdk: "/mylib.js"
-            }),
-            /**
-             * 自动加载
-             * 介绍: https://webpack.docschina.org/guides/shimming/
-             **/
-            new webpack.ProvidePlugin({
+        };
+    }
+    get copy_plugin() {
+        return new CopyWebpackPlugin([
+            {
+                from: path.resolve(__dirname, this.option.public_path),
+                to: path.resolve(
+                    __dirname,
+                    this.option.public_path.replace("./src", "./dist")
+                ),
+                toType: "dir",
+                ignore: [".DS_Store"]
+            }
+        ]);
+    }
+    get global_var() {
+        /**
+         * 自动加载
+         * 介绍: https://webpack.docschina.org/guides/shimming/
+         **/
+        return new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        });
+    }
+    get split_code() {
+        let cacheGroups = {
+            lib: {
+                test: /[\\/]node_modules[\\/].+\.js$/,
+                name: "lib",
+                priority: 10,
+                chunks: "all",
+                enforce: true
+            },
+            libStyle: {
+                test: /[\\/]node_modules[\\/].+\.css$/,
+                name: "lib",
+                priority: 10,
+                chunks: "all",
+                enforce: true
+            },
+            resetStyle: {
+                test: /(rest|normalize).css$/,
+                name: "reset",
+                priority: 20,
+                chunks: "all",
+                enforce: true
+            },
+            unit: {
+                test: /(unit).js$/,
+                name: "reset",
+                priority: 20,
+                chunks: "all",
+                enforce: true
+            }
+        };
+        // this.watch_htmls.forEach(html_path => {
+        //     let file_info = this.get_file_info(html_path)[0];
+        //     cacheGroups[file_info.basename + "_css"] = {
+        //         test: new RegExp(file_info.basename + ".*css$"),
+        //         name: file_info.basename,
+        //         priority: 30,
+        //         chunks: "all",
+        //         enforce: true
+        //     };
+        //     cacheGroups[file_info.basename + "_js"] = {
+        //         test: new RegExp(file_info.basename + ".*js$"),
+        //         name: file_info.basename,
+        //         priority: 30,
+        //         chunks: "all",
+        //         enforce: true
+        //     };
+        // });
+
+        return {
+            chunks: "all",
+            cacheGroups: cacheGroups
+        };
+    }
+    get config() {
+        this.create_watch_html(this.option.watch_html_paths);
+        return {
+            entry: this.entry,
+            output: {
+                filename: "js/[name].js",
+                path: path.resolve(__dirname, "./dist"),
+                publicPath: this.option.ASSET_PATH
+            },
+            resolve: {
+                alias: {
+                    "@": path.resolve(__dirname, "./src")
+                }
+            },
+            module: {
+                rules: [
+                    this.html_config.rule,
+                    this.ejs_config.rule,
+                    this.js_config.rule,
+                    ...this.resources_config.rules
+                ]
+            },
+            plugins: [
+                new CleanWebpackPlugin(),
+                ...this.html_config.plugins,
+                this.copy_plugin,
+                this.global_var
+            ],
+            optimization: {
+                /**
+                 * 定义压缩方式
+                 * 介绍:https://webpack.docschina.org/configuration/optimization/#optimization-minimizer
+                 **/
+                minimizer: [
+                    /**
+                     * 定义 css 压缩插件
+                     * 介绍: https://github.com/NMFR/optimize-css-assets-webpack-plugin
+                     **/
+                    new OptimizeCSSAssetsPlugin({})
+                ],
+                /**
+                 * 定义代码分包
+                 * 介绍: https://webpack.docschina.org/plugins/split-chunks-plugin/
+                 **/
+                splitChunks: this.split_code
+            }
+        };
+    }
+    get default_option() {
+        return {
+            ASSET_PATH: "/",
+            watch_html_paths: [
+                "./src/index.html",
+                "./src/body_editor.html",
+                "./src/pages/"
+            ],
+            public_path: "./src/public/",
+            global_var: {
                 $: "jquery",
                 jQuery: "jquery"
-            }),
-            /**
-             * 拷贝文件到指定位置
-             * 介绍: https://webpack.docschina.org/plugins/copy-webpack-plugin
-             **/
-
-            new CopyWebpackPlugin([
-                {
-                    from: path.resolve(__dirname, "./src/public/"),
-                    to: path.resolve(__dirname, "./dist/public/"),
-                    toType: "dir",
-                    ignore: [".DS_Store"]
-                }
-            ])
-        ].concat(get_pages_config()),
-
-        optimization: {
-            /**
-             * 定义压缩方式
-             * 介绍:https://webpack.docschina.org/configuration/optimization/#optimization-minimizer
-             **/
-            minimizer: [
-                /**
-                 * 定义 css 压缩插件
-                 * 介绍: https://github.com/NMFR/optimize-css-assets-webpack-plugin
-                 **/
-                new OptimizeCSSAssetsPlugin({})
-            ],
-            /**
-             * 定义代码分包
-             * 介绍: https://webpack.docschina.org/plugins/split-chunks-plugin/
-             **/
-            splitChunks: {
-                chunks: "all",
-                cacheGroups: {
-                    reset: {
-                        test: /(rest|normalize).css$/,
-                        name: "reset",
-                        priority: 20,
-                        chunks: "all",
-                        enforce: true
-                    },
-                    styles: {
-                        test: /[\\/]node_modules[\\/].+\.css$/,
-                        name: "lib",
-                        priority: 10,
-                        chunks: "all",
-                        enforce: true
-                    },
-                    unit: {
-                        test: /(unit).js$/,
-                        name: "reset",
-                        priority: 20,
-                        chunks: "all",
-                        enforce: true
-                    },
-                    lib: {
-                        test: /[\\/]node_modules[\\/].+\.js$/,
-                        name: "lib",
-                        priority: 100,
-                        chunks: "all",
-                        enforce: true
-                    }
-                }
             }
-        }
-    };
-    return webpack_config;
-}
-
-/**
- *
- * @param {string}  globPath  文件的路径
- * @returns entries
- */
-function get_pages(glob_path) {
-    let files = glob.sync((glob_path += "*.html"));
-    let result = [];
-
-    files.forEach(item => {
-        let entries = {};
-        let entry = item;
-        let dirname = path.dirname(entry); //当前目录;
-        let extname = path.extname(entry); //后缀
-        let basename = path.basename(entry, extname); //文件名
-        let pathname = path.join(dirname, basename); //文件路径
-
-        entries = {
-            entry,
-            dirname,
-            extname,
-            pathname,
-            basename
         };
-
-        if (extname === ".html") {
-            result.push(entries);
-        }
-    });
-
-    return result;
+    }
 }
+fs.writeFileSync(
+    "./_webpackconfig.json",
+    JSON.stringify(new Webpack_config_creater({}).config)
+);
 
-function get_pages_config(
-    glob_path = "./src/pages/",
-    target_path = "./pages/"
-) {
-    let result = [];
+const webpack_config = new Webpack_config_creater({
+    env: process.env.NODE_ENV
+}).config;
 
-    const HTMLPATHS = get_pages(glob_path).map(v => {
-        return v.entry;
-    });
-
-    HTMLPATHS.forEach(v => {
-        result.push(
-            new HtmlWebpackPlugin({
-                template: path.join(v),
-                filename: path.join(v.replace(glob_path, target_path)),
-                inject: "head",
-                // minify: {
-                //     removeComments: true,
-                //     collapseWhitespace: true,
-                //     removeAttributeQuotes: true,
-                //     collapseBooleanAttributes: true,
-                //     removeScriptTypeAttributes: true
-                // },
-                alwaysWriteToDisk: true,
-                chunks: "all"
-            })
-        );
-    });
-    return result;
-}
-
-function get_watch_html({
-    main_page = "./src/index.html",
-    glob_path = "./src/pages/"
-}) {
-    let result = {};
-    if (process.env.NODE_ENV === "production") return result;
-
-    let watch_html_js = `import '${main_page}';`;
-
-    watch.createMonitor(glob_path, function(monitor) {
-        monitor.on("created", f => {
-            let extname = path.extname(f); //后缀
-            if (extname === ".html") {
-                get_watch_html();
-            }
-        });
-    });
-
-    const HTMLPATHS = get_pages(glob_path).map(v => {
-        return v.entry;
-    });
-
-    HTMLPATHS.forEach(v => {
-        watch_html_js += `import '${v}';`;
-    });
-    fs.writeFileSync("./watch_html.js", watch_html_js);
-
-    result.watch_html = path.resolve(__dirname, "./watch_html.js");
-
-    return result;
-}
+module.exports = (env, argv) => {
+    return webpack_config;
+};

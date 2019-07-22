@@ -42,6 +42,7 @@
 
     &-body {
         @at-root (with: rule) {
+            position: relative;
             flex: 1 1 auto;
         }
     }
@@ -170,4 +171,13 @@
 
 .page_editor_toolsbar-fool_screen .fa:before {
     content: "\e83a";
+}
+
+#editor_iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border: none;
 }

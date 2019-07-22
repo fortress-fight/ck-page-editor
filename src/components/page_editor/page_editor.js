@@ -221,7 +221,7 @@ class Page_editor {
     get body_dom() {
         let result = `
             <div class="page_editor-body">
-
+                <iframe id="editor_iframe" src="./body_editor.html"></iframe>
             </div>
         `;
         return result;
