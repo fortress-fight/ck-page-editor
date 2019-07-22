@@ -10,10 +10,10 @@ class Dialog {
             return Dialog.instances;
         }
     }
-    constructor(dom, option = {}) {
-        this.option = Object.assign(option, this.default_option);
+    constructor(option = {}) {
+        this.option = Object.assign(this.default_option, option);
         this._wrapper = this.option.wrapper_option;
-        this._container = dom;
+        this._container = option.dom;
         this.constructor.set_instances(this);
     }
     init() {
@@ -49,11 +49,26 @@ class Dialog {
     }
 
     close(result) {
-        this.hide().then(res => {
-            result ? this.option.confirm_ev() : this.option.cancel_ev();
-        });
+        if (result) {
+            if (this.option.confirm_ev.length) {
+                this.option.confirm_ev(() => {
+                    this.hide().then();
+                });
+            } else {
+                this.option.confirm_ev();
+                this.hide().then();
+            }
+        } else {
+            if (this.option.cancel_ev.length) {
+                this.option.cancel_ev(() => {
+                    this.hide().then();
+                });
+            } else {
+                this.option.cancel_ev();
+                this.hide().then();
+            }
+        }
     }
-
     set _wrapper(option) {
         if (option === true) {
             this.$wrapper.trigger("show");
@@ -74,7 +89,7 @@ class Dialog {
             this.$wrapper.on("click", ev => {
                 option.click_ev(ev);
                 if (option.click_cancel && ev.target == ev.currentTarget) {
-                    this.cancel();
+                    this.close(false);
                 }
             });
             let transition_time =
@@ -112,18 +127,14 @@ class Dialog {
                 this.$container = $(
                     `
             <div class="dialog" style="${get_dialog_style.call(this)}">
-                <div class="dialog_header">
-                    ${this.option.dialog_header}
-                </div>
                 <div class="dialog_body">
                     ${this.option.dialog_body}
-                </div>
-                <div class="dialog_footer">
-                    ${this.option.dialog_footer}
                 </div>
             </div>
         `
                 )
+                    .prepend(this.dialog_header_dom)
+                    .append(this.dialog_footer_dom)
                     .hide()
                     .appendTo(this.$wrapper);
             }
@@ -145,6 +156,48 @@ class Dialog {
             });
         }
     }
+    get dialog_header_dom() {
+        let result;
+        let close_btn_dom = `<div class="dialog_close_btn" style=""><i class="fa"></i>X</div>`;
+        result = $(
+            `
+                <div class="dialog_header">
+                    ${this.option.dialog_header}
+                    ${this.option.dialog_close_btn ? close_btn_dom : ""}
+                </div>
+            `
+        );
+        result.on("click", ".dialog_close_btn", () => {
+            this.close(false);
+        });
+        return result;
+    }
+    get dialog_footer_dom() {
+        let result;
+        let dialog_footer_btns = `
+            <div class="dialog_footer_btns">
+                <div class="dialog_btn dialog_btn-confirm">确认</div>
+                <div class="dialog_btn dialog_btn-cancel">取消</div>
+            </div>
+        `;
+        result = $(`
+            <div class="dialog_footer">
+                <div class="dialog_footer_wrapper">
+                    ${this.option.dialog_footer}
+                </div>
+                ${dialog_footer_btns}
+            </div>
+        `);
+
+        result.on("click", ".dialog_btn-confirm", () => {
+            this.close(true);
+        });
+        result.on("click", ".dialog_btn-cancel", () => {
+            this.close(false);
+        });
+
+        return result;
+    }
     get default_option() {
         return {
             dialog_pos: "center",
@@ -152,6 +205,8 @@ class Dialog {
             dialog_body: "body",
             dialog_footer: "footer",
             dialog_size: "500px-500px",
+            dialog_btn_footer: true,
+            dialog_close_btn: true,
             wrapper_option: {
                 style: "",
                 click_ev() {},

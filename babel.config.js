@@ -1,6 +1,4 @@
 module.exports = {
     presets: ["env"],
-    plugins: [
-
-    ]
+    plugins: []
 };

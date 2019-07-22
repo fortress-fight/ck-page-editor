@@ -120,37 +120,32 @@ class Page_editor {
                         this.$editor_dom.find(".page_editor-footer").show();
                     },
                     init_done_ev: btn => {
-                        let confirm_dialog = dialog().init();
+                        let confirm_dialog = dialog({
+                            dialog_header: "关闭编辑器",
+                            dialog_body:
+                                "<p style='text-align: center'>当前编辑的页面未保存，是否确认退出</p>",
+                            dialog_footer: "",
+                            dialog_size: "400px-auto",
+                            confirm_ev(done) {
+                                alert("confirm");
+                            },
+                            cancel_ev() {
+                                alert("cancel");
+                            }
+                        }).init();
                         let close_editor_btn = $(
                             '<div class="close_editor_btn"  style="display: none"><i class="fa"></i>X</div>'
                         ).appendTo(this.$toolsbar);
 
                         close_editor_btn.on("click", ev => {
                             confirm_dialog.show().then();
-
-                            // .then(res => {
-                            //     if (res == "confirm") {
-                            //         btn.trigger("enable", true);
-                            //         this.fool_screen("close");
-                            //         $(ev.currentTarget).hide();
-
-                            //         this.$editor_dom
-                            //             .find(".page_editor-footer")
-                            //             .hide();
-                            //         Object.values(this.tools).forEach(tool => {
-                            //             tool.show();
-                            //         });
-                            //     }
-                            //     if (res == "cancel") {
-                            //     }
-                            // });
                         });
 
                         let editor_footer = $(`
                             <div class="page_editor-footer" style="display: none">
                                 <div class="page_editor-footer_btns">
-                                    <div class="page_editor_btn page_editor-confirm_btns" data-name="save">保存</div>
-                                    <div class="page_editor_btn page_editor-cancel_btns" data-name="cancel">取消</div>
+                                    <div class="page_editor_btn page_editor_btn-confirm" data-name="save">保存</div>
+                                    <div class="page_editor_btn page_editor_btn-cancel" data-name="cancel">取消</div>
                                 </div>            
                             </div>
                         `).appendTo(this.editor_dom);
