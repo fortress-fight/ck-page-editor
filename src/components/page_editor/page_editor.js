@@ -48,6 +48,7 @@ class Page_editor {
                 break;
         }
     }
+
     init_done() {
         this.tools_option.forEach(item => {
             item.init_done_ev.call(this, this.tools[item.name]);
@@ -94,54 +95,71 @@ class Page_editor {
             }
         );
     }
-
-    get default_option() {
+    get fool_screen_btn() {
         return {
-            tools: [
-                {
-                    name: "fool_screen",
-                    icon: "fool_screen",
-                    tip: "全屏模式",
-                    click_ev: function() {
-                        this.fool_screen();
-                    }
-                },
-                {
-                    name: "editor_dom",
-                    title: "编辑页面",
-                    tip: "编辑页面",
-                    click_ev: ev => {
-                        $(ev.currentTarget).trigger("enable", false);
-                        Object.values(this.tools).forEach(tool => {
-                            tool[0] !== ev.currentTarget && tool.hide();
-                        });
-                        this.fool_screen("open");
-                        this.$toolsbar.find(".close_editor_btn").show();
-                        this.$editor_dom.find(".page_editor-footer").show();
-                    },
-                    init_done_ev: btn => {
-                        let confirm_dialog = dialog({
-                            dialog_header: "关闭编辑器",
-                            dialog_body:
-                                "<p style='text-align: center'>当前编辑的页面未保存，是否确认退出</p>",
-                            dialog_footer: "",
-                            dialog_size: "400px-auto",
-                            confirm_ev(done) {
-                                alert("confirm");
-                            },
-                            cancel_ev() {
-                                alert("cancel");
-                            }
-                        }).init();
-                        let close_editor_btn = $(
-                            '<div class="close_editor_btn"  style="display: none"><i class="fa"></i>X</div>'
-                        ).appendTo(this.$toolsbar);
+            name: "fool_screen",
+            icon: "fool_screen",
+            tip: "全屏模式",
+            click_ev: function() {
+                this.fool_screen();
+            }
+        };
+    }
+    get editor_dom_btn() {
+        return {
+            name: "editor_dom",
+            title: "编辑页面",
+            tip: "编辑页面",
+            click_ev: ev => {
+                $(ev.currentTarget).trigger("open");
+            },
+            init_done_ev: btn => {
+                btn.on("close", () => {
+                    btn.trigger("enable", true);
+                    this.fool_screen("close");
 
-                        close_editor_btn.on("click", ev => {
-                            confirm_dialog.show().then();
-                        });
+                    this.$toolsbar.find(".close_editor_btn").hide();
+                    this.$editor_dom.find(".page_editor-footer").hide();
+                    Object.values(this.tools).forEach(tool => {
+                        tool.show();
+                    });
+                });
+                btn.on("open", () => {
+                    btn.trigger("enable", false);
+                    Object.values(this.tools).forEach(tool => {
+                        tool[0] !== btn[0] && tool.hide();
+                    });
+                    this.fool_screen("open");
+                    this.$toolsbar.find(".close_editor_btn").show();
+                    this.$editor_dom.find(".page_editor-footer").show();
+                });
+                (function set_dialog() {
+                    let confirm_dialog = dialog({
+                        dialog_header: "关闭编辑器",
+                        dialog_body:
+                            "<p style='text-align: center'>当前编辑的页面未保存，是否确认退出</p>",
+                        dialog_footer: "",
+                        dialog_size: "400px-auto",
+                        confirm_ev() {
+                            alert("confirm");
+                            btn.trigger("close");
+                        },
+                        cancel_ev() {
+                            btn.trigger("close");
+                        }
+                    }).init();
+                    let close_editor_btn = $(
+                        '<div class="close_editor_btn"  style="display: none"><i class="fa ifont fa-close"></i></div>'
+                    ).appendTo(this.$toolsbar);
 
-                        let editor_footer = $(`
+                    close_editor_btn.on("click", ev => {
+                        confirm_dialog.show().then();
+                    });
+
+                    return confirm_dialog;
+                }.call(this));
+                (function set_editor_footer() {
+                    let editor_footer = $(`
                             <div class="page_editor-footer" style="display: none">
                                 <div class="page_editor-footer_btns">
                                     <div class="page_editor_btn page_editor_btn-confirm" data-name="save">保存</div>
@@ -150,22 +168,27 @@ class Page_editor {
                             </div>
                         `).appendTo(this.editor_dom);
 
-                        editor_footer.on("click", ".page_editor_btn", ev => {
-                            switch ($(ev.currentTarget).data("name")) {
-                                case "save":
-                                    alert("save");
-                                    break;
-                                case "cancel":
-                                    alert("cancel");
-                                    break;
+                    editor_footer.on("click", ".page_editor_btn", ev => {
+                        switch ($(ev.currentTarget).data("name")) {
+                            case "save":
+                                alert("confirm");
+                                btn.trigger("close");
+                                break;
+                            case "cancel":
+                                btn.trigger("close");
+                                break;
 
-                                default:
-                                    break;
-                            }
-                        });
-                    }
-                }
-            ]
+                            default:
+                                break;
+                        }
+                    });
+                }.call(this));
+            }
+        };
+    }
+    get default_option() {
+        return {
+            tools: [this.fool_screen_btn, this.editor_dom_btn]
         };
     }
 

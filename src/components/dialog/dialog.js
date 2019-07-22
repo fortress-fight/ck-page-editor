@@ -34,38 +34,35 @@ class Dialog {
         });
     }
     hide() {
-        return new Promise((res, rej) => {
-            function done() {
-                this._wrapper = false;
-                this._container = false;
-                res();
-            }
-            if (typeof this.option.before_close === "function") {
-                this.option.before_close(done);
-            } else {
-                done.call(this);
-            }
-        });
+        function done() {
+            this._wrapper = false;
+            this._container = false;
+        }
+        if (typeof this.option.before_close === "function") {
+            this.option.before_close(done);
+        } else {
+            done.call(this);
+        }
     }
 
     close(result) {
         if (result) {
             if (this.option.confirm_ev.length) {
                 this.option.confirm_ev(() => {
-                    this.hide().then();
+                    this.hide();
                 });
             } else {
                 this.option.confirm_ev();
-                this.hide().then();
+                this.hide();
             }
         } else {
             if (this.option.cancel_ev.length) {
                 this.option.cancel_ev(() => {
-                    this.hide().then();
+                    this.hide();
                 });
             } else {
                 this.option.cancel_ev();
-                this.hide().then();
+                this.hide();
             }
         }
     }
@@ -89,7 +86,7 @@ class Dialog {
             this.$wrapper.on("click", ev => {
                 option.click_ev(ev);
                 if (option.click_cancel && ev.target == ev.currentTarget) {
-                    this.close(false);
+                    this.hide();
                 }
             });
             let transition_time =
@@ -158,7 +155,7 @@ class Dialog {
     }
     get dialog_header_dom() {
         let result;
-        let close_btn_dom = `<div class="dialog_close_btn" style=""><i class="fa"></i>X</div>`;
+        let close_btn_dom = `<div class="dialog_close_btn" style=""><i class="fa ifont fa-close"></i></div>`;
         result = $(
             `
                 <div class="dialog_header">
@@ -168,7 +165,7 @@ class Dialog {
             `
         );
         result.on("click", ".dialog_close_btn", () => {
-            this.close(false);
+            this.hide();
         });
         return result;
     }
