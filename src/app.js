@@ -1,3 +1,4 @@
+import "font-awesome/css/font-awesome.css";
 // lib-style
 import "normalize.css";
 // lib-js
@@ -8,9 +9,8 @@ import "slick-carousel/slick/slick.css";
 import "./script/main.js";
 // custom-css
 import "./style/main.scss";
-
+import "./style/reset.scss";
 window.$ = $;
 $(function() {
-    alert(1);
     console.log("running");
 });

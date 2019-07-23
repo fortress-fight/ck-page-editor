@@ -20,18 +20,8 @@ class Dialog {
         return this;
     }
     show() {
-        return new Promise((res, rej) => {
-            function done() {
-                this._wrapper = true;
-                this._container = true;
-                res();
-            }
-            if (typeof this.option.before_show === "function") {
-                this.option.before_show(done);
-            } else {
-                done.call(this);
-            }
-        });
+        this._wrapper = true;
+        this._container = true;
     }
     hide() {
         function done() {

@@ -1,3 +1,38 @@
 body {
     background: #fff;
 }
+.page_body_editor {
+    box-sizing: border-box;
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.page {
+    @at-root (with: rule) {
+        &-add_layout_btn {
+            display: flex;
+
+            width: 100%;
+            height: 100px;
+
+            cursor: pointer;
+            transition: 0.2s ease;
+
+            color: #999;
+            border: 2px solid #eee;
+
+            justify-content: center;
+            align-items: center;
+            &:hover {
+                color: #333;
+                border-color: #333;
+            }
+            .text {
+                margin-right: 10px;
+            }
+        }
+    }
+}

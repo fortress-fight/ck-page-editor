@@ -295,9 +295,7 @@ class Webpack_config_creater {
             },
             mainJs: {
                 test: (module, chunk) => {
-                    return (
-                        /\.js$/.test(module.resource) && chunk.name == "main"
-                    );
+                    return /\.js$/.test(module.resource);
                 },
                 name: "base_org",
                 priority: 10,
@@ -306,9 +304,7 @@ class Webpack_config_creater {
             },
             mainStyle: {
                 test: (module, chunk) => {
-                    return (
-                        /\.css$/.test(module.resource) && chunk.name == "main"
-                    );
+                    return /\.css$/.test(module.resource);
                 },
                 name: "base_org",
                 priority: 10,

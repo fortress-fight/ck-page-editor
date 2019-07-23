@@ -23,14 +23,28 @@ class Page_editor {
         this.container = $(dom);
         this.constructor._editors(this);
         this.option = Object.assign(this.default_option, option);
+        this.editor_frame_data = {};
     }
 
     init() {
+        this.editor_frame_data.editor_data = this.container.html();
+
         this.set_editor_event();
         this.set_rel_dom();
         this.container.html(this.editor_dom);
-        this.init_done();
+        setTimeout(() => {
+            this.set_data();
+            this.init_done();
+        });
         return this;
+    }
+
+    set_data() {
+        this.editor_iframe[0].contentWindow.frame_data = this.editor_frame_data;
+    }
+
+    get_data() {
+        return this.editor_iframe[0].contentWindow.data;
     }
 
     fool_screen(control) {
@@ -95,6 +109,7 @@ class Page_editor {
             }
         );
     }
+
     get fool_screen_btn() {
         return {
             name: "fool_screen",
@@ -153,7 +168,7 @@ class Page_editor {
                     ).appendTo(this.$toolsbar);
 
                     close_editor_btn.on("click", ev => {
-                        confirm_dialog.show().then();
+                        confirm_dialog.show();
                     });
 
                     return confirm_dialog;
@@ -219,11 +234,12 @@ class Page_editor {
     }
 
     get body_dom() {
-        let result = `
+        let result = $(`
             <div class="page_editor-body">
                 <iframe id="editor_iframe" src="./body_editor.html"></iframe>
             </div>
-        `;
+        `);
+        this.editor_iframe = result.find("iframe");
         return result;
     }
 
@@ -232,9 +248,9 @@ class Page_editor {
             this.$editor_dom = $(
                 `<div class='page_editor'>
                     ${this.tools_dom}
-                    ${this.body_dom}
                 </div>`
             );
+            this.body_dom.appendTo(this.$editor_dom);
         }
         return this.$editor_dom;
     }
