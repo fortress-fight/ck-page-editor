@@ -11,5 +11,6 @@ import "./style/main.scss";
 
 window.$ = $;
 $(function() {
+    alert(1);
     console.log("running");
 });

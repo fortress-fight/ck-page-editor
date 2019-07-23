@@ -73,7 +73,7 @@ class Webpack_config_creater {
                 this.watch_htmls.push(watch_path);
             }
         });
-        // if (this.option.env !== "development") return {};
+        if (this.option.env !== "development") return {};
 
         fs.writeFileSync(
             "./watch_html.js",
@@ -93,7 +93,10 @@ class Webpack_config_creater {
         return Object.assign(
             {
                 main: path.resolve(__dirname, "./src/app.js"),
-                body_editor: path.resolve(__dirname, "./src/body_editor.js")
+                body_editor: path.resolve(
+                    __dirname,
+                    "./src/pages/body_editor.js"
+                )
             },
             this.watch_html_entry
         );
@@ -134,7 +137,17 @@ class Webpack_config_creater {
             },
             plugins: html_paths.map(html_path => {
                 let file_info = this.get_file_info(html_path)[0];
-                let chunks = [file_info.basename];
+                let split_code = this.split_code.cacheGroups;
+                let chunks = ["main", "html_entry", file_info.basename];
+
+                Object.values(split_code).forEach(code => {
+                    if (
+                        !chunks.includes(code.name) &&
+                        code.name.indexOf("base") != -1
+                    ) {
+                        chunks.push(code.name);
+                    }
+                });
 
                 return new HtmlWebpackPlugin(
                     typeof html_path === "string"
@@ -145,7 +158,7 @@ class Webpack_config_creater {
                                   html_path.replace("./src", "./dist")
                               ),
                               inject: "head",
-                              chunks: "main"
+                              chunks: chunks
                           }
                         : {}
                 );
@@ -268,51 +281,73 @@ class Webpack_config_creater {
         let cacheGroups = {
             lib: {
                 test: /[\\/]node_modules[\\/].+\.js$/,
-                name: "lib",
-                priority: 10,
+                name: "base_lib",
+                priority: 20,
                 chunks: "all",
                 enforce: true
             },
             libStyle: {
                 test: /[\\/]node_modules[\\/].+\.css$/,
-                name: "lib",
+                name: "base_lib",
+                priority: 20,
+                chunks: "all",
+                enforce: true
+            },
+            mainJs: {
+                test: (module, chunk) => {
+                    return (
+                        /\.js$/.test(module.resource) && chunk.name == "main"
+                    );
+                },
+                name: "base_org",
                 priority: 10,
                 chunks: "all",
                 enforce: true
             },
-            resetStyle: {
-                test: /(rest|normalize).css$/,
-                name: "reset",
-                priority: 20,
-                chunks: "all",
-                enforce: true
-            },
-            unit: {
-                test: /(unit).js$/,
-                name: "reset",
-                priority: 20,
+            mainStyle: {
+                test: (module, chunk) => {
+                    return (
+                        /\.css$/.test(module.resource) && chunk.name == "main"
+                    );
+                },
+                name: "base_org",
+                priority: 10,
                 chunks: "all",
                 enforce: true
             }
         };
+
         // this.watch_htmls.forEach(html_path => {
         //     let file_info = this.get_file_info(html_path)[0];
+
         //     cacheGroups[file_info.basename + "_css"] = {
-        //         test: new RegExp(file_info.basename + ".*css$"),
+        //         test: (module, chunk) => {
+        //             return (
+        //                 new RegExp(`${file_info.basename}.+\\.css$`).test(
+        //                     module.resource
+        //                 ) && chunk.name == "body_editor"
+        //             );
+        //         },
         //         name: file_info.basename,
         //         priority: 30,
         //         chunks: "all",
         //         enforce: true
         //     };
         //     cacheGroups[file_info.basename + "_js"] = {
-        //         test: new RegExp(file_info.basename + ".*js$"),
+        //         test: (module, chunk) => {
+        //             return (
+        //                 new RegExp(`${file_info.basename}.+\\.js$`).test(
+        //                     module.resource
+        //                 ) && chunk.name == "body_editor"
+        //             );
+        //         },
         //         name: file_info.basename,
         //         priority: 30,
         //         chunks: "all",
         //         enforce: true
         //     };
         // });
-
+        // console.log(cacheGroups, "cacheGroups");
         return {
             chunks: "all",
             cacheGroups: cacheGroups
@@ -386,9 +421,9 @@ fs.writeFileSync(
     "./_webpackconfig.json",
     JSON.stringify(new Webpack_config_creater({}).config)
 );
-
+console.log(process.env.NODE_ENV, "process.env.NODE_ENV");
 const webpack_config = new Webpack_config_creater({
-    env: process.env.NODE_ENV
+    env: "development"
 }).config;
 
 module.exports = (env, argv) => {
