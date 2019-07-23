@@ -4,6 +4,11 @@
     }
 }
 
+body {
+    min-width: 1250px;
+    user-select: none;
+}
+
 .page_editor {
     font-size: 14px;
 

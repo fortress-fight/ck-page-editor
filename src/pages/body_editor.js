@@ -16,6 +16,8 @@ $(function() {
 class Page {
     constructor() {
         this._layout_dialog = null;
+        this.layout_dialog = {};
+        this.layout_data = [];
     }
 
     init() {
@@ -24,24 +26,35 @@ class Page {
         });
     }
 
-    get layout_dialog() {
-        if (!this._layout_dialog) {
-            this._layout_dialog = dialog({
-                dialog_header: "关闭编辑器",
-                dialog_body:
-                    "<p style='text-align: center'>当前编辑的页面未保存，是否确认退出</p>",
-                dialog_footer: "",
-                dialog_size: "400px-auto",
-                confirm_ev() {
-                    alert("confirm");
-                    btn.trigger("close");
+    set layout_dialog(config) {
+        const self = this;
+        this._layout_dialog = dialog(
+            Object.assign(
+                {
+                    dom: $(".page_editor-layout_pop"),
+                    box_size: "big",
+                    dialog_header: "关闭编辑器",
+                    dialog_body: null,
+                    dialog_footer: "",
+                    confirm_ev() {
+                        self.layout_data.push({
+                            col: this.$container
+                                .find(
+                                    ".page_editor-layout_options .item.active"
+                                )
+                                .data("value")
+                        });
+                    },
+                    cancel_ev() {
+                        alert("concel");
+                    }
                 },
-                cancel_ev() {
-                    btn.trigger("close");
-                }
-            }).init();
-            console.log(this._layout_dialog);
-        }
+                config
+            )
+        ).init();
+    }
+
+    get layout_dialog() {
         return this._layout_dialog;
     }
 }

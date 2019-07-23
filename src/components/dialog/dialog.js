@@ -38,20 +38,20 @@ class Dialog {
     close(result) {
         if (result) {
             if (this.option.confirm_ev.length) {
-                this.option.confirm_ev(() => {
+                this.option.confirm_ev.call(this, () => {
                     this.hide();
                 });
             } else {
-                this.option.confirm_ev();
+                this.option.confirm_ev.call(this);
                 this.hide();
             }
         } else {
             if (this.option.cancel_ev.length) {
-                this.option.cancel_ev(() => {
+                this.option.cancel_ev.call(this, () => {
                     this.hide();
                 });
             } else {
-                this.option.cancel_ev();
+                this.option.cancel_ev.call(this);
                 this.hide();
             }
         }
@@ -97,20 +97,27 @@ class Dialog {
         }
     }
     set _container(dom) {
-        function get_dialog_style() {
-            var size = this.option.dialog_size.split("-");
-            return `width: ${size[0]}; height: ${size[1]}`;
-        }
         if (dom === true) {
             this.$container.trigger("show");
         }
         if (dom === false) {
             this.$container.trigger("hide");
         }
+
+        if (dom) {
+            this.option.dialog_body =
+                this.option.dialog_body || $(dom).find('*[data-pop="body"]');
+        }
+
+        $(dom).remove();
+
         if (!this.$container) {
             this.$container = $(
                 `
-            <div class="dialog" style="${get_dialog_style.call(this)}">
+            <div class="dialog" data-size="${this.option.box_size}" style="${
+                    this.option.dialog_style
+                }">
+
              
             </div>
         `
@@ -192,11 +199,12 @@ class Dialog {
     }
     get default_option() {
         return {
+            box_size: "normal",
             dialog_pos: "center",
             dialog_header: "header",
             dialog_body: "body",
             dialog_footer: "footer",
-            dialog_size: "500px-500px",
+            dialog_style: "",
             dialog_btn_footer: true,
             dialog_close_btn: true,
             wrapper_option: {

@@ -14,13 +14,13 @@ class Page_editor {
     }
 
     constructor(dom, option = {}) {
+        this.container = $(dom);
+
         if ($(this.container).data("editor")) {
             return $(dom).data("editor");
         }
 
         $(this.container).data("editor", this);
-
-        this.container = $(dom);
         this.constructor._editors(this);
         this.option = Object.assign(this.default_option, option);
         this.editor_frame_data = {};
@@ -154,7 +154,7 @@ class Page_editor {
                         dialog_body:
                             "<p style='text-align: center'>当前编辑的页面未保存，是否确认退出</p>",
                         dialog_footer: "",
-                        dialog_size: "400px-auto",
+                        dialog_style: "width: 400px; height: auto;",
                         confirm_ev() {
                             alert("confirm");
                             btn.trigger("close");

@@ -9,16 +9,23 @@
     display: grid;
 }
 
+.hide {
+    display: none;
+}
+
 @for $num from 1 through 20 {
     .layout_grid-colspac-#{$num} {
         grid-column-gap: #{$num}px;
     }
+
     .layout_grid-rowspac-#{$num} {
         grid-row-gap: #{$num}px;
     }
+
     .layout_grid-col-#{$num} {
         grid-template-columns: repeat($num, 1fr);
     }
+
     .layout_grid-item_clo-#{$num} {
         grid-column-start: span $num;
     }
