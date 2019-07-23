@@ -108,23 +108,18 @@ class Dialog {
             this.$container.trigger("hide");
         }
         if (!this.$container) {
-            if (dom) {
-                this.$container = $(dom);
-            } else {
-                this.$container = $(
-                    `
+            this.$container = $(
+                `
             <div class="dialog" style="${get_dialog_style.call(this)}">
-                <div class="dialog_body">
-                    ${this.option.dialog_body}
-                </div>
+             
             </div>
         `
-                )
-                    .prepend(this.dialog_header_dom)
-                    .append(this.dialog_footer_dom)
-                    .hide()
-                    .appendTo(this.$wrapper);
-            }
+            )
+                .append(this.dialog_header_dom)
+                .append(this.dialog_body_dom)
+                .append(this.dialog_footer_dom)
+                .hide()
+                .appendTo(this.$wrapper);
 
             let transition_time =
                 (parseInt(this.$container.css("transition-duration")) || 0) *
@@ -157,6 +152,16 @@ class Dialog {
         result.on("click", ".dialog_close_btn", () => {
             this.hide();
         });
+        return result;
+    }
+    get dialog_body_dom() {
+        let result = $('<div class="dialog_body"> </div>');
+
+        if (typeof this.option.dialog_body === "string") {
+            result.html(this.option.dialog_body);
+        } else {
+            result.append(this.option.dialog_body);
+        }
         return result;
     }
     get dialog_footer_dom() {

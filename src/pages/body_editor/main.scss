@@ -34,5 +34,45 @@ body {
                 margin-right: 10px;
             }
         }
+        &_editor {
+            @at-root (with: rule) {
+                &-layout {
+                    .item {
+                        box-sizing: border-box;
+                        height: 50px;
+                        padding: 3px;
+
+                        cursor: pointer;
+                        transition: 0.2s ease;
+
+                        color: #a8a8a8;
+                        border: 1px solid #ebebeb;
+                        &:hover {
+                            color: #333;
+                            border-color: #d2d2d2;
+                        }
+                        &.active {
+                            color: #fff;
+                            border-color: #46be8a;
+                            .item_son {
+                                background: #46be8a;
+                            }
+                        }
+                    }
+                    .item_son {
+                        display: flex;
+
+                        height: 100%;
+
+                        transition: background-color 0.2s ease;
+
+                        background-color: #eaeaea;
+
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
     }
 }

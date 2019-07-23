@@ -53,3 +53,12 @@ Page.init_dos.push(function addLayout() {
         this.layout_dialog.show();
     });
 });
+
+Page.init_dos.push(function layoutSelect() {
+    $(".page_editor-layout_options").on("click", ".item", function() {
+        $(this)
+            .siblings()
+            .removeClass("active");
+        $(this).addClass("active");
+    });
+});
