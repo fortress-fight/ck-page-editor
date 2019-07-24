@@ -46,6 +46,8 @@
         "webpack-merge": "^4.2.1"
     },
     "dependencies": {
+        "dob": "^2.5.10",
+        "handlebars": "^4.1.2",
         "jquery": "^3.4.1",
         "normalize.css": "^8.0.1",
         "sass-resources-loader": "^2.0.1",

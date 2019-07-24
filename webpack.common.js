@@ -368,7 +368,11 @@ class Webpack_config_creater {
                     this.html_config.rule,
                     this.ejs_config.rule,
                     this.js_config.rule,
-                    ...this.resources_config.rules
+                    ...this.resources_config.rules,
+                    {
+                        test: /\.handlebars$/,
+                        loader: "raw-loader"
+                    }
                 ]
             },
             plugins: [

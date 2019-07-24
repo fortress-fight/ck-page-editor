@@ -1,4 +1,7 @@
+import { observable, observe } from "dob";
+import Handlebars from "handlebars/dist/handlebars";
 import dialog from "../components/dialog/dialog";
+import layout_source from "./body_editor/layout.handlebars";
 import "./body_editor/main.scss";
 
 $(function() {
@@ -10,22 +13,61 @@ $(function() {
         $EDITOR_BOX.html("");
     }
 
-    new Page().init();
+    new Page($EDITOR_BOX).init();
 });
 
 class Page {
-    constructor() {
+    constructor($dom) {
+        this.$container = $dom;
         this._layout_dialog = null;
         this.layout_dialog = {};
-        this.layout_data = [];
+        this.layout_data = observable([]);
     }
 
     init() {
         Page.init_dos.forEach(v => {
             v.call(this);
         });
-    }
 
+        observe(() => {
+            let template = Handlebars.compile(layout_source);
+            this.$container.html(template({ data: this.layout_data }));
+        });
+    }
+    add_layout(col) {
+        this.layout_data.push({
+            index: this.layout_data.length,
+            dom: null,
+            attrs: {
+                header: false,
+                footer: false,
+                width: "",
+                space: "",
+                window_width: false,
+                limit_width: false,
+                bg: {
+                    pc: "",
+                    mo: "",
+                    cover: false,
+                    repeat: false,
+                    parallax: false,
+                    align_center: false
+                },
+                body: [
+                    {
+                        animate: 0,
+                        x_align: false,
+                        y_align: false,
+                        body_dom: null,
+                        col: col || "100",
+                        padding_x: "",
+                        padding_y: "",
+                        backgroundColor: []
+                    }
+                ]
+            }
+        });
+    }
     set layout_dialog(config) {
         const self = this;
         this._layout_dialog = dialog(
@@ -37,7 +79,7 @@ class Page {
                     dialog_body: null,
                     dialog_footer: "",
                     confirm_ev() {
-                        self.layout_data.push({
+                        self.add_layout({
                             col: this.$container
                                 .find(
                                     ".page_editor-layout_options .item.active"

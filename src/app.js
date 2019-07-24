@@ -10,6 +10,7 @@ import "./script/main.js";
 // custom-css
 import "./style/main.scss";
 import "./style/reset.scss";
+
 window.$ = $;
 $(function() {
     console.log("running");
