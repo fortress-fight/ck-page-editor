@@ -1,8 +1,9 @@
 import { observable, observe } from "dob";
-import Handlebars from "handlebars/dist/handlebars";
+import Handlebars from "./body_editor/handlebars_plugin";
 import dialog from "../components/dialog/dialog";
 import layout_source from "./body_editor/layout.handlebars";
 import "./body_editor/main.scss";
+import "./body_editor/layout.scss";
 
 $(function() {
     const $EDITOR_BOX = $("#page_body_editor .page_body_editor-wrapper");
@@ -39,15 +40,21 @@ class Page {
             index: this.layout_data.length,
             dom: null,
             attrs: {
-                header: false,
-                footer: false,
+                header: {
+                    open: true,
+                    container: "<p>头部</p>"
+                },
+                footer: {
+                    open: true,
+                    container: "<p>底部</p>"
+                },
                 width: "",
                 space: "",
                 window_width: false,
                 limit_width: false,
                 bg: {
-                    pc: "",
-                    mo: "",
+                    pc: "123",
+                    mo: "321",
                     cover: false,
                     repeat: false,
                     parallax: false,
@@ -62,7 +69,8 @@ class Page {
                         col: col || "100",
                         padding_x: "",
                         padding_y: "",
-                        backgroundColor: []
+                        backgroundColor: [],
+                        col_container: ["<p>编辑器</p>"]
                     }
                 ]
             }
@@ -75,17 +83,11 @@ class Page {
                 {
                     dom: $(".page_editor-layout_pop"),
                     box_size: "big",
-                    dialog_header: "关闭编辑器",
+                    dialog_header: "添加布局容器",
                     dialog_body: null,
                     dialog_footer: "",
                     confirm_ev() {
-                        self.add_layout({
-                            col: this.$container
-                                .find(
-                                    ".page_editor-layout_options .item.active"
-                                )
-                                .data("value")
-                        });
+                        self.add_layout();
                     },
                     cancel_ev() {
                         alert("concel");

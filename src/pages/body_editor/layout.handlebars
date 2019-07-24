@@ -1,3 +1,41 @@
 {{#each data}}
-<div>{{index}}</div>
+{{#with attrs}}
+<div class="layout_groups">
+    {{#has bg.pc}}
+    <section class="layout_bg layout_bg_pc" style=" background-image: url({{bg.pc}});">
+        <img src="{{bg.pc}}" style="opacity: 0">
+    </section>
+    {{/has}}
+    {{#filter bg.mo bg.pc}}
+    <section class="layout_bg layout_bg_mo" style=" background-image: url({{result}});">
+        <img src="{{result}}" style="opacity: 0">
+    </section>
+    {{/filter}}
+    <section class="layout_limit_wrapper">
+        <section class="layout_container">
+            {{#has header.open}}
+            <section class="layout_header">
+                <section class="editor ck-content">{{{header.container}}}</section>
+            </section>
+            {{/has}}
+            {{#each body}}
+            <section class="row">
+                {{#row col}}
+                11
+                <section class='col-{{row}} col'>
+                    <section class="editor ck-content">
+                    </section>
+                </section>
+                {{/row}}
+            </section>
+            {{/each}}
+            {{#has footer.open}}
+            <section class="layout_footer">
+                <section class="editor ck-content">{{{footer.container}}}</section>
+            </section>
+            {{/has}}
+        </section>
+    </section>
+</div>
+{{/with}}
 {{/each}}
