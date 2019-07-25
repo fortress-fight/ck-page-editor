@@ -90,25 +90,53 @@ class Page {
     add_layout_group(col, inert_id) {
         let layout_group_data = this.get_layout_group_data(col);
         if (inert_id) {
-            this.layout_data.forEach((v, i) => {
-                if (v.id == inert_id) {
-                    this.layout_data.splice(i, 0, layout_group_data);
-                }
-            });
+            this.layout_data.splice(
+                this.search_layout_group_index(inert_id),
+                0,
+                layout_group_data
+            );
         } else {
             this.layout_data.push(layout_group_data);
         }
     }
-    delete_layout_group(id) {
-        if (typeof id != "string") return;
+    search_layout_group_index(id) {
+        let result = NaN;
         this.layout_data.forEach((v, i) => {
-            if (v.id == id) {
-                this.layout_data.splice(i, 1);
+            console.log(v);
+            if (v.id && v.id == id) {
+                result = i;
             }
         });
+        return result;
+    }
+    delete_layout_group(id) {
+        if (typeof String(id) != "string") return;
+        this.layout_data.splice(this.search_layout_group_index(id), 1);
     }
     create_layout_group_dialog(config) {
         return dialog(Object.assign({}, config)).init();
+    }
+    layout_group_move_down(data) {
+        if (!data.id) return this;
+        let layout_group_id = this.search_layout_group_index(data.id);
+        [
+            this.layout_data[layout_group_id],
+            this.layout_data[layout_group_id + 1]
+        ] = [
+            this.layout_data[layout_group_id + 1],
+            this.layout_data[layout_group_id]
+        ];
+    }
+    layout_group_move_up(data) {
+        if (!data.id) return this;
+        let layout_group_id = this.search_layout_group_index(data.id);
+        [
+            this.layout_data[layout_group_id - 1],
+            this.layout_data[layout_group_id]
+        ] = [
+            this.layout_data[layout_group_id],
+            this.layout_data[layout_group_id - 1]
+        ];
     }
     set delete_layout_group_dialog(config) {
         const Self = this;
@@ -197,6 +225,14 @@ Page.init_dos.push(function initlayoutGroupBar() {
 
                 case "add":
                     PageClass.add_layout_group_dialog.show({ id: id });
+                    break;
+
+                case "down":
+                    PageClass.layout_group_move_down({ id: id });
+                    break;
+
+                case "up":
+                    PageClass.layout_group_move_up({ id: id });
                     break;
                 default:
                     break;
