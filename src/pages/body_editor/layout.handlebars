@@ -1,6 +1,14 @@
 {{#each data}}
 {{#with attrs}}
-<div class="layout_groups">
+<div id="{{../id}}" class="layout_groups">
+    {{#has ../../editor}}
+    <div class="layout_groups-editor_bar">
+        <div class="item" data-key="add" title="添加"><span class="text">添加</span><i class="fa fa-plus"></i></div>
+        <div class="item" data-key="up" title="上移"><span class="text">上移</span><i class="fa fa-arrow-up"></i></div>
+        <div class="item" data-key="down" title="下移"><span class="text">下移</span><i class="fa fa-arrow-down"></i></div>
+        <div class="item" data-key="delete" title="删除"><span class="text">删除</span><i class="fa fa-trash"></i></div>
+    </div>
+    {{/has}}
     {{#has bg.pc}}
     <section class="layout_bg layout_bg_pc" style=" background-image: url({{bg.pc}});">
         <img src="{{bg.pc}}" style="opacity: 0">
@@ -19,14 +27,16 @@
             </section>
             {{/has}}
             {{#each body}}
-            <section class="row">
-                {{#row col}}
-                11
-                <section class='col-{{row}} col'>
-                    <section class="editor ck-content">
-                    </section>
+            <section class="layout_body">
+                <section class="layout row">
+                    {{#each col_container}}
+                    <div class="col-{{col}} col">
+                        <section class="editor ck-content">
+                            {{{dom}}}
+                        </section>
+                    </div>
+                    {{/each}}
                 </section>
-                {{/row}}
             </section>
             {{/each}}
             {{#has footer.open}}

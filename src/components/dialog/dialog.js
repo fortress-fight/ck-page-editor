@@ -19,12 +19,14 @@ class Dialog {
     init() {
         return this;
     }
-    show() {
+    show(data) {
+        this.temporary_data = data;
         this._wrapper = true;
         this._container = true;
     }
     hide() {
         function done() {
+            this.temporary_data = null;
             this._wrapper = false;
             this._container = false;
         }
@@ -38,20 +40,28 @@ class Dialog {
     close(result) {
         if (result) {
             if (this.option.confirm_ev.length) {
-                this.option.confirm_ev.call(this, () => {
-                    this.hide();
-                });
+                this.option.confirm_ev.call(
+                    this,
+                    () => {
+                        this.hide();
+                    },
+                    this.temporary_data
+                );
             } else {
-                this.option.confirm_ev.call(this);
+                this.option.confirm_ev.call(this, this.temporary_data);
                 this.hide();
             }
         } else {
             if (this.option.cancel_ev.length) {
-                this.option.cancel_ev.call(this, () => {
-                    this.hide();
-                });
+                this.option.cancel_ev.call(
+                    this,
+                    () => {
+                        this.hide();
+                    },
+                    this.temporary_data
+                );
             } else {
-                this.option.cancel_ev.call(this);
+                this.option.cancel_ev.call(this, this.temporary_data);
                 this.hide();
             }
         }
@@ -114,11 +124,9 @@ class Dialog {
         if (!this.$container) {
             this.$container = $(
                 `
-            <div class="dialog" data-size="${this.option.box_size}" style="${
-                    this.option.dialog_style
-                }">
-
-             
+            <div class="dialog" data-type="${this.option.type}"  data-size="${
+                    this.option.box_size
+                }" style="${this.option.dialog_style}">
             </div>
         `
             )
@@ -199,6 +207,7 @@ class Dialog {
     }
     get default_option() {
         return {
+            type: "normal",
             box_size: "normal",
             dialog_pos: "center",
             dialog_header: "header",

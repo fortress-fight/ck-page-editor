@@ -33,12 +33,14 @@ Handlebars.registerHelper("row", function(col_info, options) {
     let result = "";
 
     let rowArray = col_info !== "object" ? (col_info + "").split("_") : [];
-    console.log(JSON.stringify(rowArray), "rowArray");
     for (var i = 0, l = rowArray.length; i < l; i++) {
         result += options.fn(rowArray[i]);
     }
 
     return result;
+});
+Handlebars.registerHelper("length", function(array, options) {
+    return options.fn(length);
 });
 Handlebars.registerHelper("get", function(obj, key, options) {
     if (obj[key]) {

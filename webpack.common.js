@@ -140,15 +140,6 @@ class Webpack_config_creater {
                 let split_code = this.split_code.cacheGroups;
                 let chunks = ["main", "html_entry", file_info.basename];
 
-                Object.values(split_code).forEach(code => {
-                    if (
-                        !chunks.includes(code.name) &&
-                        code.name.indexOf("base") != -1
-                    ) {
-                        chunks.push(code.name);
-                    }
-                });
-
                 return new HtmlWebpackPlugin(
                     typeof html_path === "string"
                         ? {
