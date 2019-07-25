@@ -26,19 +26,33 @@
                 <section class="editor ck-content">{{{header.container}}}</section>
             </section>
             {{/has}}
-            {{#each body}}
             <section class="layout_body">
-                <section class="layout row">
+                {{#each ../body}}
+                <section id="{{id}}" class="layout row">
                     {{#each col_container}}
-                    <div class="col-{{col}} col">
+                    <section class="col-{{col}} col">
                         <section class="editor ck-content">
                             {{{dom}}}
                         </section>
-                    </div>
+                    </section>
                     {{/each}}
+                    {{#has @root.editor}}
+                    <div class="layout-editor_bar">
+                        <div class="item" data-key="editor" title="编辑"><span class="text">编辑</span><i
+                               class="fa fa-pencil"></i></div>
+                        <div class="item" data-key="add" title="添加"><span class="text">添加</span><i
+                               class="fa fa-plus"></i></div>
+                        <div class="item" data-key="up" title="上移"><span class="text">上移</span><i
+                               class="fa fa-arrow-up"></i></div>
+                        <div class="item" data-key="down" title="下移"><span class="text">下移</span><i
+                               class="fa fa-arrow-down"></i></div>
+                        <div class="item" data-key="delete" title="删除"><span class="text">删除</span><i
+                               class="fa fa-trash"></i></div>
+                    </div>
+                    {{/has}}
                 </section>
+                {{/each}}
             </section>
-            {{/each}}
             {{#has footer.open}}
             <section class="layout_footer">
                 <section class="editor ck-content">{{{footer.container}}}</section>

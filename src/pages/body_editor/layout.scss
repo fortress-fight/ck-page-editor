@@ -1,8 +1,10 @@
+/**
+* 编辑器内 .layout_group 样式
+**/
 .page_body_editor .layout_group {
     border: 2px solid #eee;
     border-bottom: none;
 }
-
 .layout_group {
     &:hover {
         .layout_group-editor_bar {
@@ -68,14 +70,99 @@
     }
 }
 
+/**
+* 编辑器内 .layout 样式
+**/
 .layout {
-    overflow: hidden;
+    &:hover {
+        .layout-editor_bar {
+            visibility: visible;
+
+            opacity: 1;
+        }
+    }
+
+    &:first-of-type .layout-editor_bar .item[data-key="up"] {
+        display: none;
+    }
+    &:last-of-type .layout-editor_bar .item[data-key="down"] {
+        display: none;
+    }
+    &:first-of-type:last-of-type .layout-editor_bar .item[data-key="delete"] {
+        display: none;
+    }
+    .layout-editor_bar .item:hover {
+        color: #000;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.layout-editor_bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    visibility: hidden;
+
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+
+    transition: 0.36s ease;
+    pointer-events: none;
+
+    opacity: 0;
+    border: 2px solid #eee;
+    border-right: none;
+    border-left: none;
+    border-radius: 2px;
+    background: transparent;
+
+    align-items: center;
+    justify-content: center;
+    .item {
+        font-size: 12px;
+
+        display: flex;
+
+        box-sizing: border-box;
+        width: 25px;
+        height: 25px;
+        margin: 0 5px;
+
+        cursor: pointer;
+        transition: 0.2s ease;
+        pointer-events: all;
+
+        color: #999;
+        border-radius: 50%;
+        background: #eee;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0);
+
+        align-items: center;
+        justify-content: center;
+    }
+    .text {
+        display: none;
+    }
+}
+
+/**
+* 页面展示与编辑器公共样式
+**/
+
+.layout_group {
+    .editor {
+        overflow: hidden;
+    }
+}
+.layout {
+    position: relative;
+
     &_group {
         @at-root (with: rule) {
             position: relative;
         }
-    }
-    &_container {
-        overflow: hidden;
     }
 }
