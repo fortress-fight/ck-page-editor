@@ -22,8 +22,8 @@ class Page {
     constructor($dom) {
         this.$container = $dom;
         this.layout_data = observable([]);
-        this.add_layout_dialog = {};
-        this.delete_layout_dialog = {};
+        this.add_layout_group_dialog = {};
+        this.delete_layout_group_dialog = {};
     }
 
     init() {
@@ -38,7 +38,7 @@ class Page {
             );
         });
     }
-    add_layout(col) {
+    get_layout_group_data(col) {
         let cols_dom = String(col)
             .split("_")
             .map(v => {
@@ -47,7 +47,7 @@ class Page {
                     dom: "<p>编辑器</p>"
                 };
             });
-        this.layout_data.push({
+        return {
             id: stringRandom(16, { numbers: false }),
             dom: null,
             attrs: {
@@ -85,7 +85,19 @@ class Page {
                     }
                 ]
             }
-        });
+        };
+    }
+    add_layout_group(col, inert_id) {
+        let layout_group_data = this.get_layout_group_data(col);
+        if (inert_id) {
+            this.layout_data.forEach((v, i) => {
+                if (v.id == inert_id) {
+                    this.layout_data.splice(i, 0, layout_group_data);
+                }
+            });
+        } else {
+            this.layout_data.push(layout_group_data);
+        }
     }
     delete_layout_group(id) {
         if (typeof id != "string") return;
@@ -95,12 +107,12 @@ class Page {
             }
         });
     }
-    create_layout_dialog(config) {
+    create_layout_group_dialog(config) {
         return dialog(Object.assign({}, config)).init();
     }
-    set delete_layout_dialog(config) {
+    set delete_layout_group_dialog(config) {
         const Self = this;
-        this._delete_layout_dialog = this.create_layout_dialog(
+        this._delete_layout_dialog = this.create_layout_group_dialog(
             Object.assign(
                 {
                     type: "warn",
@@ -119,12 +131,12 @@ class Page {
             )
         );
     }
-    get delete_layout_dialog() {
+    get delete_layout_group_dialog() {
         return this._delete_layout_dialog;
     }
-    set add_layout_dialog(config) {
+    set add_layout_group_dialog(config) {
         const Self = this;
-        this._add_layout_dialog = this.create_layout_dialog(
+        this._add_layout_group_dialog = this.create_layout_group_dialog(
             Object.assign(
                 {
                     dom: $(".page_editor-layout_pop"),
@@ -133,14 +145,16 @@ class Page {
                     dialog_header: "添加布局容器",
                     dialog_body: null,
                     dialog_footer: "",
-                    confirm_ev() {
-                        Self.add_layout(
+                    confirm_ev(done, data) {
+                        Self.add_layout_group(
                             this.$container
                                 .find(
                                     ".page_editor-layout_options .item.active"
                                 )
-                                .data("value")
+                                .data("value"),
+                            data && data.id
                         );
+                        done();
                     },
                     cancel_ev() {
                         alert("concel");
@@ -151,8 +165,8 @@ class Page {
         );
     }
 
-    get add_layout_dialog() {
-        return this._add_layout_dialog;
+    get add_layout_group_dialog() {
+        return this._add_layout_group_dialog;
     }
 }
 
@@ -161,7 +175,7 @@ Page.init_dos = [];
 Page.init_dos.push(function initAddLayoutBtn() {
     const $ADD_BTN = $(".page-add_layout_btn");
     $ADD_BTN.on("click", () => {
-        this.add_layout_dialog.show();
+        this.add_layout_group_dialog.show();
     });
 });
 
@@ -178,7 +192,11 @@ Page.init_dos.push(function initlayoutGroupBar() {
 
             switch (key) {
                 case "delete":
-                    PageClass.delete_layout_dialog.show({ id: id });
+                    PageClass.delete_layout_group_dialog.show({ id: id });
+                    break;
+
+                case "add":
+                    PageClass.add_layout_group_dialog.show({ id: id });
                     break;
                 default:
                     break;
