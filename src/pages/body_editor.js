@@ -183,11 +183,11 @@ Page.init_dos.push(function initlayoutGroupBar() {
     const PageClass = this;
     PageClass.$container.on(
         "click",
-        ".layout_groups-editor_bar .item",
+        ".layout_group-editor_bar .item",
         function() {
             let key = $(this).data("key");
             let id = $(this)
-                .closest(".layout_groups")
+                .closest(".layout_group")
                 .attr("id");
 
             switch (key) {

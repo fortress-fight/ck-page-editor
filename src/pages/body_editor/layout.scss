@@ -1,29 +1,29 @@
-.page_body_editor .layout_groups {
+.page_body_editor .layout_group {
     border: 2px solid #eee;
     border-bottom: none;
 }
 
-.layout_groups {
+.layout_group {
     &:hover {
-        .layout_groups-editor_bar {
+        .layout_group-editor_bar {
             visibility: visible;
 
             opacity: 1;
         }
     }
 
-    &:first-of-type .layout_groups-editor_bar .item[data-key="up"] {
+    &:first-of-type .layout_group-editor_bar .item[data-key="up"] {
         display: none;
     }
-    &:last-of-type .layout_groups-editor_bar .item[data-key="down"] {
+    &:last-of-type .layout_group-editor_bar .item[data-key="down"] {
         display: none;
     }
-    .layout_groups-editor_bar .item:hover {
+    .layout_group-editor_bar .item:hover {
         color: #000;
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     }
 }
-.layout_groups-editor_bar {
+.layout_group-editor_bar {
     position: absolute;
     top: -2px;
     left: 0;
@@ -70,7 +70,7 @@
 
 .layout {
     overflow: hidden;
-    &_groups {
+    &_group {
         @at-root (with: rule) {
             position: relative;
         }
