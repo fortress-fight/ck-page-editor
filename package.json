@@ -16,6 +16,8 @@
         "slick-carousel": "^1.8.1",
         "string-random": "^0.1.3",
         "uuid": "^3.3.2",
+        "velocity": "^0.7.2",
+        "velocity-animate": "^1.5.2",
         "vue": "^2.6.10",
         "vue-class-component": "^7.0.2",
         "vue-property-decorator": "^8.1.0",

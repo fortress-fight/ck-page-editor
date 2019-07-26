@@ -236,7 +236,7 @@ class Page_editor {
     get body_dom() {
         let result = $(`
             <div class="page_editor-body">
-                <iframe id="editor_iframe" src="./body_editor.html"></iframe>
+                <iframe id="editor_iframe" src="./index.html"></iframe>
             </div>
         `);
         this.editor_iframe = result.find("iframe");
