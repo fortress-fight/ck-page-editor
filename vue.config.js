@@ -138,6 +138,7 @@ module.exports = {
                             modules: true
                         }
                     },
+                    { loader: "resolve-url-loader" },
                     "sass-loader"
                 ]
             }
