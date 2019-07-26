@@ -25,7 +25,8 @@
         "src/**/*.vue",
         "tests/**/*.ts",
         "tests/**/*.tsx",
-        "src/pages/index/lib/unit.ts"
+        "src/pages/index/lib/unit.ts",
+        "src/lib/page_editor.js"
     ],
     "exclude": ["node_modules"]
 }

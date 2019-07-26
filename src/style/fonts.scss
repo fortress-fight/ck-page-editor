@@ -1,0 +1,35 @@
+@font-face {
+    font-family: "ifont";
+
+    src: url("../fonts/iconfont.eot?t=1563511385212");
+
+/* IE9 */
+    src: url("../fonts/iconfont.eot?t=1563511385212#iefix")
+    format("embedded-opentype"),
+    /* IE6-IE8 */
+    url("data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAANgAAsAAAAAB3QAAAMUAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDBgqCeIJQATYCJAMMCwgABCAFhEkHPRt5BhFFjMl+DribWbknTKZvV5Dx5mRsW5o9klnG4HmaK9/PTNLcTA5wtgwKCRVRtkCgCIQicHVVAKCyV3Xx/aaawRxCBIgndODknevy5XXr6eQOQFABK6BN2Af4APj/753+lUAnvhYA/ftae2An6iTc8QDHGhrJAgnIG8auvIjTEMBQh1ZI3+PQsYRojEkCyNJhwSzClAldUy2ECEHJSo0cwif0dnvPgIP+9+UXrSUED19hzBw5v99cen4t+N5ZxWk81aUg4zkAtg4U0ArQINNLXRNRYaoVCqOodH1xgEbwxoqm6cJHVROs9I/ngQQYlREAzaDB46SILYbA95aHIkBpAphZDxyGurK+cR3lV8+Yt65fcSy+ttetPpm9vmfpsbh85fG9N7IVq07smbL3pJNxKeqKfrxl47InKsyxYxAfnwSVE5qXlI2VEyf2lCnXV8nHJwKn4vJxzRzxccsUDmsmpxRjXeFeNwEsG9F69vM1a05Xb1P9tOfdknc6QjibKf+if/Zckqx2uZ1J7rxe7/55L7XvI1tf+V7ulfnrfJLsdLg1uOC8/Zupior97XplBL3O55I1brc6Sc6lEpk0em/7BGyV+d8536XRuSS32itwq3PJuShdbt+blDeMsWra6g2kleqBCn/Qb9g4ePndGYVdEzu0GoAXj/d2fiCt1LTzQHj6boHfQVq2aFVqmJWW0UbdrZidKMIDjOolxfCV8NdfU966EgSf8hg8qlEDFD71aS1oAj6WloqAa9pDMLRku95SCq8RnQe04AeAYLgAHgXcAoXhNq0FT8Gngl8IMHwBw/j/HS1N5JDtBO+KM3380GCCZ8up2eCWXqCb7bsgdIbdQNIQPNVFlc6e4CH95qTPrlFlYgmOjuJ5sDZQlDDCaNGrxrYsuexJhQlukdFH8K44Ex8/xGCCZzenGYvi1y/QzfZdUEPouIGqSJyH3YmagqqOPql8fdM556fPrkGVCYaVwRHHfsNgbSBi+bARRgv6HonYUprtuK2q2I3GPc0OwGA8pMQTJRq/jw0JG56tzZMRwC8W")
+    format("woff2"),
+    url("../fonts/iconfont.woff?t=1563511385212") format("woff"),
+    url("../fonts/iconfont.ttf?t=1563511385212") format("truetype"),
+    /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url("../fonts/iconfont.svg?t=1563511385212#ifont") format("svg");
+
+    /* iOS 4.1- */
+}
+
+.ifont {
+    font-family: "ifont" !important;
+    font-size: inherit;
+    font-style: normal;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-full-screen:before {
+    content: "\e83a";
+}
+
+.fa-close:before {
+    content: "\e60e";
+}

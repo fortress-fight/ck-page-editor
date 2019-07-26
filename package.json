@@ -8,6 +8,7 @@
         "test:unit": "vue-cli-service test:unit"
     },
     "dependencies": {
+        "@types/jquery": "^3.3.30",
         "core-js": "^2.6.5",
         "font-awesome": "^4.7.0",
         "jquery": "^3.4.1",
