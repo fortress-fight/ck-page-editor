@@ -62,38 +62,263 @@ const layout_module = {
     namespaced: true,
     state() {
         return {
+            active_layout_group_id: NaN,
             layout_data: []
         };
     },
-    mutations: {
-        add_layout_group(state, col, group_id) {
-            if (!group_id) {
+    mutations: {},
+    actions: {
+        add_layout_group(
+            { commit, state, getters, dispatch },
+            { col, layout_group_id }
+        ) {
+            if (!layout_group_id) {
                 state.layout_data.push(
                     unit_layout_module.get_layout_group_data(col)
                 );
-                this.commit("add_layout_group_dialog_module/tab_show", false);
             } else {
+                state.layout_data.splice(
+                    getters.search_layout_group(layout_group_id).index,
+                    0,
+                    unit_layout_module.get_layout_group_data(col)
+                );
             }
+
+            dispatch(
+                "add_layout_dom_dialog_module/tab_show",
+                {
+                    turn_on: false
+                },
+                { root: true }
+            );
+        },
+        move_layout_group({ state, getters }, { layout_group_id, dir }) {
+            if (!layout_group_id) {
+                console.error("没有输入 layout_group_id");
+                return;
+            }
+            let move_origin_group = getters.search_layout_group(
+                layout_group_id
+            );
+            let move_target_index =
+                dir == "up"
+                    ? move_origin_group.index - 1
+                    : move_origin_group.index + 1;
+            if (!getters.search_layout_group(move_target_index)) {
+                console.error("查找不到 layout-group");
+                return;
+            }
+            Vue.set(
+                state.layout_data,
+                move_origin_group.index,
+                state.layout_data[move_target_index]
+            );
+            Vue.set(
+                state.layout_data,
+                move_target_index,
+                move_origin_group.data
+            );
+        },
+        delete_layout_group({ state, getters, dispatch }, { layout_group_id }) {
+            if (!layout_group_id) {
+                console.error("没有输入 layout_group_id");
+                return;
+            }
+            state.layout_data.splice(
+                getters.search_layout_group(layout_group_id).index,
+                1
+            );
+            dispatch(
+                "delete_layout_dom_dialog_module/tab_show",
+                {
+                    turn_on: false
+                },
+                { root: true }
+            );
+        },
+        add_layout({ getters, dispatch }, { col, layout_group_id, layout_id }) {
+            if (!layout_group_id) {
+                console.error("没有输入 layout_group_id");
+                return;
+            }
+            let oper_layout_group = getters.search_layout_group(
+                layout_group_id
+            );
+
+            oper_layout_group.data.body.splice(
+                getters.search_layout(layout_group_id, layout_id).index + 1,
+                0,
+                unit_layout_module.get_layout_data(col)
+            );
+
+            dispatch(
+                "add_layout_dom_dialog_module/tab_show",
+                {
+                    turn_on: false
+                },
+                { root: true }
+            );
+        },
+        move_layout({ getters }, { layout_group_id, layout_id, dir }) {
+            if (!layout_group_id || !layout_id) {
+                console.error(
+                    "没有输入完整信息 \n",
+                    "layout_group_id",
+                    layout_group_id,
+                    " layout_id:",
+                    layout_id
+                );
+                return;
+            }
+
+            let oper_layout_group = getters.search_layout_group(
+                layout_group_id
+            );
+            let move_origin_layout = getters.search_layout(
+                layout_group_id,
+                layout_id
+            );
+
+            let move_target_index =
+                dir == "up"
+                    ? move_origin_layout.index - 1
+                    : move_origin_layout.index + 1;
+
+            if (!getters.search_layout(layout_group_id, move_target_index)) {
+                console.error("查找不到 layout-group");
+                return;
+            }
+            Vue.set(
+                oper_layout_group.data.body,
+                move_origin_layout.index,
+                oper_layout_group.data.body[move_target_index]
+            );
+            Vue.set(
+                oper_layout_group.data.body,
+                move_target_index,
+                move_origin_layout.data
+            );
+        },
+        delete_layout({ getters, dispatch }, { layout_group_id, layout_id }) {
+            if (!layout_group_id || !layout_id) {
+                console.error(
+                    "没有输入完整信息 \n",
+                    "layout_group_id",
+                    layout_group_id,
+                    " layout_id:",
+                    layout_id
+                );
+                return;
+            }
+
+            let oper_layout_group = getters.search_layout_group(
+                layout_group_id
+            );
+            let oper_layout = getters.search_layout(layout_group_id, layout_id);
+
+            oper_layout_group.data.body.splice(oper_layout.index, 1);
+            dispatch(
+                "delete_layout_dom_dialog_module/tab_show",
+                {
+                    turn_on: false
+                },
+                { root: true }
+            );
         }
     },
-    actions: {}
+    getters: {
+        search_layout_group: state => id => {
+            let result = {
+                index: NaN,
+                data: {}
+            };
+            state.layout_data.forEach((v, i) => {
+                if (id == v.id) {
+                    result.index = i;
+                    result.data = v;
+                }
+            });
+            return result;
+        },
+        search_layout: (state, getters) => (layout_group_id, layout_id) => {
+            let result = {
+                index: NaN,
+                data: {}
+            };
+            getters
+                .search_layout_group(layout_group_id)
+                .data.body.forEach((v, i) => {
+                    if (layout_id == v.id) {
+                        result.index = i;
+                        result.data = v;
+                    }
+                });
+            return result;
+        },
+        active_layout_group: (state, getters) => {
+            return getters.search_layout_group(state.active_layout_group_index);
+        }
+    }
 };
 
-const add_layout_group_dialog_module = {
+const add_layout_dom_dialog_module = {
     namespaced: true,
     state() {
         return {
-            show: false
+            show: false,
+            option: {},
+            type: "",
+            data: {}
         };
     },
     mutations: {
-        tab_show(state, turn_on) {
-            state.show = turn_on;
+        clear_data(state) {
+            state.data = {};
         }
     },
-    action: {
-        asyn_tab_show({ mutations }, turn_on) {
-            mutations.tab_show = turn_on;
+    actions: {
+        tab_show({ commit, state }, { turn_on, type, option, data }) {
+            state.show = turn_on;
+            state.option = option;
+            state.data = data || {};
+            state.type = type;
+            if (turn_on == false) {
+                state.type = "";
+                commit("clear_data", {
+                    turn_on: false
+                });
+            }
+        }
+    }
+};
+
+const delete_layout_dom_dialog_module = {
+    namespaced: true,
+    state() {
+        return {
+            show: false,
+            option: {},
+            type: "",
+            data: {}
+        };
+    },
+    mutations: {
+        clear_data(state) {
+            state.data = {};
+        }
+    },
+    actions: {
+        tab_show({ state, commit }, { turn_on, type, option, data }) {
+            state.show = turn_on;
+            state.option = option;
+            state.type = type;
+            state.data = data || {};
+            if (turn_on == false) {
+                commit("clear_data", {
+                    turn_on: false
+                });
+                state.type = "";
+            }
         }
     }
 };
@@ -101,6 +326,7 @@ const add_layout_group_dialog_module = {
 export default new Vuex.Store({
     modules: {
         layout_module,
-        add_layout_group_dialog_module
+        add_layout_dom_dialog_module,
+        delete_layout_dom_dialog_module
     }
 });

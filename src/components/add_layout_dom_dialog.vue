@@ -6,7 +6,8 @@
         :is_show="dialog_show"
     >
         <template #header>
-            <p>添加布局容器</p>
+            <p v-if="whitch_dialog == 'add_layout_group'">添加布局容器</p>
+            <p v-if="whitch_dialog == 'add_layout'">添加布局块</p>
         </template>
         <template #body>
             <div class="page_editor-layout" data-pop="body">
@@ -60,7 +61,10 @@ export default Vue.extend({
     },
     computed: {
         dialog_show() {
-            return this.$store.state.add_layout_group_dialog_module.show;
+            return this.$store.state.add_layout_dom_dialog_module.show;
+        },
+        whitch_dialog() {
+            return this.$store.state.add_layout_dom_dialog_module.type;
         }
     },
     components: {
@@ -68,13 +72,25 @@ export default Vue.extend({
     },
     methods: {
         confirm_layout() {
-            this.$store.commit("layout_module/add_layout_group", this.value);
+            let dialog_prop_data = this.$store.state
+                .add_layout_dom_dialog_module.data;
+            if (this.whitch_dialog == "add_layout_group") {
+                this.$store.dispatch("layout_module/add_layout_group", {
+                    col: this.value,
+                    layout_group_id: dialog_prop_data.layout_group_id
+                });
+            } else if (this.whitch_dialog == "add_layout") {
+                this.$store.dispatch("layout_module/add_layout", {
+                    col: this.value,
+                    layout_group_id: dialog_prop_data.layout_group_id,
+                    layout_id: dialog_prop_data.layout_id
+                });
+            }
         },
         cancel_layout() {
-            this.$store.commit(
-                "add_layout_group_dialog_module/tab_show",
-                false
-            );
+            this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                turn_on: false
+            });
         }
     }
 });

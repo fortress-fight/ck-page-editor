@@ -12,6 +12,7 @@
             class="dialog"
             :data-type="c_options.type"
             :data-size="c_options.box_size"
+            :style="c_options.dialog_style"
             style="dialog_style"
         >
             <div class="dialog_header">
