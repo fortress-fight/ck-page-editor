@@ -7,14 +7,6 @@
     width: 100vw;
     height: 100vh;
 }
-
-.dialog_pos-center {
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-}
-
 .dialog {
     font-size: 14px;
 
@@ -24,6 +16,18 @@
     border-radius: 3px;
     background: #fff;
     box-shadow: 3px 5px 20px 0 rgba(0, 0, 0, 0.1);
+
+    &_pos-center {
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+    }
+    &_pos-fixed {
+        .dialog {
+            position: fixed;
+        }
+    }
 
     &[data-type="warn"] {
         .dialog_btn-confirm {

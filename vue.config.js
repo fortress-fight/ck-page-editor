@@ -114,7 +114,8 @@ module.exports = {
                 $: "jquery",
                 jQuery: "jquery",
                 Velocity: "velocity-animate",
-                axios: "axios"
+                axios: "axios",
+                slick: "slick-carousel"
             })
         ]
     }

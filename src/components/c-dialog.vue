@@ -1,44 +1,49 @@
 <template>
     <div
-        v-inout.scale="c_is_show"
+        v-inout.opacity="c_is_show"
         class="dialog_wrapper"
-        :class="typeof c_options.dialog_pos === 'string' ? 'dialog_pos-' + c_options.dialog_pos : '' "
+        :class="c_class"
         :style="c_options.wrapper_option.style"
         @click.self="tab_show(!c_options.wrapper_option.click_cancel)"
         @scroll.prevent
     >
         <div
-            v-inout.opacity="c_is_show"
+            v-inout.scale="c_is_show"
+            v-showPos="{
+                show: c_is_show,
+                dis: 10,
+                pos: Array.isArray(this.c_options.dialog_pos) ? c_options.dialog_pos : undefined
+            }"
             class="dialog"
             :data-type="c_options.type"
             :data-size="c_options.box_size"
-            :style="c_options.dialog_style"
+            :style="c_dialog_style"
             style="dialog_style"
         >
-            <div class="dialog_header">
-                <slot name="header">
-                    <p>弹窗头部</p>
-                </slot>
-                <div
-                    v-if="c_options.dialog_close_btn"
-                    class="dialog_close_btn"
-                    @click="close(false)"
-                >
-                    <i class="fa fa-close"></i>
+            <div class="dialog_container">
+                <div v-if="c_options.dialog_header" class="dialog_header">
+                    <slot name="header">
+                        <p>弹窗头部</p>
+                    </slot>
+                    <div
+                        v-if="c_options.dialog_close_btn"
+                        class="dialog_close_btn"
+                        @click="close(false)"
+                    >
+                        <i class="fa fa-close"></i>
+                    </div>
                 </div>
-            </div>
-            <div class="dialog_body">
-                <slot name="body">
-                    <p>弹窗内容</p>
-                </slot>
-            </div>
-            <div class="dialog_footer">
-                <div class="dialog_footer_wrapper">
+                <div v-if="c_options.dialog_body" class="dialog_body">
+                    <slot name="body">
+                        <p>弹窗内容</p>
+                    </slot>
+                </div>
+                <div v-if="c_options.dialog_footer" class="dialog_footer">
                     <slot name="footer"></slot>
-                </div>
-                <div class="dialog_footer_btns">
-                    <div class="dialog_btn dialog_btn-confirm" @click="close(true)">确认</div>
-                    <div class="dialog_btn dialog_btn-cancel" @click="close(false)">取消</div>
+                    <div v-if="c_options.dialog_btn_footer" class="dialog_footer_btns">
+                        <div class="dialog_btn dialog_btn-confirm" @click="close(true)">确认</div>
+                        <div class="dialog_btn dialog_btn-cancel" @click="close(false)">取消</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,10 +59,10 @@ export default Vue.extend({
                 type: "normal",
                 box_size: "normal",
                 dialog_pos: "center",
-                dialog_header: "header",
-                dialog_body: "body",
-                dialog_footer: "footer",
-                dialog_style: "",
+                dialog_header: true,
+                dialog_body: true,
+                dialog_footer: true,
+                dialog_style: {},
                 dialog_btn_footer: true,
                 dialog_close_btn: true,
                 wrapper_option: {
@@ -75,6 +80,24 @@ export default Vue.extend({
         },
         c_options() {
             return Object.assign(this.default_options, this.options);
+        },
+        c_dialog_style() {
+            // let pos = Array.isArray(this.c_options.dialog_pos)
+            //     ? this.c_options.dialog_pos
+            //     : [];
+
+            // if (this.$el) {
+            //     console.log($(this.$el).height(), $(this.$el).width());
+            // }
+
+            return [this.c_options.dialog_style];
+        },
+        c_class() {
+            return {
+                ["dialog_pos-" + this.c_options.dialog_pos]:
+                    typeof this.c_options.dialog_pos === "string",
+                "dialog_pos-fixed": Array.isArray(this.c_options.dialog_pos)
+            };
         }
     },
     props: {
@@ -135,9 +158,14 @@ export default Vue.extend({
     box-sizing: border-box;
 
     color: #666;
-    border-radius: 3px;
     background: #fff;
-    box-shadow: 3px 5px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
+
+    &_pos-fixed {
+        .dialog {
+            position: fixed;
+        }
+    }
 
     &[data-type="warn"] {
         .dialog_btn-confirm {
@@ -151,44 +179,50 @@ export default Vue.extend({
         }
     }
     &[data-size="big"] {
-        width: 500px;
+        width: 460px;
 
         .dialog_header {
-            font-size: 16px;
+            font-size: 14px;
 
-            min-height: 30px;
-            padding: 10px 15px;
+            position: relative;
 
-            color: #999;
+            width: 100%;
+            height: 50px;
+
+            color: #474747;
         }
 
         .dialog_close_btn {
-            right: 15px;
+            right: 0;
         }
 
-        .dialog_body {
-            padding: 15px;
-        }
+        // .dialog_body {
+        //     padding: 15px;
+        // }
 
-        .dialog_footer {
-            min-height: 50px;
-            padding: 10px 15px;
-        }
+        // .dialog_footer {
+        //     min-height: 50px;
+        //     padding: 10px 15px;
+        // }
 
-        .dialog_footer_btns {
-            margin-right: -15px;
-        }
+        // .dialog_footer_btns {
+        //     margin-right: -15px;
+        // }
 
-        .dialog_btn {
-            margin-right: 15px;
-            padding: 8px 20px;
-        }
+        // .dialog_btn {
+        //     margin-right: 15px;
+        //     padding: 8px 20px;
+        // }
     }
 
     &[data-size="normal"] {
         width: 500px;
     }
+    &_container {
+        overflow: hidden;
 
+        border-radius: 3px;
+    }
     &_show {
         @at-root (with: rule) {
             display: flex;
@@ -203,27 +237,36 @@ export default Vue.extend({
             display: flex;
             flex: 0 0 auto;
 
-            height: 30px;
-            padding: 5px 10px;
+// background: #f5f5f5;
 
-            background: #f5f5f5;
+            box-sizing: border-box;
+            height: 30px;
+            padding: 5px 15px;
+
+            text-align: center;
 
             align-items: center;
+
+            & > * {
+                flex: 1 1 auto;
+            }
         }
     }
 
     &_close_btn {
         @at-root (with: rule) {
             position: absolute;
-            right: 10px;
+            right: 0;
 
             display: flex;
 
-            width: 20px;
+            width: 50px;
             height: 100%;
 
             cursor: pointer;
             transition: 0.2s ease;
+
+            color: #b5b5b5;
 
             align-items: center;
             justify-content: center;
@@ -239,7 +282,7 @@ export default Vue.extend({
             flex: 1 1 auto;
 
             box-sizing: border-box;
-            padding: 10px;
+            // padding: 10px;
         }
     }
 
@@ -250,9 +293,9 @@ export default Vue.extend({
 
             box-sizing: border-box;
             min-height: 40px;
-            padding: 5px 10px;
+            // padding: 5px 10px;
 
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            // border-top: 1px solid rgba(0, 0, 0, 0.05);
 
             &_wrapper {
                 flex: 1 1 auto;
@@ -262,9 +305,17 @@ export default Vue.extend({
                 display: flex;
                 flex: 0 0 auto;
 
-                margin-right: -10px;
+                width: 100%;
+
+// margin-right: -10px;
 
                 align-items: center;
+
+                .dialog_btn {
+                    width: 100%;
+                    height: 100%;
+                    margin: 0;
+                }
             }
 
             .dialog_btn-confirm {
@@ -290,6 +341,7 @@ export default Vue.extend({
 
                 display: flex;
 
+                box-sizing: border-box;
                 margin-right: 10px;
                 padding: 5px 13px;
 

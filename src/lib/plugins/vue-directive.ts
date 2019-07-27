@@ -196,6 +196,43 @@ export function directive(Vue: any) {
             }
         }
     });
+
+    Vue.directive("showPos", {
+        bind: function(el: HTMLElement, param: any) {
+            if (!param.value.show) return;
+
+            if (param.value.pos) {
+                $(el).css({
+                    position: "fixed",
+                    top: param.value.pos[0],
+                    left: param.value.pos[1]
+                });
+            }
+        },
+        update: function(el: HTMLElement, param: any) {
+            if (!param.value.show || param.value.oldValue) return;
+
+            if (param.value.pos) {
+                let top = param.value.pos[0];
+                let left = param.value.pos[1];
+                let { width, height } = el.getBoundingClientRect();
+                if (
+                    parseInt(param.value.pos[0]) + height >
+                    window.innerHeight
+                ) {
+                    top = window.innerHeight - height + "px";
+                }
+                if (parseInt(param.value.pos[1]) + width > window.innerWidth) {
+                    left = window.innerWidth - width + "px";
+                }
+                $(el).css({
+                    position: "fixed",
+                    top,
+                    left
+                });
+            }
+        }
+    });
 }
 
 export function filter(Vue: any) {

@@ -279,15 +279,15 @@ const add_layout_dom_dialog_module = {
     actions: {
         tab_show({ commit, state }, { turn_on, type, option, data }) {
             state.show = turn_on;
-            state.option = option;
+            if (turn_on == false) {
+                commit("clear_data");
+                return false;
+            }
+            if (option) {
+                state.option = option;
+            }
             state.data = data || {};
             state.type = type;
-            if (turn_on == false) {
-                state.type = "";
-                commit("clear_data", {
-                    turn_on: false
-                });
-            }
         }
     }
 };
@@ -310,15 +310,15 @@ const delete_layout_dom_dialog_module = {
     actions: {
         tab_show({ state, commit }, { turn_on, type, option, data }) {
             state.show = turn_on;
-            state.option = option;
+            if (turn_on == false) {
+                commit("clear_data");
+                return false;
+            }
+            if (option) {
+                state.option = option;
+            }
             state.type = type;
             state.data = data || {};
-            if (turn_on == false) {
-                commit("clear_data", {
-                    turn_on: false
-                });
-                state.type = "";
-            }
         }
     }
 };

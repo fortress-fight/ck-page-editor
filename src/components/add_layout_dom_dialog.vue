@@ -101,6 +101,8 @@ export default Vue.extend({
         &_editor {
             @at-root (with: rule) {
                 &-layout {
+                    box-sizing: border-box;
+                    padding: 15px;
                     .item {
                         box-sizing: border-box;
                         height: 50px;

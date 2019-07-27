@@ -213,7 +213,7 @@ class Dialog {
             dialog_header: "header",
             dialog_body: "body",
             dialog_footer: "footer",
-            dialog_style: "",
+            dialog_style: {},
             dialog_btn_footer: true,
             dialog_close_btn: true,
             wrapper_option: {

@@ -33,7 +33,7 @@
                     class="item"
                     data-key="delete"
                     title="删除"
-                    @click="delete_layout_group(item.id)"
+                    @click="open_delete_layout_dialog($event,item.id)"
                 >
                     <span class="text">删除</span>
                     <i class="fa fa-trash"></i>
@@ -151,7 +151,6 @@ export default Vue.extend({
             this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 type: "add_layout_group",
-                option: {},
                 data: {
                     layout_group_id
                 }
@@ -161,7 +160,6 @@ export default Vue.extend({
             this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 type: "add_layout",
-                option: {},
                 data: {
                     layout_group_id,
                     layout_id
@@ -177,7 +175,6 @@ export default Vue.extend({
         delete_layout_group(layout_group_id) {
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
-                option: {},
                 type: "delete_layout_group",
                 data: {
                     layout_group_id
@@ -191,10 +188,14 @@ export default Vue.extend({
                 dir
             });
         },
-        delete_layout(layout_group_id, layout_id) {
+        open_delete_layout_dialog(ev, layout_group_id, layout_id) {
+            let { top, right } = ev.currentTarget.getBoundingClientRect();
+
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
-                option: {},
+                option: {
+                    dialog_pos: [top + "px", right + "px"]
+                },
                 type: "delete_layout",
                 data: {
                     layout_group_id,
