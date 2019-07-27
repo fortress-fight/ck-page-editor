@@ -41,7 +41,13 @@ function get_pages_list() {
             entry: "src/pages/" + v.basename + ".ts",
             template: v.pathname + ".html",
             filename: v.basename + ".html",
-            chunks: ["lib", v.basename, "chunk-vendors", "chunk-common"]
+            chunks: [
+                "lib",
+                "public",
+                v.basename,
+                "chunk-vendors",
+                "chunk-common"
+            ]
         };
     });
     return result;
@@ -53,7 +59,7 @@ function create_pages_config() {
             entry: "src/main.ts",
             template: "public/index.html",
             filename: "index.html",
-            chunks: ["lib", "index", "chunk-vendors"]
+            chunks: ["lib", "public", "index", "chunk-vendors", "chunk-common"]
         },
         ...get_pages_list()
     };
@@ -123,7 +129,7 @@ module.exports = {
             sass: {
                 // @/ 是 src/ 的别名
                 // 所以这里假设你有 `src/variables.scss` 这个文件
-                data: `@import "@/style/mixin.scss";`,
+                data: `@import "@/style/mixin.scss"; @import "@/style/reset.scss";`,
                 use: [
                     "vue-style-loader",
                     {
@@ -132,6 +138,7 @@ module.exports = {
                             modules: true
                         }
                     },
+                    { loader: "resolve-url-loader" },
                     "sass-loader"
                 ]
             }
@@ -146,6 +153,15 @@ module.exports = {
                         test: /[\\/]node_modules[\\/].+\.js$/,
                         name: "lib",
                         priority: 10,
+                        minChunks: 1,
+                        minSize: 1000,
+                        chunks: "all",
+                        enforce: true
+                    },
+                    public: {
+                        test: /public\.(js|ts)$/,
+                        name: "public",
+                        priority: 5,
                         minChunks: 1,
                         minSize: 1000,
                         chunks: "all",

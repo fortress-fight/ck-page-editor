@@ -1,12 +1,21 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import c_pop_tran from "@/components/c-pop_tran.vue";
+import { directive, filter } from "@/lib/plugins/vue-directive";
+import store from "@/store";
+import Vue from "vue";
+import App from "./App.vue";
 
-Vue.config.productionTip = false
+// * -- 注册自定义指令
+directive(Vue);
+filter(Vue);
+Vue.config.productionTip = false;
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+const Component = new Vue({
+    //   router,
+    store,
+    components: {
+        "c-pop-tran": c_pop_tran
+    },
+    render: h => h(App)
+}).$mount();
+
+$("#app").append(Component.$el);
