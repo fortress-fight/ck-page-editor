@@ -44,27 +44,28 @@ interface JQuery {
 export default Vue.extend({
     data() {
         return {
-            tab_active_index: 0,
-            tab_cards: [
-                {
-                    nav: "tab1",
-                    card_slot_name: "tab1"
-                },
-                {
-                    nav: "tab2",
-                    card_slot_name: "tab2"
-                },
-                {
-                    nav: "tab3",
-                    card_slot_name: "tab3"
-                }
-            ]
+            tab_active_index: 0
         };
     },
+    props: {
+        begin_index: {
+            type: Number,
+            default: 0
+        },
+        tab_cards: {
+            type: Array,
+            default() {
+                return [];
+            }
+        }
+    },
     watch: {
+        begin_index(new_value) {
+            this.tab_active_index = new_value;
+        },
         tab_active_index: {
             handler() {
-                this.change_tab_nav_bar();
+                this.reset_ui();
             }
         }
     },
@@ -72,7 +73,7 @@ export default Vue.extend({
         change_tab_active_index(index) {
             this.tab_active_index = index;
         },
-        change_tab_nav_bar() {
+        reset_ui(immediately?) {
             let active_nav = this.$refs.navs[this.tab_active_index];
             let dis_pos = get_el_dis_pos(active_nav, this.$refs
                 .navs_container as HTMLElement);
@@ -83,7 +84,6 @@ export default Vue.extend({
             $(this.$refs.cards_container).css({
                 "margin-left": `-${this.tab_active_index}00%`
             });
-
             $(this.$refs.cards_container)
                 .parent()
                 .velocity(
@@ -97,34 +97,23 @@ export default Vue.extend({
                     },
                     {
                         easing: "ease",
+                        duration: immediately ? 0 : 360,
                         progress: el => {
                             this.$emit("tab_changeing", el);
                         },
-                        complete(el) {
-                            // $(el).css({
-                            //     height: "auto"
-                            // });
+                        complete: el => {
+                            this.$emit("tab_changed", el);
                         }
                     }
                 );
-            // .css({
-            //     height: () => {
-            //         console.log(
-
-            //         );
-            //         return $(
-            //             this.$refs.tab_card[this.tab_active_index]
-            //         ).height();
-            //     }
-            // });
         }
     },
     mounted() {
         this.$nextTick().then(() => {
-            this.change_tab_nav_bar();
+            this.reset_ui(true);
         });
         $(window).on("resize", () => {
-            this.change_tab_nav_bar();
+            this.reset_ui(true);
         });
     }
 });
@@ -136,7 +125,6 @@ export default Vue.extend({
     position: relative;
     overflow: hidden;
     &-component {
-        border: 1px solid #000;
         position: relative;
     }
     &-navs {
@@ -148,7 +136,7 @@ export default Vue.extend({
         &_bar {
             width: 100%;
             background: #eee;
-            height: 3px;
+            height: 2px;
 
             &-inner {
                 width: 100px;
@@ -165,8 +153,9 @@ export default Vue.extend({
         line-height: 40px;
         cursor: pointer;
         transition: color 0.36s ease;
+        color: #999;
         &.active {
-            color: red;
+            color: #333;
         }
     }
     &-container {

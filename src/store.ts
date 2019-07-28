@@ -5,7 +5,7 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 let unit_layout_module = {
-    get_layout_group_data(col) {
+    get_layout_group_data(type, value) {
         return {
             id: stringRandom(16, { numbers: false }),
             dom: null,
@@ -31,30 +31,48 @@ let unit_layout_module = {
                     align_center: false
                 }
             },
-            body: [this.get_layout_data(col)]
+            body: [this.get_layout_data(type, value)]
         };
     },
-    get_layout_data(col) {
-        let cols_dom = String(col)
-            .split("_")
-            .map(v => {
-                return {
-                    col: v,
-                    dom: "<p>编辑器</p>"
-                };
-            });
-        return {
+    get_layout_data(type, value) {
+        let result = {
             id: stringRandom(16, { numbers: false }),
             animate: 0,
             x_align: false,
             y_align: false,
             body_dom: null,
-            col: col || "100",
             padding_x: "",
             padding_y: "",
             backgroundColor: [],
-            col_container: cols_dom
+            col_container: [],
+            col: ""
         };
+        if (type == "custome") {
+            let cols_dom = String(value)
+                .split("_")
+                .map(v => {
+                    return {
+                        col: v,
+                        dom: "<p>编辑器</p>"
+                    };
+                });
+            result.col_container = cols_dom;
+            result.col = value || "100";
+        }
+
+        if (type == "fun") {
+            if (value == "slider") {
+                result.col_container = [
+                    {
+                        col: 100,
+                        dom: "<div class='slider'>幻灯</div>"
+                    }
+                ];
+                result.col = value || "100";
+            }
+        }
+
+        return result;
     }
 };
 
@@ -69,18 +87,18 @@ const layout_module = {
     mutations: {},
     actions: {
         add_layout_group(
-            { commit, state, getters, dispatch },
-            { col, layout_group_id }
+            { state, getters, dispatch },
+            { type, value, layout_group_id }
         ) {
             if (!layout_group_id) {
                 state.layout_data.push(
-                    unit_layout_module.get_layout_group_data(col)
+                    unit_layout_module.get_layout_group_data(type, value)
                 );
             } else {
                 state.layout_data.splice(
                     getters.search_layout_group(layout_group_id).index,
                     0,
-                    unit_layout_module.get_layout_group_data(col)
+                    unit_layout_module.get_layout_group_data(type, value)
                 );
             }
 
@@ -136,7 +154,10 @@ const layout_module = {
                 { root: true }
             );
         },
-        add_layout({ getters, dispatch }, { col, layout_group_id, layout_id }) {
+        add_layout(
+            { getters, dispatch },
+            { type, value, layout_group_id, layout_id }
+        ) {
             if (!layout_group_id) {
                 console.error("没有输入 layout_group_id");
                 return;
@@ -148,7 +169,7 @@ const layout_module = {
             oper_layout_group.data.body.splice(
                 getters.search_layout(layout_group_id, layout_id).index + 1,
                 0,
-                unit_layout_module.get_layout_data(col)
+                unit_layout_module.get_layout_data(type, value)
             );
 
             dispatch(

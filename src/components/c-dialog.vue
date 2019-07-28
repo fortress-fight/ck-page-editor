@@ -1,56 +1,59 @@
 <template>
-    <div
-        v-inout.opacity="c_is_show"
-        class="dialog_wrapper"
-        :class="c_class"
-        :style="c_options.wrapper_option.style"
-        @click.self="tab_show(!c_options.wrapper_option.click_cancel)"
-        @scroll.prevent
+    <transition
+        name="pop_in"
+        @before-enter="pop_in_before_enter"
+        @enter="pop_in_enter"
+        @leave="pop_leave"
     >
         <div
-            v-inout.scale="c_is_show"
-            v-showPos="{
-                show: c_is_show,
-                dis: 10,
-                pos: Array.isArray(this.c_options.dialog_pos) ? c_options.dialog_pos : undefined
-            }"
-            class="dialog"
-            :data-type="c_options.type"
-            :data-size="c_options.box_size"
-            :style="c_dialog_style"
-            style="dialog_style"
+            v-show="c_is_show"
+            class="dialog_wrapper"
+            :class="c_class"
+            :style="c_options.wrapper_option.style"
+            @click.self="tab_show(!c_options.wrapper_option.click_cancel)"
+            @scroll.prevent
         >
-            <div class="dialog_container">
-                <div v-if="c_options.dialog_header" class="dialog_header">
-                    <slot name="header">
-                        <p>弹窗头部</p>
-                    </slot>
-                    <div
-                        v-if="c_options.dialog_close_btn"
-                        class="dialog_close_btn"
-                        @click="close(false)"
-                    >
-                        <i class="fa fa-close"></i>
+            <div
+                class="dialog"
+                :data-type="c_options.type"
+                :data-size="c_options.box_size"
+                :style="c_dialog_style"
+                style="dialog_style"
+                ref="dialog"
+            >
+                <div class="dialog_container">
+                    <div v-if="c_options.dialog_header" class="dialog_header">
+                        <slot name="header">
+                            <p>弹窗头部</p>
+                        </slot>
+                        <div
+                            v-if="c_options.dialog_close_btn"
+                            class="dialog_close_btn"
+                            @click="close(false)"
+                        >
+                            <i class="fa fa-close"></i>
+                        </div>
                     </div>
-                </div>
-                <div v-if="c_options.dialog_body" class="dialog_body">
-                    <slot name="body">
-                        <p>弹窗内容</p>
-                    </slot>
-                </div>
-                <div v-if="c_options.dialog_footer" class="dialog_footer">
-                    <slot name="footer"></slot>
-                    <div v-if="c_options.dialog_btn_footer" class="dialog_footer_btns">
-                        <div class="dialog_btn dialog_btn-confirm" @click="close(true)">确认</div>
-                        <div class="dialog_btn dialog_btn-cancel" @click="close(false)">取消</div>
+                    <div v-if="c_options.dialog_body" class="dialog_body">
+                        <slot name="body">
+                            <p>弹窗内容</p>
+                        </slot>
+                    </div>
+                    <div v-if="c_options.dialog_footer" class="dialog_footer">
+                        <slot name="footer"></slot>
+                        <div v-if="c_options.dialog_btn_footer" class="dialog_footer_btns">
+                            <div class="dialog_btn dialog_btn-confirm" @click="close(true)">确认</div>
+                            <div class="dialog_btn dialog_btn-cancel" @click="close(false)">取消</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </transition>
 </template>
 <script lang="ts">
 import Vue from "vue";
+import { Transfer } from "element-ui";
 export default Vue.extend({
     data() {
         return {
@@ -72,6 +75,9 @@ export default Vue.extend({
             }
         };
     },
+    watch: {
+        c_is_show(newValue, oldValue) {}
+    },
     computed: {
         c_is_show() {
             return typeof this.is_show == "undefined"
@@ -82,14 +88,6 @@ export default Vue.extend({
             return Object.assign(this.default_options, this.options);
         },
         c_dialog_style() {
-            // let pos = Array.isArray(this.c_options.dialog_pos)
-            //     ? this.c_options.dialog_pos
-            //     : [];
-
-            // if (this.$el) {
-            //     console.log($(this.$el).height(), $(this.$el).width());
-            // }
-
             return [this.c_options.dialog_style];
         },
         c_class() {
@@ -113,6 +111,59 @@ export default Vue.extend({
         }
     },
     methods: {
+        pop_in_before_enter(el) {
+            $(el).css({ opacity: 0 });
+        },
+        pop_in_enter(el, done) {
+            $(el)
+                .velocity("stop")
+                .velocity(
+                    {
+                        opacity: 1,
+                        tween: [1, 0.95]
+                    },
+                    {
+                        begin: elements => {
+                            $(elements)
+                                .find(".dialog")
+                                .css({
+                                    transform: "scale(0.95)"
+                                });
+
+                            this.$emit("dialog_before_enter");
+                        },
+                        progress: (
+                            elements,
+                            complete,
+                            remaining,
+                            start,
+                            tweenValue
+                        ) => {
+                            $(elements)
+                                .find(".dialog")
+                                .css({
+                                    transform: "scale(" + tweenValue + ")"
+                                });
+                        },
+                        complete: () => {
+                            this.$emit("dialog_enter");
+                        },
+                        duration: 150
+                    }
+                );
+        },
+        pop_leave(el, done) {
+            $(el)
+                .velocity("stop")
+                .velocity("reverse", {
+                    duration: 150,
+                    complete: () => {
+                        this.$emit("dialog_leave");
+                        done();
+                    }
+                });
+        },
+        pop_after_leave(el) {},
         tab_show(turn_on) {
             this.close(false);
         },
@@ -237,7 +288,7 @@ export default Vue.extend({
             display: flex;
             flex: 0 0 auto;
 
-// background: #f5f5f5;
+            // background: #f5f5f5;
 
             box-sizing: border-box;
             height: 30px;
@@ -307,7 +358,7 @@ export default Vue.extend({
 
                 width: 100%;
 
-// margin-right: -10px;
+                // margin-right: -10px;
 
                 align-items: center;
 

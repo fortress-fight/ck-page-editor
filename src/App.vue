@@ -1,20 +1,7 @@
 <template>
     <div id="page_body_editor" class="page_body_editor">
         <page-layout-dom :can_editor="true"></page-layout-dom>
-        <c-tab-card>
-            <template #tab1>
-                <p>card1</p>
-                <p>card1</p>
-            </template>
-            <template #tab2>
-                <p>card2</p>
-            </template>
-            <template #tab3>
-                <p>card3</p>
-                <p>card3</p>
-                <p>card3</p>
-            </template>
-        </c-tab-card>
+
         <div class="page-add_layout_btn" @click="add_layout">
             <span class="text">添加编辑板块</span>
             <i class="fa fa-plus"></i>
