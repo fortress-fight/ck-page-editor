@@ -1,7 +1,6 @@
 import "jquery";
-
 interface JQuery {
-    velocity(): JQuery;
+    Velocity(): JQuery;
     masonry(): JQuery;
     slick(): JQuery;
     imagesLoaded(): JQuery;

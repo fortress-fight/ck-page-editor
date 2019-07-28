@@ -1,7 +1,20 @@
 <template>
     <div id="page_body_editor" class="page_body_editor">
         <page-layout-dom :can_editor="true"></page-layout-dom>
-
+        <c-tab-card>
+            <template #tab1>
+                <p>card1</p>
+                <p>card1</p>
+            </template>
+            <template #tab2>
+                <p>card2</p>
+            </template>
+            <template #tab3>
+                <p>card3</p>
+                <p>card3</p>
+                <p>card3</p>
+            </template>
+        </c-tab-card>
         <div class="page-add_layout_btn" @click="add_layout">
             <span class="text">添加编辑板块</span>
             <i class="fa fa-plus"></i>
@@ -15,6 +28,7 @@ import Vue from "vue";
 import add_layout_dom_dialog from "@/components/add_layout_dom_dialog.vue";
 import delete_layout_dom_dialog from "@/components/delete_layout_dom_dialog.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
+import c_tab_card from "@/components/c-tab_card.vue";
 
 export default Vue.extend({
     data() {
@@ -23,7 +37,8 @@ export default Vue.extend({
     components: {
         "add-layout-group-dialog": add_layout_dom_dialog,
         "delete-layout-group-dialog": delete_layout_dom_dialog,
-        "page-layout-dom": page_layout_dom
+        "page-layout-dom": page_layout_dom,
+        "c-tab-card": c_tab_card
     },
     methods: {
         add_layout() {
