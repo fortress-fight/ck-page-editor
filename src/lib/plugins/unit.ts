@@ -3,25 +3,30 @@ interface El_pos extends ClientRect {
     client_height?: Number;
 }
 
-export function get_el_pos(el: HTMLElement | HTMLAllCollection | JQuery) {
-    let result: El_pos | El_pos[];
-    if (length in el) {
+function _get_el_pos(el: HTMLElement): El_pos;
+function _get_el_pos(el: HTMLAllCollection | JQuery): El_pos[];
+function _get_el_pos(el: HTMLElement | HTMLAllCollection | JQuery) {
+    let result;
+    if ((<HTMLAllCollection | JQuery>el).length) {
         result = [];
         for (let i = 0; i < (el as HTMLAllCollection | JQuery).length; i++) {
             const _el: HTMLElement = el[i];
             let _el_pos: El_pos = _el.getBoundingClientRect();
             _el_pos.client_width = _el.clientWidth;
             _el_pos.client_height = _el.clientHeight;
-            result.push();
+            result.push(_el_pos);
         }
+        return <El_pos[]>result;
     } else {
-        let el_pos: El_pos = (el as HTMLElement).getBoundingClientRect();
-        el_pos.client_width = (el as HTMLElement).clientWidth;
-        el_pos.client_height = (el as HTMLElement).clientHeight;
+        let el_pos: El_pos = (<HTMLElement>el).getBoundingClientRect();
+        el_pos.client_width = (<HTMLElement>el).clientWidth;
+        el_pos.client_height = (<HTMLElement>el).clientHeight;
         result = el_pos;
+        return <El_pos>result;
     }
-    return result;
 }
+
+export let get_el_pos = _get_el_pos;
 
 export function get_el_dis_pos(
     el: HTMLElement,
@@ -54,5 +59,36 @@ export function get_el_dis_pos(
         result.el_pos.bottom - result.target_el_pos.bottom
     );
 
+    return result;
+}
+
+export function judge_is_dom(item) {
+    // 首先判断是否支持HTMLELement，如果支持，使用HTMLElement，如果不支持，通过判断DOM的特征，如果拥有这些特征说明就是ODM节点，特征使用的越多越准确
+    return typeof HTMLElement === "function"
+        ? item instanceof HTMLElement
+        : item &&
+              typeof item === "object" &&
+              item.nodeType === 1 &&
+              typeof item.nodeName === "string";
+}
+
+export function adjustment_pos(
+    oper_dom: HTMLElement,
+    pos?: { left: number; top: number }
+) {
+    let result: { left: number; top: number };
+    let oper_dom_pos = get_el_pos(oper_dom);
+
+    if (!pos) {
+        pos = { left: oper_dom_pos.left,top: oper_dom_pos.top}
+    }
+
+    result = pos;
+    if (pos.left + oper_dom_pos.width > window.innerWidth) {
+        result.left = window.innerWidth - oper_dom_pos.width;
+    }
+    if (pos.top + oper_dom_pos.height > window.innerHeight) {
+        result.top = window.innerHeight - oper_dom_pos.height;
+    }
     return result;
 }

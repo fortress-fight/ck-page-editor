@@ -61,14 +61,30 @@ let unit_layout_module = {
         }
 
         if (type == "fun") {
-            if (value == "slider") {
-                result.col_container = [
-                    {
-                        col: 100,
-                        dom: "<div class='slider'>幻灯</div>"
-                    }
-                ];
-                result.col = value || "100";
+            switch (value) {
+                case "slider":
+
+                    result.col_container = [
+                        {
+                            col: 100,
+                            dom: "<div class='slider'>幻灯</div>"
+                        }
+                    ];
+                    result.col = value || "100";
+                    break;
+                case "block":
+
+                    result.col_container = [
+                        {
+                            col: 100,
+                            dom: "<div class='block'>分隔块</div>"
+                        }
+                    ];
+                    result.col = value || "100";
+                    break;
+            
+                default:
+                    break;
             }
         }
 

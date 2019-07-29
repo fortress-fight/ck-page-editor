@@ -53,7 +53,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Transfer } from "element-ui";
+import { judge_is_dom, get_el_pos, adjustment_pos } from "@/lib/plugins/unit";
 export default Vue.extend({
     data() {
         return {
@@ -91,11 +91,20 @@ export default Vue.extend({
             return [this.c_options.dialog_style];
         },
         c_class() {
-            return {
-                ["dialog_pos-" + this.c_options.dialog_pos]:
-                    typeof this.c_options.dialog_pos === "string",
-                "dialog_pos-fixed": Array.isArray(this.c_options.dialog_pos)
-            };
+            let result;
+            if (judge_is_dom(this.c_options.dialog_pos)) {
+                result = {
+                    "dialog_pos-dom": true,
+                    "dialog_pos-fixed": true
+                };
+            } else {
+                result = {
+                    ["dialog_pos-" + this.c_options.dialog_pos]:
+                        typeof this.c_options.dialog_pos === "string",
+                    "dialog_pos-fixed": Array.isArray(this.c_options.dialog_pos)
+                };
+            }
+            return result;
         }
     },
     props: {
@@ -115,6 +124,7 @@ export default Vue.extend({
             $(el).css({ opacity: 0 });
         },
         pop_in_enter(el, done) {
+            let dialog_el = $(el).find(".dialog")[0];
             $(el)
                 .velocity("stop")
                 .velocity(
@@ -124,11 +134,22 @@ export default Vue.extend({
                     },
                     {
                         begin: elements => {
-                            $(elements)
-                                .find(".dialog")
-                                .css({
-                                    transform: "scale(0.95)"
-                                });
+                            $(dialog_el).css({
+                                transform: "scale(0.95)"
+                            });
+                            if (judge_is_dom(this.c_options.dialog_pos)) {
+                                let rel_dom_pos = get_el_pos(
+                                    this.c_options.dialog_pos
+                                );
+                                $(dialog_el).css(
+                                    adjustment_pos(dialog_el, {
+                                        left:
+                                            rel_dom_pos.left +
+                                            rel_dom_pos.width,
+                                        top: rel_dom_pos.top
+                                    })
+                                );
+                            }
 
                             this.$emit("dialog_before_enter");
                         },
@@ -182,6 +203,23 @@ export default Vue.extend({
                 this.default_show = false;
             }
         }
+    },
+    mounted() {
+        let time;
+        $(window).on("resize", () => {
+            clearTimeout(time);
+            time = setTimeout(() => {
+                if (judge_is_dom(this.c_options.dialog_pos)) {
+                    let rel_dom_pos = get_el_pos(this.c_options.dialog_pos);
+                    $(this.$refs.dialog).css(
+                        adjustment_pos(this.$refs.dialog, {
+                            left: rel_dom_pos.left + rel_dom_pos.width,
+                            top: rel_dom_pos.top
+                        })
+                    );
+                }
+            }, 500);
+        });
     }
 });
 </script>
@@ -275,135 +313,125 @@ export default Vue.extend({
         border-radius: 3px;
     }
     &_show {
-        @at-root (with: rule) {
-            display: flex;
-            flex-direction: column;
-        }
+        display: flex;
+        flex-direction: column;
     }
 
     &_header {
-        @at-root (with: rule) {
-            position: relative;
+        position: relative;
 
-            display: flex;
-            flex: 0 0 auto;
+        display: flex;
+        flex: 0 0 auto;
 
-            // background: #f5f5f5;
+        // background: #f5f5f5;
 
-            box-sizing: border-box;
-            height: 30px;
-            padding: 5px 15px;
+        box-sizing: border-box;
+        height: 30px;
+        padding: 5px 15px;
 
-            text-align: center;
+        text-align: center;
 
-            align-items: center;
+        align-items: center;
 
-            & > * {
-                flex: 1 1 auto;
-            }
+        & > * {
+            flex: 1 1 auto;
         }
     }
 
     &_close_btn {
-        @at-root (with: rule) {
-            position: absolute;
-            right: 0;
+        position: absolute;
+        right: 0;
 
-            display: flex;
+        display: flex;
 
-            width: 50px;
-            height: 100%;
+        width: 50px;
+        height: 100%;
 
-            cursor: pointer;
-            transition: 0.2s ease;
+        cursor: pointer;
+        transition: 0.2s ease;
 
-            color: #b5b5b5;
+        color: #b5b5b5;
 
-            align-items: center;
-            justify-content: center;
+        align-items: center;
+        justify-content: center;
 
-            &:hover {
-                color: #000;
-            }
+        &:hover {
+            color: #000;
         }
     }
 
     &_body {
-        @at-root (with: rule) {
-            flex: 1 1 auto;
+        flex: 1 1 auto;
 
-            box-sizing: border-box;
-            // padding: 10px;
-        }
+        box-sizing: border-box;
+        // padding: 10px;
     }
 
     &_footer {
-        @at-root (with: rule) {
+        display: flex;
+        flex: 0 0 auto;
+
+        box-sizing: border-box;
+        min-height: 40px;
+        // padding: 5px 10px;
+
+        // border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+        &_wrapper {
+            flex: 1 1 auto;
+        }
+
+        &_btns {
             display: flex;
             flex: 0 0 auto;
 
-            box-sizing: border-box;
-            min-height: 40px;
-            // padding: 5px 10px;
+            width: 100%;
 
-            // border-top: 1px solid rgba(0, 0, 0, 0.05);
+            // margin-right: -10px;
 
-            &_wrapper {
-                flex: 1 1 auto;
-            }
-
-            &_btns {
-                display: flex;
-                flex: 0 0 auto;
-
-                width: 100%;
-
-                // margin-right: -10px;
-
-                align-items: center;
-
-                .dialog_btn {
-                    width: 100%;
-                    height: 100%;
-                    margin: 0;
-                }
-            }
-
-            .dialog_btn-confirm {
-                background: #46be8a;
-
-                &:hover {
-                    background-color: #6ccba2;
-                }
-            }
-
-            .dialog_btn-cancel {
-                border-color: #ccd5db;
-                background-color: #ccd5db;
-
-                &:hover {
-                    border-color: #e4eaec;
-                    background-color: #e4eaec;
-                }
-            }
+            align-items: center;
 
             .dialog_btn {
-                font-size: 12px;
-
-                display: flex;
-
-                box-sizing: border-box;
-                margin-right: 10px;
-                padding: 5px 13px;
-
-                cursor: pointer;
-                transition: 0.36s ease;
-
-                color: #fff;
-
-                align-items: center;
-                justify-content: center;
+                width: 100%;
+                height: 100%;
+                margin: 0;
             }
+        }
+
+        .dialog_btn-confirm {
+            background: #46be8a;
+
+            &:hover {
+                background-color: #6ccba2;
+            }
+        }
+
+        .dialog_btn-cancel {
+            border-color: #ccd5db;
+            background-color: #ccd5db;
+
+            &:hover {
+                border-color: #e4eaec;
+                background-color: #e4eaec;
+            }
+        }
+
+        .dialog_btn {
+            font-size: 12px;
+
+            display: flex;
+
+            box-sizing: border-box;
+            // margin-right: 10px;
+            padding: 5px 13px;
+
+            cursor: pointer;
+            transition: 0.36s ease;
+
+            color: #fff;
+
+            align-items: center;
+            justify-content: center;
         }
     }
 }

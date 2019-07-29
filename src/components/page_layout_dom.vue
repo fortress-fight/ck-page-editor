@@ -189,12 +189,12 @@ export default Vue.extend({
             });
         },
         open_delete_layout_dialog(ev, layout_group_id, layout_id) {
-            let { top, right } = ev.currentTarget.getBoundingClientRect();
+            // let { top, right } = ev.currentTarget.getBoundingClientRect();
 
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 option: {
-                    dialog_pos: [top + "px", right + "px"]
+                    dialog_pos: ev.currentTarget
                 },
                 type: "delete_layout",
                 data: {
