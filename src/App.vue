@@ -8,12 +8,14 @@
         </div>
         <add-layout-group-dialog></add-layout-group-dialog>
         <delete-layout-group-dialog></delete-layout-group-dialog>
+        <editor-layout-panel></editor-layout-panel>
     </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import add_layout_dom_dialog from "@/components/add_layout_dom_dialog.vue";
 import delete_layout_dom_dialog from "@/components/delete_layout_dom_dialog.vue";
+import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 import c_tab_card from "@/components/c-tab_card.vue";
 
@@ -24,6 +26,7 @@ export default Vue.extend({
     components: {
         "add-layout-group-dialog": add_layout_dom_dialog,
         "delete-layout-group-dialog": delete_layout_dom_dialog,
+        "editor-layout-panel": editor_layout_panel,
         "page-layout-dom": page_layout_dom,
         "c-tab-card": c_tab_card
     },
