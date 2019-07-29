@@ -123,6 +123,7 @@ export default Vue.extend({
 <style lang="scss">
 .tab_cards {
     position: relative;
+
     overflow: hidden;
     &-component {
         position: relative;
@@ -131,28 +132,36 @@ export default Vue.extend({
         position: relative;
         &_container {
             position: relative;
+
             display: flex;
         }
         &_bar {
             width: 100%;
-            background: #eee;
-            height: 2px;
+            height: 1px;
+
+            background: #f0f0f0;
 
             &-inner {
                 width: 100px;
                 height: 100%;
+
                 transition: transform 0.56s ease;
+
                 background: #333;
             }
         }
     }
     &-nav {
-        flex: 1 0 auto;
-        width: 1px;
-        text-align: center;
         line-height: 40px;
+
+        flex: 1 0 auto;
+
+        width: 1px;
+
         cursor: pointer;
         transition: color 0.36s ease;
+        text-align: center;
+
         color: #999;
         &.active {
             color: #333;
@@ -162,13 +171,17 @@ export default Vue.extend({
         position: absolute;
         top: 0;
         left: 0;
+
         display: flex;
+
         transition: 0.36s ease;
+
         align-items: flex-start;
     }
     .tab_card {
-        width: 1px;
         flex: 1 0 auto;
+
+        width: 1px;
     }
 }
 </style>

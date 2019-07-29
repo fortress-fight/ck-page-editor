@@ -13,6 +13,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import "element-ui/lib/theme-chalk/index.css";
 import add_layout_dom_dialog from "@/components/add_layout_dom_dialog.vue";
 import delete_layout_dom_dialog from "@/components/delete_layout_dom_dialog.vue";
 import editor_layout_panel from "@/components/editor_layout_panel.vue";

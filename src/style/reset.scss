@@ -15,7 +15,21 @@
 .hide {
     display: none;
 }
+.flex {
+    display: flex;
+}
+.flex_center {
+    display: flex;
 
+    align-items: center;
+    justify-content: center;
+}
+.flex_fix {
+    flex: 0 0 auto;
+}
+.flex_auto {
+    flex: 1 1 auto;
+}
 @for $num from 1 through 20 {
     .layout_grid-colspac-#{$num} {
         grid-column-gap: #{$num}px;
