@@ -1,6 +1,6 @@
 <template>
     <div class="c_switch">
-        <el-switch v-bind="$attrs" active-value="#46be8a" inactive-value="#999" width="30px"></el-switch>
+        <el-switch v-bind="$attrs" active-value="#46be8a" inactive-value="#999" :width="30"></el-switch>
     </div>
 </template>
 <script lang="ts">

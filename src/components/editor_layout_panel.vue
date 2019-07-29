@@ -83,7 +83,13 @@
                         </div>
                     </div>
                 </template>
-                <template #layout_attr></template>
+                <template #layout_attr>
+                    <div class="attr_set_group" style="padding: 20px 30px 0;">
+                        <div class="attr_set_item">
+                            <c-upload></c-upload>
+                        </div>
+                    </div>
+                </template>
                 <template #layout_animate>
                     <div class="attr_set_group" style="padding: 20px 30px 0;">
                         <div

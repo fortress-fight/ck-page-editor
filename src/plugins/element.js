@@ -1,5 +1,6 @@
 import C_Input from "@/components/c-input.vue";
 import C_Switch from "@/components/c-switch.vue";
+import C_Upload from "@/components/c-upload.vue";
 import {
     Alert,
     Aside,
@@ -81,6 +82,7 @@ import {
 } from "element-ui";
 import Vue from "vue";
 Vue.component("c-input", C_Input);
+Vue.component("c-upload", C_Upload);
 Vue.component("c-switch", C_Switch);
 
 Vue.use(Pagination);
