@@ -4,6 +4,7 @@
         @before-enter="pop_in_before_enter"
         @enter="pop_in_enter"
         @leave="pop_leave"
+        @after-leave="pop_after_leave"
     >
         <div
             v-show="c_is_show"
@@ -47,6 +48,13 @@
                         </div>
                     </div>
                 </div>
+                <div
+                    class="dilog_arrow_warpper"
+                    ref="dilog_arrow_warpper"
+                    v-if="c_options.dialog_pos_detail.arrow"
+                >
+                    <div class="dilog_arrow" ref="dilog_arrow_warpper"></div>
+                </div>
             </div>
         </div>
     </transition>
@@ -62,6 +70,7 @@ export default Vue.extend({
                 type: "normal",
                 box_size: "normal",
                 dialog_pos: "center",
+                dialog_pos_detail: false,
                 dialog_header: true,
                 dialog_body: true,
                 dialog_footer: true,
@@ -124,7 +133,7 @@ export default Vue.extend({
             $(el).css({ opacity: 0 });
         },
         pop_in_enter(el, done) {
-            let dialog_el = $(el).find(".dialog")[0];
+            let dialog_el = this.$refs.dialog;
             $(el)
                 .velocity("stop")
                 .velocity(
@@ -134,23 +143,21 @@ export default Vue.extend({
                     },
                     {
                         begin: elements => {
-                            $(dialog_el).css({
-                                transform: "scale(0.95)"
-                            });
-                            if (judge_is_dom(this.c_options.dialog_pos)) {
-                                let rel_dom_pos = get_el_pos(
-                                    this.c_options.dialog_pos
-                                );
+                            let dialog_pos = this.calculate_dialog_pos(
+                                dialog_el,
+                                this.c_options.dialog_pos,
+                                this.c_options.dialog_pos_detail
+                            );
+                            if (dialog_pos) {
                                 $(dialog_el).css(
-                                    adjustment_pos(dialog_el, {
-                                        left:
-                                            rel_dom_pos.left +
-                                            rel_dom_pos.width,
-                                        top: rel_dom_pos.top
-                                    })
+                                    adjustment_pos(dialog_el, dialog_pos)
                                 );
                             }
 
+                            this.set_dialog_arrow_pos();
+                            $(dialog_el).css({
+                                transform: "scale(0.95)"
+                            });
                             this.$emit("dialog_before_enter");
                         },
                         progress: (
@@ -184,9 +191,88 @@ export default Vue.extend({
                     }
                 });
         },
-        pop_after_leave(el) {},
+        pop_after_leave(el) {
+            $(this.$refs.dialog).css({
+                transform: "scale(1)"
+            });
+        },
         tab_show(turn_on) {
             this.close(false);
+        },
+        calculate_dialog_pos(dialog_el, relate_el, options) {
+            if (!judge_is_dom(relate_el)) return false;
+            let result = {
+                top: 0,
+                left: 0
+            };
+            let dialog_el_pos = get_el_pos(dialog_el);
+            let rel_dom_pos = get_el_pos(relate_el);
+            let pos = {
+                left: rel_dom_pos.left + rel_dom_pos.width,
+                top: rel_dom_pos.top
+            };
+
+            if (options) {
+                let _detail = Object.assign(
+                    {
+                        x: "center",
+                        y: "bottom"
+                    },
+                    options
+                );
+
+                switch (_detail.x) {
+                    case "center":
+                        pos.left -=
+                            dialog_el_pos.width / 2 + rel_dom_pos.width / 2;
+                        break;
+
+                    default:
+                        break;
+                }
+                switch (_detail.y) {
+                    case "bottom":
+                        pos.top += rel_dom_pos.height;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            result = pos;
+            return result;
+        },
+
+        set_dialog_arrow_pos(dialog_el, relate_el, options) {
+            if (!judge_is_dom(relate_el) || !options.arrow) return false;
+            let dialog_el_pos = get_el_pos(dialog_el);
+            let rel_dom_pos = get_el_pos(relate_el);
+
+            if (options) {
+                let _detail = Object.assign(
+                    {
+                        x: "center",
+                        y: "bottom"
+                    },
+                    options
+                );
+                $(this.$refs.dilog_arrow).css({
+                    left:
+                        rel_dom_pos.left +
+                        rel_dom_pos.width / 2 -
+                        rel_dom_pos.left
+                });
+                switch (_detail.y) {
+                    case "bottom":
+                        $(this.$refs.dilog_arrow_warpper).css({
+                            top: 0
+                        });
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         },
         close(is_confirm) {
             let target = is_confirm ? "confirm" : "cancel";
@@ -194,12 +280,15 @@ export default Vue.extend({
                 if (this.$listeners[target].fns.length) {
                     this.$emit(target, res => {
                         this.default_show = false;
+                        this.$emit("update:is_show", false);
                     });
                 } else {
                     this.$emit(target);
+                    this.$emit("update:is_show", false);
                     this.default_show = false;
                 }
             } else {
+                this.$emit("update:is_show", false);
                 this.default_show = false;
             }
         }
@@ -209,17 +298,21 @@ export default Vue.extend({
         $(window).on("resize", () => {
             clearTimeout(time);
             time = setTimeout(() => {
-                if (judge_is_dom(this.c_options.dialog_pos)) {
-                    let rel_dom_pos = get_el_pos(this.c_options.dialog_pos);
+                let dialog_pos = this.calculate_dialog_pos(
+                    this.$refs.dialog,
+                    this.c_options.dialog_pos,
+                    this.c_options.dialog_pos_detail
+                );
+                if (dialog_pos) {
                     $(this.$refs.dialog).css(
-                        adjustment_pos(this.$refs.dialog, {
-                            left: rel_dom_pos.left + rel_dom_pos.width,
-                            top: rel_dom_pos.top
-                        })
+                        adjustment_pos(this.$refs.dialog, dialog_pos)
                     );
                 }
+
+                this.set_dialog_arrow_pos();
             }, 500);
         });
+        $(this.$el).appendTo("body");
     }
 });
 </script>
@@ -248,8 +341,9 @@ export default Vue.extend({
 
     color: #666;
     background: #fff;
-    box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
 
+// box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
     &_pos-fixed {
         .dialog {
             position: fixed;
@@ -323,7 +417,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-        // background: #f5f5f5;
+// background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -387,7 +481,7 @@ export default Vue.extend({
 
             width: 100%;
 
-            // margin-right: -10px;
+// margin-right: -10px;
 
             align-items: center;
 
@@ -422,7 +516,8 @@ export default Vue.extend({
             display: flex;
 
             box-sizing: border-box;
-            // margin-right: 10px;
+
+// margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;
@@ -434,5 +529,21 @@ export default Vue.extend({
             justify-content: center;
         }
     }
+}
+.dilog_arrow {
+    @include triangle($dir: top, $color: #fff);
+
+    position: absolute;
+    top: 0;
+    left: 50%;
+
+    transform: translate3d(-50%, -100%, 0);
+}
+.dilog_arrow_warpper {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
 }
 </style>

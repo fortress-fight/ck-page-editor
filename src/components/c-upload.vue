@@ -46,7 +46,7 @@
                 <div
                     class="c_image_upload-tool_bar-btns layout_grid layout_grid-col-3 layout_grid-colspac-1"
                 >
-                    <template v-if="!img_prev_link">
+                    <template v-if="img_prev_link">
                         <div class="btn flex_center layout_grid-item_clo-3" @click="upload">
                             <i class="ic fa fa-fw fa-upload" style="font-size: 15px;"></i>
                             <span class="text">上传图片</span>
@@ -57,7 +57,7 @@
                             <i class="ic fa fa-fw fa-pencil" style="font-size: 15px;"></i>
                             <span class="text">编辑</span>
                         </div>
-                        <div class="btn flex_center" @click="setting">
+                        <div class="btn flex_center" @click="setting" ref="setting_btn">
                             <i class="ic fa fa-fw fa-gear" style="font-size: 15px;"></i>
                             <span class="text">设置</span>
                         </div>
@@ -69,14 +69,18 @@
                 </div>
             </div>
         </div>
-        <div
-            class
-            style="background-image: url(&quot;//single_admin.uemo.net/uploads/20190221/5efd5607c88e780f70cce5737662e1d7.png&quot;);"
-        ></div>
+        <c-dialog
+            class="test"
+            :is_show.sync="background_setting_dialog_show"
+            :options="background_setting_dialog"
+        >
+            <template #body>width:123</template>
+        </c-dialog>
     </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
+import dialog from "@/components/c-dialog.vue";
 export default Vue.extend({
     data() {
         return {
@@ -103,7 +107,27 @@ export default Vue.extend({
                     url:
                         "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
                 }
-            ]
+            ],
+            background_setting_dialog_show: false,
+            background_setting_dialog: {
+                dialog_footer: false,
+                dialog_header: false,
+                dialog_style: {
+                    width: "390px",
+                    transform: "translateY(2px)"
+                },
+                dialog_pos: "center",
+                dialog_pos_detail: {
+                    dir: {
+                        x: "center",
+                        y: "bottom"
+                    },
+                    arrow: true
+                },
+                wrapper_option: {
+                    style: { "z-index": 9999 }
+                }
+            }
         };
     },
     props: {
@@ -139,7 +163,7 @@ export default Vue.extend({
                 "http://127.0.0.1:3003/" + file.path.replace("\\", "/");
         },
         setting() {
-            alert(1);
+            this.background_setting_dialog_show = true;
         },
         delete_image() {
             this.img_prev_link = "";
@@ -151,24 +175,34 @@ export default Vue.extend({
                 this.background_attr_pos_value = value;
             }
         }
+    },
+    components: {
+        "c-dialog": dialog
+    },
+    mounted() {
+        this.background_setting_dialog.dialog_pos = this.$refs.setting_btn;
     }
 });
 </script>
 <style lang="scss">
 .c_image_upload-wrapper {
+    font-size: 12px;
+
     position: relative;
+
     color: #bdbdbd;
     background: rgb(248, 248, 248);
-    font-size: 12px;
     &[data-type="background"] {
         padding: 20px;
+
         border: 1px dotted #d1d1d1;
     }
 
     .el-upload-list {
         position: absolute;
-        width: 100%;
         bottom: 0;
+
+        width: 100%;
     }
     .el-upload-list__item .el-progress {
         display: block;
@@ -189,52 +223,64 @@ export default Vue.extend({
 }
 .c_image_upload {
     position: relative;
-    color: #a8a8a8;
+
     display: flex;
     flex-direction: column;
-    height: 220px;
+
+    height: 180px;
+
+    color: #a8a8a8;
     &-btn {
         position: absolute;
+        z-index: 10;
         top: 0;
-        left: 0;
         right: 0;
         bottom: 0;
-        z-index: 10;
+        left: 0;
         .el-upload {
             position: absolute;
+            z-index: 10;
             top: 0;
-            left: 0;
             right: 0;
             bottom: 0;
-            z-index: 10;
+            left: 0;
         }
     }
     &-image_preview_box {
         position: relative;
+
         overflow: hidden;
+
         cursor: pointer;
+
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTUyOUU2MTAwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTUyOUU2MTEwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFNTI5RTYwRTA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFNTI5RTYwRjA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuLRCmkAAAAqSURBVHjaYvz//z8DNnD27Fms4kwMJIJRDcQAFlzhbWxsPBpK9NMAEGAA+cQIhpHCLJEAAAAASUVORK5CYII=);
     }
     &-tip {
-        color: #bdbdbd;
         font-size: 14px;
+
+        color: #bdbdbd;
         .ic {
             font-size: 24px;
+
             margin-right: 4px;
+
             color: #a4a4a4;
         }
     }
     &-tool_bar {
         .btn {
             line-height: 40px;
+
             width: 100%;
             height: 40px;
+
+            cursor: pointer;
             -webkit-transition: color 0.2s ease;
-            transition: color 0.2s ease;
+                    transition: color 0.2s ease;
+
             color: #a7a7a7;
             border-radius: 0;
             background: #f4f4f4;
-            cursor: pointer;
             .text {
                 margin: 0 8px;
             }
@@ -244,11 +290,13 @@ export default Vue.extend({
         position: absolute;
         top: 0;
         left: 0;
-        height: 100%;
+
         width: 100%;
-        background-size: contain;
+        height: 100%;
+
         background-repeat: no-repeat;
         background-position: center;
+        background-size: contain;
     }
     &-theme_light {
         background-color: #fff;
@@ -319,6 +367,7 @@ export default Vue.extend({
         position: absolute;
         top: 0;
         left: 0;
+
         width: 100%;
         height: 100%;
     }
