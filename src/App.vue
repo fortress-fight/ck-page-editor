@@ -9,6 +9,7 @@
         <add-layout-group-dialog></add-layout-group-dialog>
         <delete-layout-group-dialog></delete-layout-group-dialog>
         <editor-layout-panel></editor-layout-panel>
+        <c-color-picker></c-color-picker>
     </div>
 </template>
 <script lang="ts">
@@ -19,6 +20,7 @@ import delete_layout_dom_dialog from "@/components/delete_layout_dom_dialog.vue"
 import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 import c_tab_card from "@/components/c-tab_card.vue";
+import c_color_picker from "@/components/c-color_picker.vue";
 
 export default Vue.extend({
     data() {
@@ -29,7 +31,8 @@ export default Vue.extend({
         "delete-layout-group-dialog": delete_layout_dom_dialog,
         "editor-layout-panel": editor_layout_panel,
         "page-layout-dom": page_layout_dom,
-        "c-tab-card": c_tab_card
+        "c-tab-card": c_tab_card,
+        "c-color-picker": c_color_picker
     },
     methods: {
         add_layout() {

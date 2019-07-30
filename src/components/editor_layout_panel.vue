@@ -2,7 +2,7 @@
     <c-dialog
         id="editor_layout_panel"
         class="editor_layout_panel"
-        :is_show="true"
+        :is_show="false"
         :options="page_editor_dialog"
     >
         <template #header>
@@ -12,7 +12,7 @@
             <c-tab-card :tab_cards="tab_cards" ref="tab_card">
                 <template #layout_dom>
                     <div class="attr_set_groups">
-                        <div class="attr_set_group" >
+                        <div class="attr_set_group">
                             <div
                                 class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                             >
@@ -20,7 +20,7 @@
                                 <c-switch active-text="显示底部" class="space_normal"></c-switch>
                             </div>
                         </div>
-                        <div class="attr_set_group" >
+                        <div class="attr_set_group">
                             <div
                                 class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                             >
@@ -30,7 +30,7 @@
                                 <c-switch active-text="内容宽度" class="space_normal"></c-switch>
                             </div>
                         </div>
-                        <div class="attr_set_group" >
+                        <div class="attr_set_group">
                             <div class="attr_set_item flex_center">
                                 <div class="item_header flex_fix">布局宽度</div>
                                 <div class="item_body flex_center flex_auto">
@@ -84,14 +84,14 @@
                     </div>
                 </template>
                 <template #layout_attr>
-                    <div class="attr_set_group" >
+                    <div class="attr_set_group">
                         <div class="attr_set_item">
                             <c-upload></c-upload>
                         </div>
                     </div>
                 </template>
                 <template #layout_animate>
-                    <div class="attr_set_group" >
+                    <div class="attr_set_group">
                         <div
                             class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                         >

@@ -11,6 +11,7 @@
     "@types/jquery": "^3.3.30",
     "@types/slick-carousel": "^1.6.33",
     "@types/velocity-animate": "^1.2.33",
+    "color": "^3.1.2",
     "core-js": "^2.6.5",
     "element-ui": "^2.4.5",
     "font-awesome": "^4.7.0",
