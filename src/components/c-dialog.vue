@@ -340,10 +340,8 @@ export default Vue.extend({
     box-sizing: border-box;
 
     color: #666;
-    background: #fff;
 
-// box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
+    // box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
     &_pos-fixed {
         .dialog {
             position: fixed;
@@ -404,7 +402,9 @@ export default Vue.extend({
     &_container {
         overflow: hidden;
 
-        border-radius: 3px;
+        background: #fff;
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
     }
     &_show {
         display: flex;
@@ -417,7 +417,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-// background: #f5f5f5;
+        // background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -481,7 +481,7 @@ export default Vue.extend({
 
             width: 100%;
 
-// margin-right: -10px;
+            // margin-right: -10px;
 
             align-items: center;
 
@@ -517,7 +517,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-// margin-right: 10px;
+            // margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;

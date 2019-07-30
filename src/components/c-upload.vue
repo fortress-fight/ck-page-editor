@@ -46,7 +46,7 @@
                 <div
                     class="c_image_upload-tool_bar-btns layout_grid layout_grid-col-3 layout_grid-colspac-1"
                 >
-                    <template v-if="img_prev_link">
+                    <template v-if="!img_prev_link">
                         <div class="btn flex_center layout_grid-item_clo-3" @click="upload">
                             <i class="ic fa fa-fw fa-upload" style="font-size: 15px;"></i>
                             <span class="text">上传图片</span>
@@ -70,11 +70,32 @@
             </div>
         </div>
         <c-dialog
-            class="test"
             :is_show.sync="background_setting_dialog_show"
             :options="background_setting_dialog"
         >
-            <template #body>width:123</template>
+            <template #body>
+                <div class="attr_set_groups">
+                    <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">展现方式</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio class="space_normal">常规</c-radio>
+                                <c-radio class="space_normal">视差</c-radio>
+                                <c-radio class="space_normal">锁定</c-radio>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">背景大小</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-switch active-text="适应" class="space_normal"></c-switch>
+                                <c-switch active-text="平铺" class="space_normal"></c-switch>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </c-dialog>
     </div>
 </template>

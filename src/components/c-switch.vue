@@ -1,6 +1,11 @@
 <template>
     <div class="c_switch">
-        <el-switch v-bind="$attrs" active-value="#46be8a" inactive-value="#999" :width="30"></el-switch>
+        <el-switch
+            v-bind="$attrs"
+            active-value="rgb(104, 122, 226)"
+            inactive-value="#999"
+            :width="30"
+        ></el-switch>
     </div>
 </template>
 <script lang="ts">
@@ -12,9 +17,6 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
-.c_switch {
-    text-align: center;
-}
 .el-switch__label * {
     font-size: inherit;
 }
@@ -47,6 +49,9 @@ export default Vue.extend({
     font-size: inherit;
 
     color: inherit;
+    &.is-active {
+        color: inherit;
+    }
 }
 .el-switch__label--right {
     margin-left: 6px;
