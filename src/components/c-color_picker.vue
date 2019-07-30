@@ -44,8 +44,53 @@
             <div class="color_picker-control-item" data-control="l">
                 <div class="color_picker-control-item_title">明暗度</div>
                 <div class="color_picker-control-item_con">
-                    <color_picker_input class="u-flex-elastic" :hideCount="true"></color_picker_input>
+                    <color_picker_input
+                        class="u-flex-elastic"
+                        v-model="hsl_light"
+                        away_change
+                        :hideCount="true"
+                    ></color_picker_input>
                 </div>
+            </div>
+            <div class="color_picker-control-item" data-control="s">
+                <div class="color_picker-control-item_title">饱和度</div>
+                <div class="color_picker-control-item_con">
+                    <color_picker_input
+                        class="u-flex-elastic"
+                        v-model="hsl_s"
+                        away_change
+                        :hideCount="true"
+                        :innerStyle="s_bar_style"
+                    ></color_picker_input>
+                </div>
+            </div>
+
+            <div class="color_picker-control-item" data-control="a">
+                <div class="color_picker-control-item_title">透明度</div>
+                <div class="color_picker-control-item_con">
+                    <color_picker_input
+                        class="u-flex-elastic"
+                        v-model="hsl_a"
+                        awaySync
+                        :innerStyle="a_bar_style"
+                    ></color_picker_input>
+                </div>
+            </div>
+        </div>
+
+        <div class="color_picker-color_group">
+            <div
+                v-for="(item, index) in color_group"
+                class="color_picker-color_group-col"
+                :key="index"
+            >
+                <div
+                    v-for="(color, num) in item"
+                    class="color_picker-color_group_btn"
+                    :key="num"
+                    :style="`background-color: ${color};`"
+                    @click="set_color(color)"
+                ></div>
             </div>
         </div>
     </div>
@@ -61,7 +106,30 @@ export default Vue.extend({
         return {
             old_value: "#fff",
             new_value: "#fff",
-            color_picker: null
+            color_picker: null,
+
+            color_group: [
+                // 白
+                ["#f8f8f8", "#dddddd", "#999999", "#666666", "#333333"],
+                // 青
+                ["#bcfffc", "#67fffb", "#00f9ff", "#00a4b2", "#0c474d"],
+                // 蓝
+                ["#bfb6ff", "#6a55ff", "#1e00fb", "#2716a9", "#0a005d"],
+                // 紫
+                ["#d7b6ff", "#a65bf4", "#733fa8", "#572f7e", "#321b48"],
+                // 粉
+                ["#ffb6e4", "#f562a0", "#ed169a", "#9c0060", "#560035"],
+                // 红
+                ["#f8cecf", "#ff687e", "#fd0025", "#8e1426", "#46151c"],
+                // 橙
+                ["#ffe8c5", "#ffc265", "#ff9e0a", "#af6900", "#5b3700"],
+                // 黄
+                ["#fffabe", "#fff377", "#ffea00", "#bb9600", "#4a4017"],
+                // 绿
+                ["#dcffc2", "#76dc1c", "#76dc1c", "#61951d", "#2e4717"],
+                // 青绿
+                ["#e1f7eb", "#83deae", "#55d390", "#26a863", "#0e502d"]
+            ]
         };
     },
     methods: {
@@ -77,20 +145,110 @@ export default Vue.extend({
                     .toUpperCase();
             },
             set(value) {
-                if (ColorPicker.is_color("#" + value)) {
+                if (ColorPicker.is_color("#" + value) && value.length == 6) {
                     this.color_picker.color = "#" + value;
                 }
             }
+        },
+        hsl_color: {
+            get() {
+                return ColorPicker.calculate_HSL(this.new_value);
+            },
+            set(value) {
+                this.color_picker.color = ColorPicker.calculate_color(
+                    Object.assign(
+                        ColorPicker.calculate_HSL(this.new_value),
+                        value
+                    )
+                );
+            }
+        },
+        hsl_light: {
+            get() {
+                return parseInt(this.hsl_color.l);
+            },
+            set(value) {
+                this.hsl_color = { l: value + "%" };
+            }
+        },
+        hsl_s: {
+            get() {
+                return parseInt(this.hsl_color.s);
+            },
+            set(value) {
+                this.hsl_color = { s: value + "%" };
+            }
+        },
+        s_bar_style() {
+            let hsl_color = this.hsl_color;
+            return {
+                background:
+                    "linear-gradient(90deg, hsl(" +
+                    hsl_color.h +
+                    ", 0%, " +
+                    hsl_color.l +
+                    "), hsl(" +
+                    hsl_color.h +
+                    ", 16.666667%, " +
+                    hsl_color.l +
+                    "), hsl(" +
+                    hsl_color.h +
+                    ", 33.333333%, " +
+                    hsl_color.l +
+                    "), hsl(" +
+                    hsl_color.h +
+                    ", 50%, " +
+                    hsl_color.l +
+                    "), hsl(" +
+                    hsl_color.h +
+                    ", 66.666667%, " +
+                    hsl_color.l +
+                    "), hsl(" +
+                    hsl_color.h +
+                    ", 100%, " +
+                    hsl_color.l +
+                    "))"
+            };
+        },
+        hsl_a: {
+            get() {
+                return parseInt(this.hsl_color.a * 100);
+            },
+            set(value) {
+                this.hsl_color = { a: value / 100 };
+            }
+        },
+        a_bar_style(): object {
+            let hsl_color = this.hsl_color;
+
+            return {
+                "background-image":
+                    "linear-gradient(90deg, hsla(" +
+                    hsl_color.h +
+                    ", " +
+                    hsl_color.s +
+                    ", " +
+                    hsl_color.l +
+                    ", 1), hsla(" +
+                    hsl_color.h +
+                    ", " +
+                    hsl_color.s +
+                    ", " +
+                    hsl_color.l +
+                    ', 0)), url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTUyOUU2MTAwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTUyOUU2MTEwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFNTI5RTYwRTA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFNTI5RTYwRjA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuLRCmkAAAAqSURBVHjaYvz//z8DNnD27Fms4kwMJIJRDcQAFlzhbWxsPBpK9NMAEGAA+cQIhpHCLJEAAAAASUVORK5CYII=")'
+            };
         }
     },
     components: {
         color_picker_input
     },
     mounted(this: any) {
-        this.color_picker = new ColorPicker(this.$el).init("#fff");
+        Vue.nextTick().then(() => {
+            this.color_picker = new ColorPicker(this.$el).init("#fff");
 
-        $(this.color_picker).on("change", (ev, color) => {
-            this.new_value = color;
+            $(this.color_picker).on("change", (ev, color) => {
+                this.new_value = color;
+            });
         });
     }
 });

@@ -61,7 +61,7 @@ class ColorPicker {
             let x = pos.x;
             let y = pos.y;
 
-            self.hslColor.h = ColorPicker.two_pointer_angle(
+            self.hsl_color.h = ColorPicker.two_pointer_angle(
                 {
                     x: x - boxInfo.left,
                     y: y - boxInfo.top
@@ -77,7 +77,7 @@ class ColorPicker {
             let x = movePos.x;
             let y = movePos.y;
 
-            self.hslColor.h = ColorPicker.two_pointer_angle(
+            self.hsl_color.h = ColorPicker.two_pointer_angle(
                 {
                     x: x - boxInfo.left,
                     y: y - boxInfo.top
@@ -111,15 +111,14 @@ class ColorPicker {
     set color(new_value) {
         if (this._color === new_value) return this;
         this._color = new_value;
-        this.hslColor = this.calculate_HSL(new_value);
+        this.hsl_color = ColorPicker.calculate_HSL(new_value);
         this.update_color_cycle();
-        this.update_color_picker_coin_pos(this.hslColor.h);
+        this.update_color_picker_coin_pos(this.hsl_color.h);
         $(this).trigger("change", new_value);
     }
 
     update_color_cycle() {
         const ctx = this.ctx;
-        const hslColor = this.hslColor;
         const iSectors = 360;
         const iSectorAngle = (360 / iSectors / 180) * Math.PI;
 
@@ -132,11 +131,11 @@ class ColorPicker {
                 "hsla(" +
                 i +
                 ", " +
-                hslColor.s +
+                this.hsl_color.s +
                 ", " +
-                hslColor.l +
+                this.hsl_color.l +
                 ", " +
-                hslColor.a +
+                this.hsl_color.a +
                 ")";
 
             let startAngle = 180;
@@ -183,11 +182,23 @@ class ColorPicker {
     }
 
     set_oper_hsl_color(color) {
-        this.hslColor = this.calculate_HSL(color);
+        this.color = ColorPicker.calculate_color(color);
     }
 
-    calculate_HSL(color) {
-        if (!color) color = this.calculate_color();
+    calculate_HSL() {
+        return ColorPicker.calculate_HSL(this.color);
+    }
+
+    calculate_color(type = "rgb") {
+        return ColorPicker.calculate_color(this.hsl_color, type);
+    }
+    static calculate_color(color, type = "rgb") {
+        const { h, s, l, a } = color;
+        const result = color_transform(`hsla(${h}, ${s}, ${l}, ${a})`)[type]();
+
+        return typeof result === "string" ? result : result.string();
+    }
+    static calculate_HSL(color) {
         let result = {
             h: 0,
             s: 0,
@@ -208,16 +219,6 @@ class ColorPicker {
         });
 
         return result;
-    }
-
-    calculate_color(type = "rgb") {
-        const h = this.hslColor.h;
-        const s = this.hslColor.s;
-        const l = this.hslColor.l;
-        const a = this.hslColor.a;
-        const result = color_transform(`hsla(${h}, ${s}, ${l}, ${a})`)[type]();
-
-        return typeof result === "string" ? result : result.string();
     }
 
     static tranform(color, type = "rgb") {

@@ -72,7 +72,7 @@ export default Vue.extend({
             type: Number,
             default: 100
         },
-        awaySync: {
+        away_change: {
             type: Boolean,
             default: false
         },
@@ -109,7 +109,7 @@ export default Vue.extend({
                 [vm.name]: value
             };
             vm.$emit("change", { result });
-            if (this.awaySync) {
+            if (this.away_change) {
                 vm.$emit("input", value);
             }
         },
@@ -122,7 +122,7 @@ export default Vue.extend({
             };
 
             vm.$emit("changeEnd", { result });
-            if (!this.awaySync) {
+            if (!this.away_change) {
                 vm.$emit("input", value);
             }
         }
