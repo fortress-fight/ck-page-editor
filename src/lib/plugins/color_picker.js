@@ -1,58 +1,123 @@
-import colorTran from "color";
+import color_transform from "color";
 
 class ColorPicker {
-    constructor(el, param) {
-        if (!el) return this;
+    constructor(el, option) {
         if ($(el).data("color_picker")) return $(el).data("color_picker");
-        let initParam = {
-            dom: ".color_picker",
-            colorPanelDom: ".color_picker-color_panel",
-            colorCanvasDom: ".color_picker-color_canvas",
-            panelCoin: ".color_picker-coin"
-        };
-        this.cpParam = $.extend(true, initParam, param);
-        this.cpDom = $(el);
-        this.cpColorPanelDom = this.cpDom.find(this.cpParam.colorPanelDom);
-        this.colorCanvasDom = this.cpDom.find(this.cpParam.colorCanvasDom);
-        this.panelCoin = this.cpDom.find(this.cpParam.panelCoin);
-        this.ctx = $(this.colorCanvasDom)[0].getContext("2d");
+        this.option = Object.assign(this.default_option, option);
+        this.container = $(el);
+        this.set_dom_var();
     }
 
-    init(color) {
-        this.color = color;
-        this.hslColor = this.getHSL(color);
-        this.initPanel();
-        this.initColorPanel();
-        this.initDraggerCoin();
-        this.setDraggerCoin(this.hslColor.h);
-        return this;
+    set_dom_var() {
+        this.$panel_dom = $(this.option.panel_selector, this.container);
+        this.$color_cycle_canvas_dom = $(
+            this.option.color_cycle_selector,
+            this.container
+        );
+        this.$color_picker_coin = $(
+            this.option.color_picker_coin_selector,
+            this.container
+        );
     }
-    updatePanel() {
-        this.initPanel();
-        return this;
+    get $panel_dom() {
+        return this._panel_dom;
     }
-    update() {
-        this.color = this.getColor();
-        this.hslColor = this.getHSL();
-        this.setDraggerCoin(this.hslColor.h);
-        this.initColorPanel();
-        $(this).trigger("change", this.getColor());
+    set $panel_dom(value) {
+        this._panel_dom = value;
+        this.update_panel_size();
     }
-
-    initPanel() {
-        const color_panel = $(this.cpColorPanelDom);
-
+    update_panel_size() {
         this.colorPanelInfo = {
-            w: color_panel.outerWidth(),
-            h: color_panel.outerHeight(),
+            w: this.$panel_dom.outerWidth(),
+            h: this.$panel_dom.outerHeight(),
             centerPoint: {
-                x: color_panel.outerWidth() / 2,
-                y: color_panel.outerHeight() / 2
+                x: this.$panel_dom.outerWidth() / 2,
+                y: this.$panel_dom.outerHeight() / 2
             }
         };
+        return this;
+    }
+    get $color_cycle_canvas_dom() {
+        return this._$color_cycle_canvas_dom;
+    }
+    set $color_cycle_canvas_dom(value) {
+        this._$color_cycle_canvas_dom = value;
+        this.ctx = value[0].getContext("2d");
     }
 
-    initColorPanel() {
+    get $color_picker_coin() {
+        return this._$color_picker_coin;
+    }
+    set $color_picker_coin(value) {
+        this._$color_picker_coin = value;
+        this.set_color_picker_coin_drager();
+    }
+
+    set_color_picker_coin_drager() {
+        const self = this;
+        const boxInfo = this.$panel_dom[0].getBoundingClientRect();
+
+        this.$panel_dom.on("drag.start", function(ev, pos) {
+            let x = pos.x;
+            let y = pos.y;
+
+            self.hslColor.h = ColorPicker.two_pointer_angle(
+                {
+                    x: x - boxInfo.left,
+                    y: y - boxInfo.top
+                },
+                self.colorPanelInfo.centerPoint
+            ).angle;
+
+            self.update();
+
+            return false;
+        });
+        this.$panel_dom.on("drag.move", function(ev, movePos, disPos) {
+            let x = movePos.x;
+            let y = movePos.y;
+
+            self.hslColor.h = ColorPicker.two_pointer_angle(
+                {
+                    x: x - boxInfo.left,
+                    y: y - boxInfo.top
+                },
+                self.colorPanelInfo.centerPoint
+            ).angle;
+
+            self.update();
+        });
+        ColorPicker.drag(this.$panel_dom);
+    }
+
+    get default_option() {
+        return {
+            dom: ".color_picker",
+            panel_selector: ".color_picker-color_panel",
+            color_cycle_selector: ".color_picker-color_canvas",
+            color_picker_coin_selector: ".color_picker-coin"
+        };
+    }
+
+    init(color = "#fff") {
+        this.color = color;
+        return this;
+    }
+
+    get color() {
+        return this._color;
+    }
+
+    set color(new_value) {
+        if (this._color === new_value) return this;
+        this._color = new_value;
+        this.hslColor = this.calculate_HSL(new_value);
+        this.update_color_cycle();
+        this.update_color_picker_coin_pos(this.hslColor.h);
+        $(this).trigger("change", new_value);
+    }
+
+    update_color_cycle() {
         const ctx = this.ctx;
         const hslColor = this.hslColor;
         const iSectors = 360;
@@ -106,111 +171,62 @@ class ColorPicker {
         ctx.restore();
         ctx.save();
     }
-
-    initDraggerCoin() {
-        const cp = this;
-        const colorPanel = $(this.cpColorPanelDom);
-        const boxInfo = colorPanel[0].getBoundingClientRect();
-
-        colorPanel.on("drag.start", function(ev, pos) {
-            let x = pos.x;
-            let y = pos.y;
-
-            cp.hslColor.h = cp.getAngle(
-                {
-                    x: x - boxInfo.left,
-                    y: y - boxInfo.top
-                },
-                cp.colorPanelInfo.centerPoint
-            ).angle;
-
-            cp.update();
-
-            return false;
-        });
-        colorPanel.on("drag.move", function(ev, movePos, disPos) {
-            let x = movePos.x;
-            let y = movePos.y;
-
-            cp.hslColor.h = cp.getAngle(
-                {
-                    x: x - boxInfo.left,
-                    y: y - boxInfo.top
-                },
-                cp.colorPanelInfo.centerPoint
-            ).angle;
-
-            cp.update();
-        });
-        this.drag(colorPanel);
+    update_color_picker_coin_pos(angle) {
+        this.$color_picker_coin.css(
+            "transform",
+            ColorPicker.calculate_coordinate(angle, 78)
+        );
     }
 
-    setDraggerCoin(info) {
-        let angle;
-
-        if (typeof info === "object") {
-            angle = this.getAngle(info, this.colorPanelInfo.centerPoint).angle;
-        } else {
-            angle = info;
-        }
-
-        // 78 是半径
-        $(this.panelCoin).css("transform", this.getRPos(angle, 78));
-    }
-    isColor(color) {
-        try {
-            colorTran(color);
-            return true;
-        } catch (error) {
-            return false;
-        }
-    }
-    setColor(color) {
-        this.hslColor = this.getHSL(color);
+    update() {
+        this.color = this.calculate_color();
     }
 
-    getHSL(color) {
-        if (!color) color = this.getColor();
+    set_oper_hsl_color(color) {
+        this.hslColor = this.calculate_HSL(color);
+    }
 
-        let result = colorTran(color)
-            .hsl()
-            .string();
-
-        let reg = /^hsla?\((\d+.?\d*),\s?(\d+.?\d*%),\s?(\d+.?\d*%),?\s?([0|1].?([0-9]+)?)?\)$/;
-        let hsl = {
+    calculate_HSL(color) {
+        if (!color) color = this.calculate_color();
+        let result = {
             h: 0,
             s: 0,
             l: 0,
             a: 0
         };
-        result.replace(reg, ($0, $1, $2, $3, $4) => {
-            hsl.h = $1;
-            hsl.s = $2;
-            hsl.l = $3;
-            hsl.a = $4 ? $4 : 1;
+        let hsl = color_transform(color)
+            .hsl()
+            .string();
+
+        let reg = /^hsla?\((\d+.?\d*),\s?(\d+.?\d*%),\s?(\d+.?\d*%),?\s?([0|1].?([0-9]+)?)?\)$/;
+
+        hsl.replace(reg, ($0, $1, $2, $3, $4) => {
+            result.h = $1;
+            result.s = $2;
+            result.l = $3;
+            result.a = $4 ? $4 : 1;
         });
 
-        return hsl;
+        return result;
     }
 
-    getColor(type = "rgb") {
+    calculate_color(type = "rgb") {
         const h = this.hslColor.h;
         const s = this.hslColor.s;
         const l = this.hslColor.l;
         const a = this.hslColor.a;
-        const result = colorTran(`hsla(${h}, ${s}, ${l}, ${a})`)[type]();
+        const result = color_transform(`hsla(${h}, ${s}, ${l}, ${a})`)[type]();
 
         return typeof result === "string" ? result : result.string();
     }
 
-    tranColor(color, type = "rgb") {
-        const result = colorTran(color)[type]();
-
+    static tranform(color, type = "rgb") {
+        const result = color_transform(color)[type]();
         return typeof result === "string" ? result : result.string();
     }
 
     // 获取两点之间的圆角
-    getAngle(point, center) {
+    static two_pointer_angle(point, center) {
         let dir,
             angle = Math.round(
                 (360 * Math.atan((point.y - center.y) / (point.x - center.x))) /
@@ -245,7 +261,7 @@ class ColorPicker {
     }
 
     // 通过半径和圆角计算点的坐标信息
-    getRPos(angle, radius) {
+    static calculate_coordinate(angle, radius) {
         let pos = {
             x: -Math.round(radius * Math.cos((angle * 3.14) / 180)),
             y: -Math.round(radius * Math.sin((angle * 3.14) / 180))
@@ -254,8 +270,15 @@ class ColorPicker {
 
         return result;
     }
-
-    drag(dragEl, config = {}) {
+    static is_color(color) {
+        try {
+            color_transform(color);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+    static drag(dragEl, config = {}) {
         if (!dragEl.length) return false;
 
         const initConfig = {
