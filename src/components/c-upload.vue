@@ -1,33 +1,71 @@
 <template>
     <div class="c_image_upload-wrapper c_image_upload-theme_light" data-type="background">
-        <div
-            v-for="(item, index) in background_attr_pos_options"
-            class="c_image_upload-background_attrs"
-            :data-value="item.value"
-            :key="index"
-        >
-            <i class="dot"></i>
-        </div>
+        <template v-if="type == `background` && img_prev_link">
+            <div
+                v-for="(item, index) in background_attr_pos_options"
+                class="c_image_upload-background_attrs"
+                :data-value="item.value"
+                :checked="item.value == background_attr_pos_value ? 'checked' : false"
+                :key="index"
+                @click="tab_background_pos(item.value)"
+            >
+                <i class="dot"></i>
+            </div>
+        </template>
         <div class="c_image_upload">
-            <div class="c_image_upload-image_preview_box flex_center flex_auto">
+            <div
+                class="c_image_upload-image_preview_box flex_center flex_auto"
+                :style="{'background': (img_prev_link ? '' : '#fff')}"
+            >
                 <el-upload
+                    name="Filedata"
                     class="c_image_upload-btn"
                     ref="upload_btn"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="/service"
+                    accept="image/*"
+                    :with-credentials="true"
+                    :on-preview="handlePreview"
+                    :on-success="upload_suc"
                 ></el-upload>
-                <div class="c_image_upload-image_preview flex_center">
-                    <div class="flex_center c_image_upload-tip">
+                <div
+                    class="c_image_upload-image_preview flex_center"
+                    :style="'background-image: url(' + img_prev_link +')'"
+                >
+                    <img
+                        v-if="type == `image`"
+                        class="c_image_upload-preview_image"
+                        :src="img_prev_link"
+                    />
+                    <div class="flex_center c_image_upload-tip" v-if="!img_prev_link">
                         <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
                         <span class="text">上传图片</span>
                     </div>
                 </div>
             </div>
             <div class="c_image_upload-tool_bar flex_fix">
-                <div class="c_image_upload-tool_bar-btns">
-                    <div class="btn flex_center" @click="upload">
-                        <i class="ic fa fa-fw fa-upload" style="font-size: 15px;"></i>
-                        <span class="text">上传图片</span>
-                    </div>
+                <div
+                    class="c_image_upload-tool_bar-btns layout_grid layout_grid-col-3 layout_grid-colspac-1"
+                >
+                    <template v-if="!img_prev_link">
+                        <div class="btn flex_center layout_grid-item_clo-3" @click="upload">
+                            <i class="ic fa fa-fw fa-upload" style="font-size: 15px;"></i>
+                            <span class="text">上传图片</span>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="btn flex_center" @click="upload">
+                            <i class="ic fa fa-fw fa-pencil" style="font-size: 15px;"></i>
+                            <span class="text">编辑</span>
+                        </div>
+                        <div class="btn flex_center" @click="setting">
+                            <i class="ic fa fa-fw fa-gear" style="font-size: 15px;"></i>
+                            <span class="text">设置</span>
+                        </div>
+                        <div class="btn flex_center" @click="delete_image">
+                            <i class="ic fa fa-fw fa-trash" style="font-size: 15px;"></i>
+                            <span class="text">删除</span>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -42,6 +80,8 @@ import Vue from "vue";
 export default Vue.extend({
     data() {
         return {
+            img_prev_link: "",
+            background_attr_pos_value: "cc",
             background_attr_pos_options: [
                 { value: "tl" },
                 { value: "tc" },
@@ -66,6 +106,12 @@ export default Vue.extend({
             ]
         };
     },
+    props: {
+        type: {
+            type: String,
+            default: "background"
+        }
+    },
     methods: {
         upload() {
             console.log(
@@ -87,6 +133,23 @@ export default Vue.extend({
         },
         beforeRemove(file, fileList) {
             return this.$confirm(`确定移除 ${file.name}？`);
+        },
+        upload_suc(file) {
+            this.img_prev_link =
+                "http://127.0.0.1:3003/" + file.path.replace("\\", "/");
+        },
+        setting() {
+            alert(1);
+        },
+        delete_image() {
+            this.img_prev_link = "";
+        },
+        tab_background_pos(value) {
+            if (this.background_attr_pos_value == value) {
+                this.background_attr_pos_value = "cc";
+            } else {
+                this.background_attr_pos_value = value;
+            }
         }
     }
 });
@@ -100,6 +163,28 @@ export default Vue.extend({
     &[data-type="background"] {
         padding: 20px;
         border: 1px dotted #d1d1d1;
+    }
+
+    .el-upload-list {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+    }
+    .el-upload-list__item .el-progress {
+        display: block;
+    }
+    .el-upload-list__item .el-progress__text,
+    .el-upload-list__item-name {
+        display: none;
+    }
+    .el-upload-list__item:first-child {
+        margin: 0;
+    }
+    .el-progress-bar__inner {
+        background-color: #46be8a;
+    }
+    .el-progress-bar__outer {
+        height: 4px !important;
     }
 }
 .c_image_upload {
@@ -128,6 +213,7 @@ export default Vue.extend({
         position: relative;
         overflow: hidden;
         cursor: pointer;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTUyOUU2MTAwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTUyOUU2MTEwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFNTI5RTYwRTA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFNTI5RTYwRjA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuLRCmkAAAAqSURBVHjaYvz//z8DNnD27Fms4kwMJIJRDcQAFlzhbWxsPBpK9NMAEGAA+cQIhpHCLJEAAAAASUVORK5CYII=);
     }
     &-tip {
         color: #bdbdbd;
@@ -155,7 +241,14 @@ export default Vue.extend({
         }
     }
     &-image_preview {
-        background: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTUyOUU2MTAwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTUyOUU2MTEwNjczMTFFOEE1MEQ5RTI4RUQzQzJBNTUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFNTI5RTYwRTA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFNTI5RTYwRjA2NzMxMUU4QTUwRDlFMjhFRDNDMkE1NSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuLRCmkAAAAqSURBVHjaYvz//z8DNnD27Fms4kwMJIJRDcQAFlzhbWxsPBpK9NMAEGAA+cQIhpHCLJEAAAAASUVORK5CYII=)";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
     }
     &-theme_light {
         background-color: #fff;
@@ -221,6 +314,13 @@ export default Vue.extend({
             top: 100%;
             left: 100%;
         }
+    }
+    &-preview_image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
     }
 }
 </style>
