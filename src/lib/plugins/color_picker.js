@@ -55,9 +55,10 @@ class ColorPicker {
 
     set_color_picker_coin_drager() {
         const self = this;
-        const boxInfo = this.$panel_dom[0].getBoundingClientRect();
+        let boxInfo;
 
         this.$panel_dom.on("drag.start", function(ev, pos) {
+            boxInfo = self.$panel_dom[0].getBoundingClientRect();
             let x = pos.x;
             let y = pos.y;
 

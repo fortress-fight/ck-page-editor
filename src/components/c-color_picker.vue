@@ -1,5 +1,6 @@
 <template>
     <div v-show="true" class="color_picker color_picker_wrapper">
+        <slot name="color_picker_name"></slot>
         <div class="color_picker-color_panel">
             <div class="color_picker-bg"></div>
             <canvas
@@ -104,10 +105,9 @@ import ColorPicker from "@/lib/plugins/color_picker.js";
 export default Vue.extend({
     data() {
         return {
-            old_value: "#fff",
-            new_value: "#fff",
+            default_value: "#fff",
+            old_value: this.value,
             color_picker: null,
-
             color_group: [
                 // 白
                 ["#f8f8f8", "#dddddd", "#999999", "#666666", "#333333"],
@@ -132,12 +132,31 @@ export default Vue.extend({
             ]
         };
     },
+    props: {
+        value: {
+            type: [String, undefined],
+            default: undefined
+        }
+    },
     methods: {
         set_color(color) {
             this.color_picker.color = color;
         }
     },
     computed: {
+        new_value: {
+            get() {
+                return this.value || this.default_value;
+            },
+            set(value) {
+                if (this.value) {
+                    this.$emit("input", value);
+                } else {
+                    this.default_value = value;
+                }
+            }
+        },
+
         input_value: {
             get() {
                 return ColorPicker.tranform(this.new_value, "hex")
@@ -343,7 +362,7 @@ export default Vue.extend({
     }
     &-color_panel {
         position: relative;
-
+        z-index: 100;
         overflow: hidden;
 
         width: 200px;

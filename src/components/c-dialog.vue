@@ -7,7 +7,7 @@
         @after-leave="pop_after_leave"
     >
         <div
-            v-show="c_is_show"
+            v-if="c_is_show"
             class="dialog_wrapper"
             :class="c_class"
             :style="c_options.wrapper_option.style"
