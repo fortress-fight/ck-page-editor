@@ -62,9 +62,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { judge_is_dom, get_el_pos, adjustment_pos } from "@/lib/plugins/unit";
+import dialog_manager from "@/components/c-dialog_manager";
+import stringRandom from "string-random";
 export default Vue.extend({
     data() {
         return {
+            id: stringRandom(16, { numbers: false }),
+            temporary_hide: false,
             default_show: true,
             default_options: {
                 type: "normal",
@@ -113,6 +117,8 @@ export default Vue.extend({
                     "dialog_pos-fixed": Array.isArray(this.c_options.dialog_pos)
                 };
             }
+            result.dialog_temporary_hide = this.temporary_hide;
+
             return result;
         }
     },
@@ -130,7 +136,10 @@ export default Vue.extend({
     },
     methods: {
         pop_in_before_enter(el) {
-            $(el).css({ opacity: 0 });
+            $(el).css({ opacity: 0, transition: "0s" });
+            if (this.c_options.only_show) {
+                dialog_manager.only_show(this.id);
+            }
         },
         pop_in_enter(el, done) {
             let dialog_el = this.$refs.dialog;
@@ -190,8 +199,12 @@ export default Vue.extend({
                         done();
                     }
                 });
+            if (this.c_options.only_show) {
+                dialog_manager.recovery_show();
+            }
         },
         pop_after_leave(el) {
+            $(el).css({ opacity: 0, transition: "none" });
             $(this.$refs.dialog).css({
                 transform: "scale(1)"
             });
@@ -293,6 +306,15 @@ export default Vue.extend({
             }
         }
     },
+    created() {
+        dialog_manager.add_dialog({
+            id: this.id,
+            layout_component: this
+        });
+    },
+    destroyed() {
+        dialog_manager.remove_dialog(this.id);
+    },
     mounted() {
         let time;
         $(window).on("resize", () => {
@@ -319,12 +341,21 @@ export default Vue.extend({
 <style lang="scss">
 .dialog_wrapper {
     position: fixed;
-    z-index: 999;
+    z-index: 900;
     top: 0;
     left: 0;
 
     width: 100vw;
     height: 100vh;
+
+    transition: 0.36s ease;
+    &.dialog_temporary_hide {
+        visibility: hidden;
+
+        pointer-events: none;
+
+        opacity: 0;
+    }
 }
 
 .dialog_pos-center {
@@ -402,9 +433,9 @@ export default Vue.extend({
     &_container {
         overflow: hidden;
 
+        border-radius: 6px;
         background: #fff;
         box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
-        border-radius: 6px;
     }
     &_show {
         display: flex;
@@ -417,7 +448,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-        // background: #f5f5f5;
+// background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -481,7 +512,7 @@ export default Vue.extend({
 
             width: 100%;
 
-            // margin-right: -10px;
+// margin-right: -10px;
 
             align-items: center;
 
@@ -517,7 +548,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-            // margin-right: 10px;
+// margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;

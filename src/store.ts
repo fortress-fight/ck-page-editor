@@ -63,7 +63,6 @@ let unit_layout_module = {
         if (type == "fun") {
             switch (value) {
                 case "slider":
-
                     result.col_container = [
                         {
                             col: 100,
@@ -73,7 +72,6 @@ let unit_layout_module = {
                     result.col = value || "100";
                     break;
                 case "block":
-
                     result.col_container = [
                         {
                             col: 100,
@@ -82,7 +80,7 @@ let unit_layout_module = {
                     ];
                     result.col = value || "100";
                     break;
-            
+
                 default:
                     break;
             }
@@ -91,7 +89,43 @@ let unit_layout_module = {
         return result;
     }
 };
+const dialogs_manage_module = {
+    namespaced: true,
+    state() {
+        return {
+            dialogs_group: []
+        };
+    },
 
+    mutations: {
+        add_dialog(state, dialog_components) {
+            state.dialog_group.push(dialog_components);
+        }
+    },
+    actions: {
+        remove_dialog({ state, getters }, dialog_components_id) {
+            state.dialogs_group.splice(
+                getters.search_dialog(dialog_components_id).index,
+                1
+            );
+        }
+    },
+    getters: {
+        search_dialog: state => id => {
+            let result = {
+                index: NaN,
+                value: null
+            };
+            state.dialogs_group.forEach((layout_component, i) => {
+                if (layout_component.id === id) {
+                    result.index = i;
+                    result.value = layout_component;
+                }
+            });
+            return result;
+        }
+    }
+};
 const layout_module = {
     namespaced: true,
     state() {
@@ -364,6 +398,7 @@ export default new Vuex.Store({
     modules: {
         layout_module,
         add_layout_dom_dialog_module,
-        delete_layout_dom_dialog_module
+        delete_layout_dom_dialog_module,
+        dialogs_manage_module
     }
 });

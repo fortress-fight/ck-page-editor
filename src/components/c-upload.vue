@@ -146,7 +146,7 @@ export default Vue.extend({
                     arrow: true
                 },
                 wrapper_option: {
-                    style: { "z-index": 9999 }
+                    style: { "z-index": 910 }
                 }
             }
         };

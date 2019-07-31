@@ -2,7 +2,7 @@
     <c-dialog
         id="editor_layout_panel"
         class="editor_layout_panel"
-        :is_show="false"
+        :is_show="true"
         :options="page_editor_dialog"
     >
         <template #header>
@@ -85,6 +85,24 @@
                 </template>
                 <template #layout_attr>
                     <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">整体背景</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-6">
+                                <c-color-picker-btn></c-color-picker-btn>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">分栏背景</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-6">
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attr_set_group">
                         <div class="attr_set_item">
                             <c-upload></c-upload>
                         </div>
@@ -121,6 +139,7 @@
 import Vue from "vue";
 import dialog from "@/components/c-dialog.vue";
 import tab_card from "@/components/c-tab_card.vue";
+import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
 export default Vue.extend({
     data() {
         return {
@@ -146,7 +165,8 @@ export default Vue.extend({
     },
     components: {
         "c-dialog": dialog,
-        "c-tab-card": tab_card
+        "c-tab-card": tab_card,
+        "c-color-picker-btn": c_color_picker_btn
     }
 });
 </script>

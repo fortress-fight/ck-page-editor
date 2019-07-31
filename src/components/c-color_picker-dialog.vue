@@ -31,9 +31,13 @@ export default Vue.extend({
             default_dialog_option: {
                 dialog_header: false,
                 dialog_footer: false,
+                only_show: true,
                 dialog_style: {
                     width: "280px",
                     position: "relative"
+                },
+                wrapper_option: {
+                    style: "z-index: 999"
                 }
             },
             dragger_option: {
