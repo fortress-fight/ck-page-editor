@@ -1,11 +1,20 @@
 <template>
     <c-dialog
         id="editor_layout_panel"
+        ref="dialog"
         class="editor_layout_panel"
-        :is_show="true"
-        :options="page_editor_dialog"
+        :is_show="layout_editor_dialog_show"
+        :options="c_layout_editor_dialog_option"
+        @cancel="layout_editor_cancel"
     >
         <template #header>
+            <div class="editor_layout_panel-dragger" style="text-align: left;">
+                <c-dragger :options="dragger_option">
+                    <template #dragger_btn>
+                        <i class="fa ic fa-navicon"></i>
+                    </template>
+                </c-dragger>
+            </div>
             <p>内容块编辑</p>
         </template>
         <template #body>
@@ -140,13 +149,10 @@ import Vue from "vue";
 import dialog from "@/components/c-dialog.vue";
 import tab_card from "@/components/c-tab_card.vue";
 import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
+import c_dragger from "@/components/c-dragger.vue";
 export default Vue.extend({
     data() {
         return {
-            page_editor_dialog: {
-                dialog_style: { width: "360px", "font-size": "14px;" },
-                box_size: "big"
-            },
             tab_cards: [
                 {
                     nav: "结构",
@@ -160,13 +166,52 @@ export default Vue.extend({
                     nav: "动效",
                     card_slot_name: "layout_animate"
                 }
-            ]
+            ],
+
+            dragger_option: {
+                style: {
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "100%"
+                },
+                dragger_dom: null
+            }
         };
+    },
+    computed: {
+        layout_editor_dialog_show() {
+            return this.$store.state.editor_layout_dom_dialog_module.show;
+        },
+        c_layout_editor_dialog_option() {
+            return Object.assign(
+                {
+                    dialog_style: { width: "360px", "font-size": "14px;" },
+                    box_size: "big"
+                },
+                this.$store.state.editor_layout_dom_dialog_module.option
+            );
+        }
+    },
+    methods: {
+        layout_editor_cancel() {
+            this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
+                turn_on: false
+            });
+        }
+    },
+    watch: {
+        layout_editor_dialog_show() {
+            this.$nextTick().then(() => {
+                this.dragger_option.dragger_dom = this.$refs.dialog.$refs.dialog;
+            });
+        }
     },
     components: {
         "c-dialog": dialog,
         "c-tab-card": tab_card,
-        "c-color-picker-btn": c_color_picker_btn
+        "c-color-picker-btn": c_color_picker_btn,
+        "c-dragger": c_dragger
     }
 });
 </script>
@@ -224,5 +269,15 @@ export default Vue.extend({
             background-color: #46be8a;
         }
     }
+}
+.editor_layout_panel-dragger {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 100%;
 }
 </style>

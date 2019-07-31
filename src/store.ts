@@ -394,11 +394,42 @@ const delete_layout_dom_dialog_module = {
     }
 };
 
+const editor_layout_dom_dialog_module = {
+    namespaced: true,
+    state() {
+        return {
+            show: false,
+            option: {},
+            type: "",
+            data: {}
+        };
+    },
+    mutations: {
+        clear_data(state) {
+            state.data = {};
+        }
+    },
+    actions: {
+        tab_show({ state, commit }, { turn_on, type, option, data }) {
+            state.show = turn_on;
+            if (turn_on == false) {
+                commit("clear_data");
+                return false;
+            }
+            if (option) {
+                state.option = option;
+            }
+            state.type = type;
+            state.data = data || {};
+        }
+    }
+};
+
 export default new Vuex.Store({
     modules: {
         layout_module,
         add_layout_dom_dialog_module,
         delete_layout_dom_dialog_module,
-        dialogs_manage_module
+        editor_layout_dom_dialog_module
     }
 });

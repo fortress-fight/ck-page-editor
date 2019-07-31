@@ -13,6 +13,15 @@
                 </div>
                 <div
                     class="item"
+                    data-key="editor"
+                    title="编辑"
+                    @click="open_editor_layout_group_dialog($event,item.id)"
+                >
+                    <span class="text">编辑</span>
+                    <i class="fa fa-pencil"></i>
+                </div>
+                <div
+                    class="item"
                     data-key="up"
                     title="上移"
                     @click="move_layout_group(item.id, 'up')"
@@ -76,7 +85,12 @@
                                     <section class="editor ck-content" v-html="col_item.dom"></section>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
-                                    <div class="item" data-key="editor" title="编辑">
+                                    <div
+                                        class="item"
+                                        data-key="editor"
+                                        title="编辑"
+                                        @click="open_editor_layout_group_dialog($event, item.id, layout_item.id)"
+                                    >
                                         <span class="text">编辑</span>
                                         <i class="fa fa-pencil"></i>
                                     </div>
@@ -111,7 +125,7 @@
                                         class="item"
                                         data-key="delete"
                                         title="删除"
-                                        @click="delete_layout(item.id, layout_item.id, 'up')"
+                                        @click="delete_layout(item.id, layout_item.id)"
                                     >
                                         <span class="text">删除</span>
                                         <i class="fa fa-trash"></i>
@@ -192,6 +206,19 @@ export default Vue.extend({
             // let { top, right } = ev.currentTarget.getBoundingClientRect();
 
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
+                turn_on: true,
+                option: {
+                    dialog_pos: ev.currentTarget
+                },
+                type: "delete_layout",
+                data: {
+                    layout_group_id,
+                    layout_id
+                }
+            });
+        },
+        open_editor_layout_group_dialog(ev, layout_group_id, layout_id) {
+            this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 option: {
                     dialog_pos: ev.currentTarget
