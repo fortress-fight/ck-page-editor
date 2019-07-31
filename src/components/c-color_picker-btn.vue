@@ -7,6 +7,7 @@
         >
             <c-color-picker-dialog
                 :is_show="show_panel"
+                :dialog_option="dialog_option"
                 v-model="value"
                 @color_picker_dialog_cancel="color_picker_dialog_cancel"
             ></c-color-picker-dialog>
@@ -16,12 +17,25 @@
 <script lang="ts">
 import Vue from "vue";
 import c_color_picker_dialog from "@/components/c-color_picker-dialog.vue";
+
 export default Vue.extend({
     data() {
-        return {
+        interface data {
+            show_panel: boolean;
+            value: string;
+            dialog_option: Dialogoption;
+        }
+
+        interface Dialogoption {
+            dialog_pos?: string | Element;
+        }
+        let result: data = {
             show_panel: false,
-            value: "#fff"
+            value: "#fff",
+            dialog_option: {}
         };
+
+        return result;
     },
     methods: {
         tab_show_panel(turn_show) {
@@ -35,6 +49,13 @@ export default Vue.extend({
     },
     components: {
         "c-color-picker-dialog": c_color_picker_dialog
+    },
+    mounted() {
+        this.$nextTick().then(() => {
+            this.dialog_option = {
+                dialog_pos: this.$el
+            };
+        });
     }
 });
 </script>

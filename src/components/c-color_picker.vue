@@ -350,7 +350,7 @@ export default Vue.extend({
         position: relative;
 
         box-sizing: border-box;
-        width: 280px;
+        width: 100%;
         padding: 30px;
 
         user-select: none;

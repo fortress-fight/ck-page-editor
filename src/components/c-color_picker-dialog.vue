@@ -2,7 +2,7 @@
     <c-dialog
         ref="dialog"
         :is_show="c_is_show"
-        :options="dialog_option"
+        :options="c_dialog_option"
         @cancel="color_picker_dialog_cancel"
     >
         <template #body>
@@ -28,11 +28,11 @@ export default Vue.extend({
         return {
             default_value: "#fff",
             default_show: true,
-            dialog_option: {
+            default_dialog_option: {
                 dialog_header: false,
                 dialog_footer: false,
                 dialog_style: {
-                    width: "auto",
+                    width: "280px",
                     position: "relative"
                 }
             },
@@ -53,6 +53,12 @@ export default Vue.extend({
                 ? this.default_show
                 : this.is_show;
         },
+        c_dialog_option() {
+            return Object.assign(
+                this.default_dialog_option,
+                this.dialog_option
+            );
+        },
         new_value: {
             get() {
                 return this.value || this.default_value;
@@ -67,6 +73,12 @@ export default Vue.extend({
         }
     },
     props: {
+        dialog_option: {
+            type: Object,
+            default() {
+                return {};
+            }
+        },
         is_show: {
             type: [Boolean, undefined],
             default: undefined
