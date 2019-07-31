@@ -71,7 +71,7 @@
                     <color_picker_input
                         class="u-flex-elastic"
                         v-model="hsl_a"
-                        awaySync
+                        away_change
                         :innerStyle="a_bar_style"
                     ></color_picker_input>
                 </div>

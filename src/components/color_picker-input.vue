@@ -130,24 +130,26 @@ export default Vue.extend({
     mounted() {
         const vm: any = this;
         vm.percent = vm.value / vm.total;
-        new dragger({
-            draggerEl: $(this.$el).find("[data-dragger]")[0] as any,
-            dir: "x",
-            rang: {
-                strict: true,
-                box: $(this.$el).find("[data-dragger-box]")[0] as any,
-                offset: {
-                    x: 0,
-                    y: 0
+        this.$nextTick().then(() => {
+            new dragger({
+                draggerEl: $(this.$el).find("[data-dragger]")[0] as any,
+                dir: "x",
+                rang: {
+                    strict: true,
+                    box: $(this.$el).find("[data-dragger-box]")[0] as any,
+                    offset: {
+                        x: 0,
+                        y: 0
+                    }
+                },
+                draggerStart(ev) {},
+                draggerMove(param) {
+                    vm.change(param.percent.x);
+                },
+                draggerEnd(param) {
+                    vm.changeEnd(param.percent.x);
                 }
-            },
-            draggerStart(ev) {},
-            draggerMove(param) {
-                vm.change(param.percent.x);
-            },
-            draggerEnd(param) {
-                vm.changeEnd(param.percent.x);
-            }
+            });
         });
     }
 });
