@@ -339,7 +339,7 @@ export default Vue.extend({
         color: #999;
         border-radius: 2px;
         background: #f6f6f6;
-        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
+        // box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
     }
     &-color_panel {
         position: relative;
