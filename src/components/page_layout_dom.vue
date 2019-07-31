@@ -38,6 +38,10 @@
                     <span class="text">下移</span>
                     <i class="fa fa-arrow-down"></i>
                 </div>
+                <div class="item" data-key="copy" title="复制" @click="copy_layout_group(item.id)">
+                    <span class="text">复制</span>
+                    <i class="fa fa-copy"></i>
+                </div>
                 <div
                     class="item"
                     data-key="delete"
@@ -146,6 +150,7 @@
 <script lang="ts">
 import Vue from "vue";
 import "@/pages/app/app.scss";
+import { copy } from "@/lib/plugins/unit";
 export default Vue.extend({
     data() {
         return {
@@ -200,6 +205,16 @@ export default Vue.extend({
                 layout_group_id,
                 layout_id,
                 dir
+            });
+        },
+        copy_layout_group(layout_group_id) {
+            let layout_group_data = JSON.stringify(
+                this.$store.getters["layout_module/search_layout_group"](
+                    layout_group_id
+                )
+            );
+            copy(layout_group_data, function() {
+                console.log("copy 成功");
             });
         },
         open_delete_layout_dialog(ev, layout_group_id, layout_id) {

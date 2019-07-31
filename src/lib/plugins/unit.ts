@@ -80,7 +80,7 @@ export function adjustment_pos(
     let oper_dom_pos = get_el_pos(oper_dom);
 
     if (!pos) {
-        pos = { left: oper_dom_pos.left,top: oper_dom_pos.top}
+        pos = { left: oper_dom_pos.left, top: oper_dom_pos.top };
     }
 
     result = pos;
@@ -92,3 +92,59 @@ export function adjustment_pos(
     }
     return result;
 }
+function _copy() {
+    var textArea, copy;
+
+    // 判断是不是ios端
+    function isOS() {
+        return navigator.userAgent.match(/ipad|iphone/i);
+    }
+    //创建文本元素
+    function createTextArea(text) {
+        textArea = document.createElement("textArea");
+        textArea.style.position = "fixed";
+        textArea.style.bottom = "0";
+        textArea.style.left = "0";
+        textArea.style.zIndex = "-1";
+        textArea.value = text;
+        document.body.appendChild(textArea);
+    }
+    //选择内容
+    function selectText() {
+        var range, selection;
+
+        if (isOS()) {
+            range = document.createRange();
+            range.selectNodeContents(textArea);
+            selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textArea.setSelectionRange(0, 999999);
+        } else {
+            textArea.select();
+        }
+    }
+
+    //复制到剪贴板
+    function copyToClipboard(suc_callback?, fall_callback?) {
+        try {
+            if (document.execCommand("Copy")) {
+                suc_callback && suc_callback();
+            } else {
+                fall_callback && fall_callback();
+            }
+        } catch (err) {
+            fall_callback && fall_callback();
+        }
+        document.body.removeChild(textArea);
+    }
+
+    copy = function(text, suc_callback?, fall_callback?) {
+        createTextArea(text);
+        selectText();
+        copyToClipboard(suc_callback, fall_callback);
+    };
+
+    return copy;
+}
+export const copy = _copy();
