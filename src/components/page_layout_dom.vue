@@ -214,8 +214,13 @@ export default Vue.extend({
                     layout_group_id
                 ).data
             );
-            copy(encrypt(layout_group_data), function() {
-                console.log("copy 成功");
+            copy(encrypt(layout_group_data), () => {
+                this.$message({
+                    message: "代码复制成功",
+                    offset: -1,
+                    duration: 1000,
+                    type: "success"
+                });
             });
         },
         open_delete_layout_dialog(ev, layout_group_id, layout_id) {

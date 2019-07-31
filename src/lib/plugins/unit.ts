@@ -1,6 +1,6 @@
 interface El_pos extends ClientRect {
-    client_width?: Number;
-    client_height?: Number;
+    client_width?: number;
+    client_height?: number;
 }
 
 function _get_el_pos(el: HTMLElement): El_pos;
@@ -84,11 +84,11 @@ export function adjustment_pos(
     }
 
     result = pos;
-    if (pos.left + oper_dom_pos.width > window.innerWidth) {
+    if (pos.left + oper_dom_pos.client_width > window.innerWidth) {
         result.left = window.innerWidth - oper_dom_pos.width;
     }
-    if (pos.top + oper_dom_pos.height > window.innerHeight) {
-        result.top = window.innerHeight - oper_dom_pos.height;
+    if (pos.top + oper_dom_pos.client_height > window.innerHeight) {
+        result.top = 0;
     }
     return result;
 }

@@ -15,26 +15,32 @@
 .hide {
     display: none;
 }
+
 .flex {
     display: flex;
 }
+
 .flex_yc {
     display: flex;
 
     align-items: center;
 }
+
 .flex_center {
     display: flex;
 
     align-items: center;
     justify-content: center;
 }
+
 .flex_fix {
     flex: 0 0 auto;
 }
+
 .flex_auto {
     flex: 1 1 auto;
 }
+
 @for $num from 1 through 20 {
     .layout_grid-colspac-#{$num} {
         grid-column-gap: #{$num}px;
@@ -55,4 +61,47 @@
 
 :focus {
     outline: none;
+}
+
+// reset Element-tool-Message
+
+body .el-message--success {
+
+    background-color: #46be8a;
+    border-color: #46be8a;
+    color: #eee;
+}
+
+body .el-message .el-icon-warning,
+body .el-message--warning .el-message__content,
+body .el-message__closeBtn,
+body .el-message .el-icon-success,
+body .el-message--success .el-message__content {
+    color: #fff
+}
+
+body .el-message__closeBtn {
+    right: 10px;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+body .el-message {
+    min-width: auto;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px 10px;
+    padding-right: 28px;
+}
+
+
+body .el-message__icon {
+    margin-right: 16px;
+}
+
+body .el-message--warning {
+    background-color: #eb0d0d;
+    border-color: #eb0d0d;
 }

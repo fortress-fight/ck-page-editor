@@ -44,6 +44,7 @@ interface JQuery {
 export default Vue.extend({
     data() {
         return {
+            window_resize: () => {},
             tab_active_index: 0
         };
     },
@@ -75,6 +76,7 @@ export default Vue.extend({
         },
         reset_ui(immediately?) {
             let active_nav = this.$refs.navs[this.tab_active_index];
+            if (!active_nav) return false;
             let dis_pos = get_el_dis_pos(active_nav, this.$refs
                 .navs_container as HTMLElement);
             $(this.$refs.navs_bar).css({
@@ -109,12 +111,14 @@ export default Vue.extend({
         }
     },
     mounted() {
-        this.$nextTick().then(() => {
+        this.window_resize = () => {
             this.reset_ui(true);
-        });
-        $(window).on("resize", () => {
-            this.reset_ui(true);
-        });
+        };
+        this.$nextTick().then(this.window_resize);
+        $(window).on("resize", this.window_resize);
+    },
+    destroyed() {
+        $(window).off("resize", this.window_resize);
     }
 });
 </script>

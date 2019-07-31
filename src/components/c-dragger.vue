@@ -37,7 +37,6 @@ export default Vue.extend({
         const unWatch = this.$watch(
             "options.dragger_dom",
             (new_value, old_value) => {
-                console.log("new_value:", new_value);
                 if (new_value) {
                     unWatch();
                     this.init_dragger();

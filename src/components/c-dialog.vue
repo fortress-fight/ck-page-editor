@@ -68,6 +68,7 @@ export default Vue.extend({
     data() {
         return {
             id: stringRandom(16, { numbers: false }),
+            window_resize: () => {},
             temporary_hide: false,
             default_show: true,
             default_options: {
@@ -143,51 +144,70 @@ export default Vue.extend({
         },
         pop_in_enter(el, done) {
             let dialog_el = this.$refs.dialog;
-            $(el)
-                .velocity("stop")
-                .velocity(
-                    {
-                        opacity: 1,
-                        tween: [1, 0.95]
-                    },
-                    {
-                        begin: elements => {
-                            let dialog_pos = this.calculate_dialog_pos(
-                                dialog_el,
-                                this.c_options.dialog_pos,
-                                this.c_options.dialog_pos_detail
-                            );
-                            if (dialog_pos) {
-                                $(dialog_el).css(
-                                    adjustment_pos(dialog_el, dialog_pos)
+            Vue.nextTick().then(() => {
+                $(el)
+                    .velocity("stop")
+                    .velocity(
+                        {
+                            opacity: 1,
+                            tween: [1, 0.95]
+                        },
+                        {
+                            begin: elements => {
+                                let dialog_pos = this.calculate_dialog_pos(
+                                    dialog_el,
+                                    this.c_options.dialog_pos,
+                                    this.c_options.dialog_pos_detail
                                 );
-                            }
+                                if (dialog_pos) {
+                                    $(dialog_el).css(
+                                        adjustment_pos(
+                                            dialog_el as HTMLElement,
+                                            dialog_pos
+                                        )
+                                    );
+                                }
 
-                            this.set_dialog_arrow_pos();
-                            $(dialog_el).css({
-                                transform: "scale(0.95)"
-                            });
-                            this.$emit("dialog_before_enter");
-                        },
-                        progress: (
-                            elements,
-                            complete,
-                            remaining,
-                            start,
-                            tweenValue
-                        ) => {
-                            $(elements)
-                                .find(".dialog")
-                                .css({
-                                    transform: "scale(" + tweenValue + ")"
+                                (this as any).set_dialog_arrow_pos();
+                                $(dialog_el).css({
+                                    transform: "scale(0.95)"
                                 });
-                        },
-                        complete: () => {
-                            this.$emit("dialog_enter");
-                        },
-                        duration: 150
-                    }
-                );
+                                this.$emit("dialog_before_enter");
+                            },
+                            progress: (
+                                elements,
+                                complete,
+                                remaining,
+                                start,
+                                tweenValue
+                            ) => {
+                                let dialog_pos = this.calculate_dialog_pos(
+                                    dialog_el,
+                                    this.c_options.dialog_pos,
+                                    this.c_options.dialog_pos_detail
+                                );
+                                if (dialog_pos) {
+                                    $(dialog_el).css(
+                                        adjustment_pos(
+                                            dialog_el as HTMLElement,
+                                            dialog_pos
+                                        )
+                                    );
+                                }
+
+                                $(elements)
+                                    .find(".dialog")
+                                    .css({
+                                        transform: "scale(" + tweenValue + ")"
+                                    });
+                            },
+                            complete: elements => {
+                                this.$emit("dialog_enter");
+                            },
+                            duration: 150
+                        }
+                    );
+            });
         },
         pop_leave(el, done) {
             $(el)
@@ -314,12 +334,14 @@ export default Vue.extend({
     },
     destroyed() {
         dialog_manager.remove_dialog(this.id);
+        $(window).off("resize", this.window_resize);
     },
     mounted() {
         let time;
-        $(window).on("resize", () => {
+        this.window_resize = () => {
             clearTimeout(time);
             time = setTimeout(() => {
+                if (!this.$refs.dialog) return false;
                 let dialog_pos = this.calculate_dialog_pos(
                     this.$refs.dialog,
                     this.c_options.dialog_pos,
@@ -333,7 +355,8 @@ export default Vue.extend({
 
                 this.set_dialog_arrow_pos();
             }, 500);
-        });
+        };
+        $(window).on("resize", this.window_resize);
         $(this.$el).appendTo("body");
     }
 });
@@ -433,7 +456,7 @@ export default Vue.extend({
     &_container {
         overflow: hidden;
 
-        border-radius: 6px;
+        border-radius: 4px;
         background: #fff;
         box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);
     }
@@ -448,7 +471,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-// background: #f5f5f5;
+        // background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -512,7 +535,7 @@ export default Vue.extend({
 
             width: 100%;
 
-// margin-right: -10px;
+            // margin-right: -10px;
 
             align-items: center;
 
@@ -548,7 +571,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-// margin-right: 10px;
+            // margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;

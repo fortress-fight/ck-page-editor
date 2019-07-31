@@ -146,7 +146,7 @@ class draggerBase {
         moveHandle: HTMLElement,
         param: strictDraggerConfig
     ) {
-        let defaultConfig:any = {
+        let defaultConfig: any = {
             // 禁止拖拽的类名
             disableClass: "dragger--disable",
             // 可以启动拖拽的元素
@@ -225,9 +225,9 @@ class draggerBase {
         } else {
             box = Dragger.config.rang.box;
         }
-        $(window).on("resize.drag", () => {
-            this.amendPos();
-        });
+        // $(window).on("resize.drag", () => {
+        //     this.amendPos();
+        // });
     }
     draggerStart() {
         const Dragger = this;
@@ -483,12 +483,18 @@ class draggerBase {
         const Dragger = this;
         const DraggerConfig = this.config;
         let info = getElDisPos(Dragger.moveElBox, DraggerConfig.rang.innerBox);
-        let x = typeof targetPos.x === 'string' ? parseFloat(targetPos.x) : targetPos.x;
-        let y = typeof targetPos.y === 'string' ? parseFloat(targetPos.y) : targetPos.y;
+        let x =
+            typeof targetPos.x === "string"
+                ? parseFloat(targetPos.x)
+                : targetPos.x;
+        let y =
+            typeof targetPos.y === "string"
+                ? parseFloat(targetPos.y)
+                : targetPos.y;
 
         let pos = {
-            x: Math.abs(info.left) + info.relEl.width * x / 100,
-            y: Math.abs(info.top) + info.relEl.height * y / 100
+            x: Math.abs(info.left) + (info.relEl.width * x) / 100,
+            y: Math.abs(info.top) + (info.relEl.height * y) / 100
         };
 
         this.setPos(pos);

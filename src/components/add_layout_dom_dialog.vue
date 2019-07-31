@@ -79,6 +79,7 @@
 import Vue from "vue";
 import dialog from "@/components/c-dialog.vue";
 import tab_card from "@/components/c-tab_card.vue";
+import { decrypt } from "@/lib/plugins/crypto";
 
 export default Vue.extend({
     data() {
@@ -150,9 +151,12 @@ export default Vue.extend({
             ],
             page_editor_dialog: {
                 box_size: "big"
-            },
-
-            tab_cards: [
+            }
+        };
+    },
+    computed: {
+        tab_cards() {
+            let result = [
                 {
                     nav: "自定义布局",
                     card_slot_name: "custome_layout"
@@ -160,15 +164,16 @@ export default Vue.extend({
                 {
                     nav: "功能布局",
                     card_slot_name: "fun_layout"
-                },
-                {
+                }
+            ];
+            if (this.whitch_dialog == "add_layout_group") {
+                result.push({
                     nav: "固定布局",
                     card_slot_name: "fix_layout"
-                }
-            ]
-        };
-    },
-    computed: {
+                });
+            }
+            return result;
+        },
         dialog_show() {
             return (this as any).$store.state.add_layout_dom_dialog_module.show;
         },
@@ -182,22 +187,41 @@ export default Vue.extend({
     },
     methods: {
         confirm_layout() {
+            let result: any = this.value;
+            if (this.type === "code") {
+                try {
+                    result = JSON.parse(decrypt(result));
+                    console.log(result);
+                    if (!result && !result.id) {
+                        throw new Error("格式错误");
+                    }
+                } catch (error) {
+                    this.$message({
+                        message: "请输入正确格式",
+                        offset: -1,
+                        duration: 1000,
+                        type: "warning"
+                    });
+                    return false;
+                }
+            }
             let dialog_prop_data = this.$store.state
                 .add_layout_dom_dialog_module.data;
             if (this.whitch_dialog == "add_layout_group") {
                 this.$store.dispatch("layout_module/add_layout_group", {
                     type: this.type,
-                    value: this.value,
+                    value: result,
                     layout_group_id: dialog_prop_data.layout_group_id
                 });
             } else if (this.whitch_dialog == "add_layout") {
                 this.$store.dispatch("layout_module/add_layout", {
                     type: this.type,
-                    value: this.value,
+                    value: result,
                     layout_group_id: dialog_prop_data.layout_group_id,
                     layout_id: dialog_prop_data.layout_id
                 });
             }
+            this.code = "";
         },
         dialog_before_enter() {
             (this.$refs.tab_card as any).reset_ui(true);
