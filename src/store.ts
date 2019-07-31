@@ -6,33 +6,43 @@ Vue.use(Vuex);
 
 let unit_layout_module = {
     get_layout_group_data(type, value) {
-        return {
-            id: stringRandom(16, { numbers: false }),
-            dom: null,
-            attrs: {
-                header: {
-                    open: true,
-                    container: "<p>头部</p>"
+        let result;
+        if (type == "code") {
+            result = JSON.parse(value);
+            result.id = stringRandom(16, { numbers: false });
+            result.body.forEach(layout_data => {
+                layout_data.id = stringRandom(16, { numbers: false });
+            });
+        } else {
+            result = {
+                id: stringRandom(16, { numbers: false }),
+                dom: null,
+                attrs: {
+                    header: {
+                        open: true,
+                        container: "<p>头部</p>"
+                    },
+                    footer: {
+                        open: true,
+                        container: "<p>底部</p>"
+                    },
+                    width: "",
+                    space: "",
+                    window_width: false,
+                    limit_width: false,
+                    bg: {
+                        pc: "",
+                        mo: "",
+                        cover: false,
+                        repeat: false,
+                        parallax: false,
+                        align_center: false
+                    }
                 },
-                footer: {
-                    open: true,
-                    container: "<p>底部</p>"
-                },
-                width: "",
-                space: "",
-                window_width: false,
-                limit_width: false,
-                bg: {
-                    pc: "",
-                    mo: "",
-                    cover: false,
-                    repeat: false,
-                    parallax: false,
-                    align_center: false
-                }
-            },
-            body: [this.get_layout_data(type, value)]
-        };
+                body: [this.get_layout_data(type, value)]
+            };
+        }
+        return result;
     },
     get_layout_data(type, value) {
         let result = {
@@ -85,7 +95,6 @@ let unit_layout_module = {
                     break;
             }
         }
-
         return result;
     }
 };

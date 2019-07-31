@@ -52,3 +52,7 @@
         grid-column-start: span $num;
     }
 }
+
+:focus {
+    outline: none;
+}

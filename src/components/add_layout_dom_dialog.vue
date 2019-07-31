@@ -57,6 +57,20 @@
                         </div>
                     </div>
                 </template>
+                <template #fix_layout>
+                    <div class="page_editor-layout" data-pop="body">
+                        <div class="page_editor-layout_options layout_grid layout_grid-col-1">
+                            <c-input
+                                type="textarea"
+                                :rows="10"
+                                placeholder="请输入复制的板块内容"
+                                v-model="code"
+                                resize="none"
+                                @change="type='code';value = code"
+                            ></c-input>
+                        </div>
+                    </div>
+                </template>
             </c-tab-card>
         </template>
     </c-dialog>
@@ -71,6 +85,7 @@ export default Vue.extend({
         return {
             type: "custome",
             value: "100",
+            code: "",
             custom_options: [
                 {
                     grid_col: 1,
@@ -147,8 +162,8 @@ export default Vue.extend({
                     card_slot_name: "fun_layout"
                 },
                 {
-                    nav: "tab3",
-                    card_slot_name: "tab3"
+                    nav: "固定布局",
+                    card_slot_name: "fix_layout"
                 }
             ]
         };

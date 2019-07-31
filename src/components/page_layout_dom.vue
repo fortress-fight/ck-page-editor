@@ -211,7 +211,7 @@ export default Vue.extend({
             let layout_group_data = JSON.stringify(
                 this.$store.getters["layout_module/search_layout_group"](
                     layout_group_id
-                )
+                ).data
             );
             copy(layout_group_data, function() {
                 console.log("copy 成功");

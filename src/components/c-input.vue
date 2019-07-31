@@ -1,6 +1,6 @@
 <template>
     <div class="c_input">
-        <el-input v-bind="$attrs"></el-input>
+        <el-input v-bind="$attrs" v-on="$listeners"></el-input>
     </div>
 </template>
 <script lang="ts">
@@ -14,6 +14,8 @@ export default Vue.extend({
 <style lang="scss">
 .c_input {
     width: 100%;
+
+    color: #666;
 }
 .el-input {
     font-size: inherit;
@@ -43,5 +45,14 @@ export default Vue.extend({
         outline: 0;
         background-color: #fff;
     }
+}
+.el-textarea__inner {
+    color: #666;
+    border-color: #dcdfe6;
+    border-radius: 0;
+}
+.el-textarea__inner:focus {
+    border-color: #dcdfe6;
+    outline: none;
 }
 </style>    
