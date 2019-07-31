@@ -151,6 +151,7 @@
 import Vue from "vue";
 import "@/pages/app/app.scss";
 import { copy } from "@/lib/plugins/unit";
+import { encrypt } from "@/lib/plugins/crypto";
 export default Vue.extend({
     data() {
         return {
@@ -213,7 +214,7 @@ export default Vue.extend({
                     layout_group_id
                 ).data
             );
-            copy(layout_group_data, function() {
+            copy(encrypt(layout_group_data), function() {
                 console.log("copy 成功");
             });
         },

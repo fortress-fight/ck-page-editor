@@ -1,4 +1,5 @@
 import stringRandom from "string-random";
+import { decrypt } from "@/lib/plugins/crypto";
 import Vue from "vue";
 import Vuex from "vuex";
 
@@ -8,7 +9,7 @@ let unit_layout_module = {
     get_layout_group_data(type, value) {
         let result;
         if (type == "code") {
-            result = JSON.parse(value);
+            result = JSON.parse(decrypt(value));
             result.id = stringRandom(16, { numbers: false });
             result.body.forEach(layout_data => {
                 layout_data.id = stringRandom(16, { numbers: false });

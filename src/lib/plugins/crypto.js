@@ -1,11 +1,11 @@
-var CryptoJS = require("crypto-js");
+import utf_8 from "crypto-js/enc-utf8";
+import AES from "crypto-js/aes";
+const key = "uemo_page_editor!^_^";
 
-const key = "page_editor@^_^";
+export function encrypt(message) {
+    return AES.encrypt(message, key).toString();
+}
 
-var ciphertext = CryptoJS.AES.encrypt("my message", key);
-console.log("ciphertext:", ciphertext);
-
-var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), key);
-var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-
-console.log(plaintext);
+export function decrypt(code) {
+    return AES.decrypt(code, key).toString(utf_8);
+}
