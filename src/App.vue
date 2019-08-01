@@ -9,6 +9,7 @@
         <add-layout-group-dialog></add-layout-group-dialog>
         <delete-layout-group-dialog></delete-layout-group-dialog>
         <editor-layout-group-panel></editor-layout-group-panel>
+        <editor-layout-panel></editor-layout-panel>
     </div>
 </template>
 <script lang="ts">
@@ -17,6 +18,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import add_layout_dom_dialog from "@/components/add_layout_dom_dialog.vue";
 import delete_layout_dom_dialog from "@/components/delete_layout_dom_dialog.vue";
 import editor_layout_group_panel from "@/components/editor_layout_group_panel.vue";
+import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 
 export default Vue.extend({
@@ -27,7 +29,8 @@ export default Vue.extend({
         "add-layout-group-dialog": add_layout_dom_dialog,
         "delete-layout-group-dialog": delete_layout_dom_dialog,
         "editor-layout-group-panel": editor_layout_group_panel,
-        "page-layout-dom": page_layout_dom
+        "page-layout-dom": page_layout_dom,
+        "editor-layout-panel": editor_layout_panel
     },
     methods: {
         add_layout() {

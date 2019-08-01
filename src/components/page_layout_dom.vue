@@ -108,7 +108,7 @@
                                         class="item"
                                         data-key="editor"
                                         title="编辑"
-                                        @click="open_editor_layout_group_dialog($event, item.id, layout_item.id)"
+                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id)"
                                     >
                                         <span class="text">编辑</span>
                                         <i class="fa fa-pencil"></i>
@@ -260,12 +260,23 @@ export default Vue.extend({
             });
         },
         open_editor_layout_group_dialog(ev, layout_group_id, layout_id) {
-            this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
+            this.$store.dispatch("editor_layout_group_dialog_module/tab_show", {
                 turn_on: true,
                 option: {
                     dialog_pos: $(ev.currentTarget).closest(".layout_group")[0]
                 },
-                type: "delete_layout",
+                data: {
+                    layout_group_id,
+                    layout_id
+                }
+            });
+        },
+        open_editor_layout_dialog(ev, layout_group_id, layout_id) {
+            this.$store.dispatch("editor_layout_dialog_module/tab_show", {
+                turn_on: true,
+                option: {
+                    dialog_pos: $(ev.currentTarget).closest(".layout")[0]
+                },
                 data: {
                     layout_group_id,
                     layout_id

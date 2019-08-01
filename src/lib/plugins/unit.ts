@@ -95,6 +95,7 @@ export function adjustment_pos(
             oper_dom_pos.client_width -
             option.distance;
     }
+
     if (
         pos.top + oper_dom_pos.client_height + option.distance >
         document.body.clientHeight

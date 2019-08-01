@@ -1,8 +1,8 @@
 <template>
     <c-dialog
-        id="editor_layout_group_panel"
+        id="editor_layout_panel"
         ref="dialog"
-        class="editor_layout_group_panel"
+        class="editor_layout_panel"
         :is_show="layout_editor_dialog_show"
         :options="c_layout_editor_dialog_option"
         @confirm="layout_editor_confirm"
@@ -10,7 +10,7 @@
         @header_close_event="layout_editor_confirm"
     >
         <template #header>
-            <div class="editor_layout_group_panel-dragger" style="text-align: left;">
+            <div class="editor_layout_panel-dragger" style="text-align: left;">
                 <c-dragger :options="dragger_option">
                     <template #dragger_btn>
                         <i class="fa ic fa-navicon"></i>
@@ -27,43 +27,61 @@
                             <div
                                 class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                             >
-                                <c-switch
-                                    active-text="显示头部"
-                                    v-model="layout_group_data.attrs.header.open"
-                                    class="space_normal"
-                                ></c-switch>
-
-                                <c-switch
-                                    active-text="显示底部"
-                                    class="space_normal"
-                                    v-model="layout_group_data.attrs.footer.open"
-                                ></c-switch>
+                                <c-switch active-text="横向居中" class="space_normal"></c-switch>
+                                <c-switch active-text="纵向居中" class="space_normal"></c-switch>
+                                <c-switch active-text="屏幕宽度" class="space_normal"></c-switch>
+                                <c-switch active-text="内容宽度" class="space_normal"></c-switch>
                             </div>
                         </div>
                         <div class="attr_set_group">
-                            <div
-                                class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
-                            >
-                                <c-switch
-                                    active-text="屏幕宽度"
-                                    class="space_normal"
-                                    v-model="layout_group_data.attrs.window_width"
-                                ></c-switch>
-                                <c-switch
-                                    active-text="内容宽度"
-                                    class="space_normal"
-                                    v-inout.clipX.reverse="layout_group_data.attrs.window_width"
-                                    v-model="layout_group_data.attrs.limit_width"
-                                ></c-switch>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">布局宽度</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入布局宽度"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
-                            >
-                                <c-switch
-                                    active-text="屏幕高度"
-                                    class="space_normal"
-                                    v-model="layout_group_data.attrs.window_height"
-                                ></c-switch>
+
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">布局间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入布局间距"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">左右间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入左右间距"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">上下间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入上下间距"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,34 +89,14 @@
                 <template #layout_attr>
                     <div class="attr_set_group">
                         <div class="attr_set_item flex_center">
-                            <div class="item_header flex_fix">整体背景</div>
+                            <div class="item_header flex_fix">分栏背景</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-6">
-                                <c-color-picker-btn
-                                    v-model="layout_group_data.attrs.background_color"
-                                ></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
                             </div>
-                        </div>
-                    </div>
-                    <div class="attr_set_group">
-                        <div class="attr_set_item">
-                            <c-tab-card :tab_cards="background_upload_cards">
-                                <template #background_upload_pc>
-                                    <div class="layout_uploder_wrapper">
-                                        <c-upload
-                                            tip="上传背景图"
-                                            v-model="layout_group_data.attrs.bg.pc"
-                                        ></c-upload>
-                                    </div>
-                                </template>
-                                <template #background_upload_mo>
-                                    <div class="layout_uploder_wrapper">
-                                        <c-upload
-                                            tip="上传背景图"
-                                            v-model="layout_group_data.attrs.bg.mo"
-                                        ></c-upload>
-                                    </div>
-                                </template>
-                            </c-tab-card>
                         </div>
                     </div>
                 </template>
@@ -162,20 +160,10 @@ export default Vue.extend({
                 {
                     nav: "属性",
                     card_slot_name: "layout_attr"
-                }
-                // {
-                //     nav: "动效",
-                //     card_slot_name: "layout_animate"
-                // }
-            ],
-            background_upload_cards: [
-                {
-                    nav: "电脑",
-                    card_slot_name: "background_upload_pc"
                 },
                 {
-                    nav: "手机",
-                    card_slot_name: "background_upload_mo"
+                    nav: "动效",
+                    card_slot_name: "layout_animate"
                 }
             ],
             dragger_option: {
@@ -203,7 +191,7 @@ export default Vue.extend({
     computed: {
         layout_group_data: {
             get() {
-                return this.$store.state.editor_layout_group_dialog_module
+                return this.$store.state.editor_layout_dialog_module
                     .editor_target_layout_group_data;
             },
             set(value) {
@@ -211,7 +199,7 @@ export default Vue.extend({
             }
         },
         layout_editor_dialog_show() {
-            return this.$store.state.editor_layout_group_dialog_module.show;
+            return this.$store.state.editor_layout_dialog_module.show;
         },
         c_layout_editor_dialog_option() {
             return Object.assign(
@@ -219,7 +207,7 @@ export default Vue.extend({
                     dialog_style: { width: "360px", "font-size": "14px;" },
                     box_size: "big"
                 },
-                this.$store.state.editor_layout_group_dialog_module.option
+                this.$store.state.editor_layout_dialog_module.option
             );
         }
     },
@@ -228,7 +216,7 @@ export default Vue.extend({
             this.cancel_dialog.show = true;
         },
         layout_editor_confirm() {
-            this.$store.dispatch("editor_layout_group_dialog_module/tab_show", {
+            this.$store.dispatch("editor_layout_dialog_module/tab_show", {
                 turn_on: false
             });
         },
@@ -236,13 +224,10 @@ export default Vue.extend({
             this.cancel_dialog.show = false;
             this.$el.style.visibility = "hidden";
             this.$nextTick(() => {
-                this.$store.dispatch(
-                    "editor_layout_group_dialog_module/tab_show",
-                    {
-                        turn_on: false,
-                        reset: true
-                    }
-                );
+                this.$store.dispatch("editor_layout_dialog_module/tab_show", {
+                    turn_on: false,
+                    reset: true
+                });
             });
         },
         cancel_change_cancel() {
@@ -319,7 +304,7 @@ export default Vue.extend({
         }
     }
 }
-.editor_layout_group_panel-dragger {
+.editor_layout_panel-dragger {
     position: absolute;
     top: 0;
     left: 0;

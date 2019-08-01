@@ -392,7 +392,7 @@ const delete_layout_dom_dialog_module = {
     }
 };
 
-const editor_layout_dom_dialog_module = {
+const editor_layout_group_dialog_module = {
     namespaced: true,
     state() {
         return {
@@ -400,7 +400,7 @@ const editor_layout_dom_dialog_module = {
             option: {
                 mask: false
             },
-            type: "",
+
             data: {},
             editor_target_layout_group_data: {},
             backup_group_data: {}
@@ -411,6 +411,83 @@ const editor_layout_dom_dialog_module = {
             state.data = {};
         }
     },
+    actions: {
+        reset_data({ state, dispatch }) {
+            dispatch(
+                "layout_module/set_layout_group_data",
+                {
+                    layout_group_id: state.editor_target_layout_group_data.id,
+                    data: JSON.parse(state.backup_group_data)
+                },
+                { root: true }
+            );
+        },
+        tab_show(
+            { state, commit, dispatch, rootGetters },
+            {
+                turn_on,
+                reset,
+
+                option,
+                data = {
+                    layout_group_id: NaN,
+                    layout_id: NaN
+                }
+            }
+        ) {
+            if (turn_on) {
+                if (option) {
+                    state.option = Object.assign(option, state.option);
+                }
+                dispatch("layout_module/set_oper_layout_groups_id", data, {
+                    root: true
+                });
+
+                state.editor_target_layout_group_data = rootGetters[
+                    "layout_module/search_layout_group"
+                ](data.layout_group_id).data;
+
+                state.backup_group_data = JSON.stringify(
+                    state.editor_target_layout_group_data
+                );
+
+                state.data = data || {};
+            } else {
+                if (reset) {
+                    dispatch("reset_data");
+                }
+
+                dispatch("layout_module/set_oper_layout_groups_id", data, {
+                    root: true
+                });
+
+                commit("clear_data");
+            }
+            state.show = turn_on;
+        }
+    }
+};
+
+const editor_layout_dialog_module = {
+    namespaced: true,
+    state() {
+        return {
+            show: false,
+            option: {
+                mask: false
+            },
+            data: {},
+            editor_target_layout_group_data: {},
+            backup_group_data: {}
+        };
+    },
+
+    mutations: {
+        clear_data(state) {
+            state.data = {};
+        }
+    },
+
     actions: {
         reset_data({ state, dispatch }) {
             dispatch(
@@ -439,17 +516,17 @@ const editor_layout_dom_dialog_module = {
                 if (option) {
                     state.option = Object.assign(option, state.option);
                 }
-                dispatch("layout_module/set_oper_layout_groups_id", data, {
-                    root: true
-                });
+                // dispatch("layout_module/set_oper_layout_groups_id", data, {
+                //     root: true
+                // });
 
-                state.editor_target_layout_group_data = rootGetters[
-                    "layout_module/search_layout_group"
-                ](data.layout_group_id).data;
+                // state.editor_target_layout_group_data = rootGetters[
+                //     "layout_module/search_layout_group"
+                // ](data.layout_group_id).data;
 
-                state.backup_group_data = JSON.stringify(
-                    state.editor_target_layout_group_data
-                );
+                // state.backup_group_data = JSON.stringify(
+                //     state.editor_target_layout_group_data
+                // );
                 state.type = type;
                 state.data = data || {};
             } else {
@@ -457,9 +534,9 @@ const editor_layout_dom_dialog_module = {
                     dispatch("reset_data");
                 }
 
-                dispatch("layout_module/set_oper_layout_groups_id", data, {
-                    root: true
-                });
+                // dispatch("layout_module/set_oper_layout_groups_id", data, {
+                //     root: true
+                // });
 
                 commit("clear_data");
             }
@@ -473,6 +550,7 @@ export default new Vuex.Store({
         layout_module,
         add_layout_dom_dialog_module,
         delete_layout_dom_dialog_module,
-        editor_layout_dom_dialog_module
+        editor_layout_group_dialog_module,
+        editor_layout_dialog_module
     }
 });
