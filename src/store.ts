@@ -435,7 +435,6 @@ const editor_layout_dom_dialog_module = {
                 }
             }
         ) {
-            state.show = turn_on;
             if (turn_on) {
                 if (option) {
                     state.option = Object.assign(option, state.option);
@@ -451,15 +450,20 @@ const editor_layout_dom_dialog_module = {
                 state.backup_group_data = JSON.stringify(
                     state.editor_target_layout_group_data
                 );
-
                 state.type = type;
                 state.data = data || {};
             } else {
                 if (reset) {
                     dispatch("reset_data");
                 }
+
+                dispatch("layout_module/set_oper_layout_groups_id", data, {
+                    root: true
+                });
+
                 commit("clear_data");
             }
+            state.show = turn_on;
         }
     }
 };

@@ -1,5 +1,9 @@
 <template>
-    <div id="page_body_editor-wrapper" class="page_body_editor-wrapper">
+    <div
+        id="page_body_editor-wrapper"
+        class="page_body_editor-wrapper"
+        :class="{is_editing: !!oper_layout_groups_id}"
+    >
         <div
             :id="item.id"
             class="layout_group"
@@ -279,4 +283,12 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
+#page_body_editor-wrapper.is_editing {
+    .layout-editor_bar,
+    .layout_group-editor_bar {
+        .item {
+            display: none;
+        }
+    }
+}
 </style>

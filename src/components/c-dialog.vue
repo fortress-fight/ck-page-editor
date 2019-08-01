@@ -30,7 +30,7 @@
                         <div
                             v-if="c_options.dialog_close_btn"
                             class="dialog_close_btn"
-                            @click="close(false)"
+                            @click="header_close_click(false)"
                         >
                             <i class="fa fa-close"></i>
                         </div>
@@ -303,6 +303,13 @@ export default Vue.extend({
                     default:
                         break;
                 }
+            }
+        },
+        header_close_click(is_confirm) {
+            if (this.$listeners.header_close_event) {
+                this.$emit("header_close_event");
+            } else {
+                this.close(is_confirm);
             }
         },
         close(is_confirm) {

@@ -1,15 +1,16 @@
 <template>
     <c-dialog
-        id="editor_layout_panel"
+        id="editor_layout_group_panel"
         ref="dialog"
-        class="editor_layout_panel"
+        class="editor_layout_group_panel"
         :is_show="layout_editor_dialog_show"
         :options="c_layout_editor_dialog_option"
         @confirm="layout_editor_confirm"
         @cancel="layout_editor_cancel"
+        @header_close_event="layout_editor_confirm"
     >
         <template #header>
-            <div class="editor_layout_panel-dragger" style="text-align: left;">
+            <div class="editor_layout_group_panel-dragger" style="text-align: left;">
                 <c-dragger :options="dragger_option">
                     <template #dragger_btn>
                         <i class="fa ic fa-navicon"></i>
@@ -125,13 +126,29 @@
                     </div>
                 </template>
             </c-tab-card>
+
+            <c-dialog
+                :options="cancel_dialog.option"
+                @confirm="cancel_change_confirm"
+                @cancel="cancel_change_cancel"
+                :is_show="cancel_dialog.show"
+            >
+                <template #body>
+                    <div
+                        style="font-size: 18px; line-height: 25px; overflow: hidden; max-width: 80%; height: auto; margin: 0 auto; padding-top: 30px; text-align: center; white-space: nowrap; text-overflow: ellipsis; color: #6b6b6b;"
+                    >取消编辑</div>
+                    <div
+                        style="font-size: 14px; line-height: 21px; margin-top: 10px; padding-bottom: 20px; text-align: center; color: #a5a5a5;"
+                    >点击确认将会取消此次编辑（包含文字修改）</div>
+                </template>
+            </c-dialog>
         </template>
     </c-dialog>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import dialog from "@/components/c-dialog.vue";
 import tab_card from "@/components/c-tab_card.vue";
+import dialog from "@/components/c-dialog.vue";
 import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
 import c_dragger from "@/components/c-dragger.vue";
 export default Vue.extend({
@@ -170,7 +187,17 @@ export default Vue.extend({
                 },
                 dragger_dom: null
             },
-            local_data: this.layout_group_data
+            cancel_dialog: {
+                show: false,
+                option: {
+                    type: "warn",
+                    dialog_header: false,
+                    dialog_pos: "center",
+                    only_show: true,
+                    dialog_style: { width: "350px", "font-size": "16px;" },
+                    box_size: "big"
+                }
+            }
         };
     },
     computed: {
@@ -198,15 +225,28 @@ export default Vue.extend({
     },
     methods: {
         layout_editor_cancel() {
-            this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
-                turn_on: false,
-                reset: true
-            });
+            this.cancel_dialog.show = true;
         },
         layout_editor_confirm() {
             this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
                 turn_on: false
             });
+        },
+        cancel_change_confirm() {
+            this.cancel_dialog.show = false;
+            this.$el.style.visibility = "hidden";
+            this.$nextTick(() => {
+                this.$store.dispatch(
+                    "editor_layout_dom_dialog_module/tab_show",
+                    {
+                        turn_on: false,
+                        reset: true
+                    }
+                );
+            });
+        },
+        cancel_change_cancel() {
+            this.cancel_dialog.show = false;
         }
     },
     watch: {
@@ -279,7 +319,7 @@ export default Vue.extend({
         }
     }
 }
-.editor_layout_panel-dragger {
+.editor_layout_group_panel-dragger {
     position: absolute;
     top: 0;
     left: 0;
