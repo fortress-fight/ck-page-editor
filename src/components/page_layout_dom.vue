@@ -46,7 +46,7 @@
                     class="item"
                     data-key="delete"
                     title="删除"
-                    @click="open_delete_layout_dialog($event,item.id)"
+                    @click="open_delete_layout_group_dialog($event,item.id)"
                 >
                     <span class="text">删除</span>
                     <i class="fa fa-trash"></i>
@@ -129,7 +129,7 @@
                                         class="item"
                                         data-key="delete"
                                         title="删除"
-                                        @click="delete_layout(item.id, layout_item.id)"
+                                        @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
                                     >
                                         <span class="text">删除</span>
                                         <i class="fa fa-trash"></i>
@@ -192,10 +192,13 @@ export default Vue.extend({
                 dir
             });
         },
-        delete_layout_group(layout_group_id) {
+        open_delete_layout_group_dialog(ev, layout_group_id) {
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 type: "delete_layout_group",
+                option: {
+                    dialog_pos: ev.currentTarget
+                },
                 data: {
                     layout_group_id
                 }
