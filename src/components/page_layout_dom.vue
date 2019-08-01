@@ -4,8 +4,8 @@
             :id="item.id"
             class="layout_group"
             :class="{is_oper: item.id == oper_layout_groups_id}"
-            v-for="(item, index) in layout_groups"
-            :key="index"
+            v-for="(item) in layout_groups"
+            :key="item.id"
         >
             <div class="layout_group-editor_bar" v-if="can_editor">
                 <div
@@ -82,8 +82,8 @@
                         <section
                             :id="layout_item.id"
                             class="layout"
-                            v-for="(layout_item, layout_key) in item.body"
-                            :key="layout_key"
+                            v-for="(layout_item) in item.body"
+                            :key="layout_item.id"
                         >
                             <section class="row">
                                 <section

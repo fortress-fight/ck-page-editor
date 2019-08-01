@@ -420,7 +420,8 @@ const editor_layout_dom_dialog_module = {
                 mask: false
             },
             type: "",
-            data: {}
+            data: {},
+            editor_target_layout_group_data: {}
         };
     },
     mutations: {
@@ -430,7 +431,7 @@ const editor_layout_dom_dialog_module = {
     },
     actions: {
         tab_show(
-            { state, commit, dispatch },
+            { state, commit, dispatch, rootGetters },
             {
                 turn_on,
                 type,
@@ -444,6 +445,10 @@ const editor_layout_dom_dialog_module = {
             dispatch("layout_module/set_oper_layout_groups_id", data, {
                 root: true
             });
+            state.editor_target_layout_group_data = rootGetters[
+                "layout_module/search_layout_group"
+            ](data.layout_group_id).data;
+            console.log(state.editor_target_layout_group_data);
             state.show = turn_on;
             if (turn_on == false) {
                 commit("clear_data");

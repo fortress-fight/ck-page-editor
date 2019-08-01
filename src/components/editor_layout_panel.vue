@@ -180,6 +180,15 @@ export default Vue.extend({
         };
     },
     computed: {
+        layout_group_data: {
+            get() {
+                return this.$store.state.editor_layout_dom_dialog_module
+                    .editor_target_layout_group_data;
+            },
+            set(value) {
+                console.log(value);
+            }
+        },
         layout_editor_dialog_show() {
             return this.$store.state.editor_layout_dom_dialog_module.show;
         },

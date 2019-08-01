@@ -167,7 +167,6 @@ export default Vue.extend({
             }
         },
         pop_in_enter(el, done) {
-            console.log("pop_in_enter");
             let dialog_el = this.$refs.dialog;
             $(el)
                 .velocity("stop")
@@ -209,7 +208,6 @@ export default Vue.extend({
                 );
         },
         pop_leave(el, done) {
-            console.log("pop_leave");
             $(el)
                 .velocity("stop")
                 .velocity("reverse", {
