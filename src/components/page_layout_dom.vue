@@ -1,6 +1,12 @@
 <template>
     <div id="page_body_editor-wrapper" class="page_body_editor-wrapper">
-        <div :id="item.id" class="layout_group" v-for="(item, index) in layout_groups" :key="index">
+        <div
+            :id="item.id"
+            class="layout_group"
+            :class="{is_oper: item.id == oper_layout_groups_id}"
+            v-for="(item, index) in layout_groups"
+            :key="index"
+        >
             <div class="layout_group-editor_bar" v-if="can_editor">
                 <div
                     class="item"
@@ -164,6 +170,9 @@ export default Vue.extend({
                 this.$store.state.layout_module.layout_data ||
                 this.default_layout_groups
             );
+        },
+        oper_layout_groups_id() {
+            return this.$store.state.layout_module.oper_layout_groups_id;
         }
     },
     methods: {

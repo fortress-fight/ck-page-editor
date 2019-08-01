@@ -82,6 +82,7 @@ export default Vue.extend({
                 dialog_style: {},
                 dialog_btn_footer: true,
                 dialog_close_btn: true,
+                mask: true,
                 wrapper_option: {
                     style: "",
                     click_cancel: true
@@ -119,6 +120,7 @@ export default Vue.extend({
                 };
             }
             result.dialog_temporary_hide = this.temporary_hide;
+            result.close_mask = !this.c_options.mask;
 
             return result;
         }
@@ -165,6 +167,7 @@ export default Vue.extend({
             }
         },
         pop_in_enter(el, done) {
+            console.log("pop_in_enter");
             let dialog_el = this.$refs.dialog;
             $(el)
                 .velocity("stop")
@@ -206,6 +209,7 @@ export default Vue.extend({
                 );
         },
         pop_leave(el, done) {
+            console.log("pop_leave");
             $(el)
                 .velocity("stop")
                 .velocity("reverse", {
@@ -353,12 +357,16 @@ export default Vue.extend({
     height: 100vh;
 
     transition: 0.36s ease;
+    &.close_mask {
+        width: 100vw;
+        height: 0;
+    }
     &.dialog_temporary_hide {
         visibility: hidden;
 
         pointer-events: none;
 
-        opacity: 0;
+        opacity: 0 !important;
     }
 }
 

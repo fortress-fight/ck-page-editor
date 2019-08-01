@@ -139,6 +139,7 @@ const layout_module = {
     namespaced: true,
     state() {
         return {
+            oper_layout_groups_id: NaN,
             active_layout_group_id: NaN,
             layout_data: []
         };
@@ -304,6 +305,9 @@ const layout_module = {
                 },
                 { root: true }
             );
+        },
+        set_oper_layout_groups_id({ state }, { layout_group_id }) {
+            state.oper_layout_groups_id = layout_group_id;
         }
     },
     getters: {
@@ -346,7 +350,9 @@ const add_layout_dom_dialog_module = {
     state() {
         return {
             show: false,
-            option: {},
+            option: {
+                only_show: true
+            },
             type: "",
             data: {}
         };
@@ -359,12 +365,14 @@ const add_layout_dom_dialog_module = {
     actions: {
         tab_show({ commit, state }, { turn_on, type, option, data }) {
             state.show = turn_on;
+            state.option.only_show = true;
             if (turn_on == false) {
                 commit("clear_data");
+                state.option.only_show = false;
                 return false;
             }
             if (option) {
-                state.option = option;
+                state.option = Object.assign(option, state.option);
             }
             state.data = data || {};
             state.type = type;
@@ -408,7 +416,9 @@ const editor_layout_dom_dialog_module = {
     state() {
         return {
             show: false,
-            option: {},
+            option: {
+                mask: false
+            },
             type: "",
             data: {}
         };
@@ -419,14 +429,29 @@ const editor_layout_dom_dialog_module = {
         }
     },
     actions: {
-        tab_show({ state, commit }, { turn_on, type, option, data }) {
+        tab_show(
+            { state, commit, dispatch },
+            {
+                turn_on,
+                type,
+                option,
+                data = {
+                    layout_group_id: NaN,
+                    layout_id: NaN
+                }
+            }
+        ) {
+            dispatch("layout_module/set_oper_layout_groups_id", data, {
+                root: true
+            });
             state.show = turn_on;
             if (turn_on == false) {
                 commit("clear_data");
+
                 return false;
             }
             if (option) {
-                state.option = option;
+                state.option = Object.assign(option, state.option);
             }
             state.type = type;
             state.data = data || {};

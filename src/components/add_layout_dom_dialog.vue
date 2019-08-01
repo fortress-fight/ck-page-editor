@@ -1,6 +1,6 @@
 <template>
     <c-dialog
-        :options="page_editor_dialog"
+        :options="c_page_editor_dialog"
         @confirm="confirm_layout"
         @cancel="cancel_layout"
         @dialog_before_enter="dialog_before_enter"
@@ -179,6 +179,12 @@ export default Vue.extend({
         },
         whitch_dialog() {
             return (this as any).$store.state.add_layout_dom_dialog_module.type;
+        },
+        c_page_editor_dialog() {
+            return Object.assign(
+                this.page_editor_dialog,
+                this.$store.state.add_layout_dom_dialog_module.option
+            );
         }
     },
     components: {

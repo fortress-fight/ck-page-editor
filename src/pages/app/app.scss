@@ -21,9 +21,9 @@ body {
     }
 
     .ck-widget.table
-    td.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+        td.ck-editor__nested-editable.ck-editor__nested-editable_focused,
     .ck-widget.table
-    th.ck-editor__nested-editable.ck-editor__nested-editable_focused {
+        th.ck-editor__nested-editable.ck-editor__nested-editable_focused {
         background: rgba(123, 123, 123, 0.4);
     }
 
@@ -53,7 +53,7 @@ body {
 .page_body_editor .layout_group {
     border: 2px solid #eee;
     border-bottom: none;
-
+    &.is_oper,
     &:hover {
         .layout_group-editor_bar {
             visibility: visible;
@@ -73,9 +73,9 @@ body {
     .layout_group-editor_bar .item:hover {
         // color: #000;
         color: #fff;
+        background: #171717;
         // box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.25);
-        background: #171717;
     }
 }
 
@@ -661,7 +661,11 @@ body {
         }
     }
 
-    &[data-align_center="true"] > .layout_limit_wrapper > .layout_container > .row > .col {
+    &[data-align_center="true"]
+        > .layout_limit_wrapper
+        > .layout_container
+        > .row
+        > .col {
         display: flex;
 
         align-items: center;
@@ -1031,14 +1035,14 @@ body {
 @keyframes fadeInUp {
     from {
         -webkit-transform: translate3d(0, 100%, 0);
-                transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
 
         opacity: 0;
     }
 
     to {
         -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
 
         opacity: 1;
     }
@@ -1047,14 +1051,14 @@ body {
 @keyframes fadeInRight {
     from {
         -webkit-transform: translate3d(100%, 0, 0);
-                transform: translate3d(100%, 0, 0);
+        transform: translate3d(100%, 0, 0);
 
         opacity: 0;
     }
 
     to {
         -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
 
         opacity: 1;
     }
@@ -1075,14 +1079,14 @@ body {
 @keyframes fadeInLeft {
     from {
         -webkit-transform: translate3d(-100%, 0, 0);
-                transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
 
         opacity: 0;
     }
 
     to {
         -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
 
         opacity: 1;
     }
