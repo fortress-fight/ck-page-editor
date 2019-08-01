@@ -26,17 +26,27 @@ let unit_layout_module = {
                         open: true,
                         container: "<p>底部</p>"
                     },
-                    width: "",
-                    space: "",
+                    background_color: "rgba(255,255,255,0)",
                     window_width: false,
                     limit_width: false,
                     bg: {
-                        pc: "",
-                        mo: "",
-                        cover: false,
-                        repeat: false,
-                        parallax: false,
-                        align_center: false
+                        pc: {
+                            path: "",
+                            cover: false,
+                            repeat: false,
+                            effect: "normal",
+                            size: "normal",
+                            position: "tl"
+                        },
+                        mo: {
+                            path: "",
+                            cover: false,
+                            repeat: false,
+
+                            effect: "normal",
+                            size: "normal",
+                            position: "tl"
+                        }
                     }
                 },
                 body: [this.get_layout_data(type, value)]

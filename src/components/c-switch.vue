@@ -1,11 +1,6 @@
 <template>
     <div class="c_switch">
-        <el-switch
-            v-bind="$attrs"
-            active-value="rgb(104, 122, 226)"
-            inactive-value="#999"
-            :width="30"
-        ></el-switch>
+        <el-switch v-bind="$attrs" :width="30" v-on="$listeners"></el-switch>
     </div>
 </template>
 <script lang="ts">
@@ -55,5 +50,13 @@ export default Vue.extend({
 }
 .el-switch__label--right {
     margin-left: 6px;
+}
+
+.el-switch.is-checked .el-switch__core {
+    border-color: #677ae4;
+    background-color: #677ae4;
+}
+.el-switch.is-checked .el-switch__core::after {
+    margin-left: -14px;
 }
 </style>

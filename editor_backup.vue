@@ -42,17 +42,61 @@
                             <div
                                 class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                             >
-                                <c-switch
-                                    active-text="屏幕宽度"
-                                    class="space_normal"
-                                    v-model="layout_group_data.attrs.window_width"
-                                ></c-switch>
-                                <c-switch
-                                    active-text="内容宽度"
-                                    class="space_normal"
-                                    v-inout.clipX.reverse="layout_group_data.attrs.window_width"
-                                    v-model="layout_group_data.attrs.limit_width"
-                                ></c-switch>
+                                <c-switch active-text="横向居中" class="space_normal"></c-switch>
+                                <c-switch active-text="纵向居中" class="space_normal"></c-switch>
+                                <c-switch active-text="屏幕宽度" class="space_normal"></c-switch>
+                                <c-switch active-text="内容宽度" class="space_normal"></c-switch>
+                            </div>
+                        </div>
+                        <div class="attr_set_group">
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">布局宽度</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入布局宽度"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">布局间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入布局间距"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">左右间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入左右间距"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">上下间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input class="input" placeholder="请输入上下间距"></c-input>
+                                        <span class="unit">%</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch active-text="百分比"></c-switch>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,6 +109,16 @@
                                 <c-color-picker-btn
                                     v-model="layout_group_data.attrs.background_color"
                                 ></c-color-picker-btn>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">分栏背景</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-6">
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
+                                <c-color-picker-btn></c-color-picker-btn>
                             </div>
                         </div>
                     </div>
@@ -135,7 +189,7 @@ export default Vue.extend({
                 {
                     nav: "属性",
                     card_slot_name: "layout_attr"
-                }
+                },
                 // {
                 //     nav: "动效",
                 //     card_slot_name: "layout_animate"

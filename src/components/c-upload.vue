@@ -5,9 +5,10 @@
                 v-for="(item, index) in background_attr_pos_options"
                 class="c_image_upload-background_attrs"
                 :data-value="item.value"
-                :checked="item.value == background_attr_pos_value ? 'checked' : false"
+                :checked="item.value == c_value.position ? 'checked' : false"
                 :key="index"
                 @click="tab_background_pos(item.value)"
+                v-if="c_value.position"
             >
                 <i class="dot"></i>
             </div>
@@ -38,7 +39,7 @@
                     />
                     <div class="flex_center c_image_upload-tip" v-if="!img_prev_link">
                         <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
-                        <span class="text">上传图片</span>
+                        <span class="text">{{tip}}</span>
                     </div>
                 </div>
             </div>
@@ -75,22 +76,47 @@
         >
             <template #body>
                 <div class="attr_set_groups">
-                    <div class="attr_set_group">
+                    <div class="attr_set_group" v-if="c_value.effect">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">展现方式</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-3">
-                                <c-radio class="space_normal">常规</c-radio>
-                                <c-radio class="space_normal">视差</c-radio>
-                                <c-radio class="space_normal">锁定</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.effect"
+                                    label="normal"
+                                >常规</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.effect"
+                                    label="parallax"
+                                >视差</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.effect"
+                                    label="fixed"
+                                >锁定</c-radio>
                             </div>
                         </div>
                     </div>
-                    <div class="attr_set_group">
+                    <div class="attr_set_group" v-if="c_value.size">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">背景大小</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-3">
-                                <c-switch active-text="适应" class="space_normal"></c-switch>
-                                <c-switch active-text="平铺" class="space_normal"></c-switch>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.size"
+                                    label="normal"
+                                >原始</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.size"
+                                    label="contain"
+                                >适应</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.size"
+                                    label="repeat"
+                                >重复</c-radio>
                             </div>
                         </div>
                     </div>
@@ -106,7 +132,6 @@ export default Vue.extend({
     data() {
         return {
             img_prev_link: "",
-            background_attr_pos_value: "cc",
             background_attr_pos_options: [
                 { value: "tl" },
                 { value: "tc" },
@@ -152,9 +177,32 @@ export default Vue.extend({
         };
     },
     props: {
+        tip: {
+            type: String,
+            tip: "上传图片"
+        },
         type: {
             type: String,
             default: "background"
+        },
+        value: {
+            type: Object,
+            default() {
+                return {};
+            }
+        }
+    },
+    computed: {
+        c_value: {
+            get() {
+                return this.value;
+            },
+            set(new_value) {
+                let result = Object.assign(this.value, new_value);
+                this.img_prev_link = result.path;
+                console.log(result);
+                this.$emit("input", result);
+            }
         }
     },
     methods: {
@@ -180,28 +228,33 @@ export default Vue.extend({
             return this.$confirm(`确定移除 ${file.name}？`);
         },
         upload_suc(file) {
-            this.img_prev_link =
-                "http://127.0.0.1:3003/" + file.path.replace("\\", "/");
+            this.c_value = {
+                path: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
+            };
         },
         setting() {
+            this.background_setting_dialog.dialog_pos = this.$refs.setting_btn;
             this.background_setting_dialog_show = true;
         },
         delete_image() {
-            this.img_prev_link = "";
+            this.c_value = {
+                path: ""
+            };
         },
         tab_background_pos(value) {
-            if (this.background_attr_pos_value == value) {
-                this.background_attr_pos_value = "cc";
+            if (this.c_value.position == value) {
+                this.c_value = {
+                    position: "cc"
+                };
             } else {
-                this.background_attr_pos_value = value;
+                this.c_value = {
+                    position: value
+                };
             }
         }
     },
     components: {
         "c-dialog": dialog
-    },
-    mounted() {
-        this.background_setting_dialog.dialog_pos = this.$refs.setting_btn;
     }
 });
 </script>

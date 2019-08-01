@@ -5,6 +5,7 @@
             class="layout_group"
             :class="{is_oper: item.id == oper_layout_groups_id}"
             v-for="(item) in layout_groups"
+            :style="{backgroundColor: item.attrs.background_color}"
             :key="item.id"
         >
             <div class="layout_group-editor_bar" v-if="can_editor">
@@ -61,21 +62,25 @@
 
             <section
                 class="layout_bg layout_bg_pc"
-                :style=" `background-image: url(${item.attrs.bg.pc});`"
-                v-if="item.attrs.bg.pc"
+                :style=" `background-image: url(${item.attrs.bg.pc.path});`"
+                v-if="item.attrs.bg.pc.path"
             >
-                <img :src="item.attrs.bg.pc" style="opacity: 0" />
+                <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
             </section>
             <section
                 class="layout_bg layout_bg_mo"
-                :style=" `background-image: url(${item.attrs.bg.mo || item.attrs.bg.pc});`"
-                v-if="item.attrs.bg.mo || item.attrs.bg.pc"
+                :style=" `background-image: url(${item.attrs.bg.mo.path || item.attrs.bg.pc.path});`"
+                v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path"
             >
-                <img :src="item.attrs.bg.mo || item.attrs.bg.pc" style="opacity: 0" />
+                <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
             </section>
             <section class="layout_limit_wrapper">
-                <section class="layout_container" v-if="item.attrs.header.open">
-                    <section class="layout_header" v-html="item.attrs.header.container">
+                <section class="layout_container">
+                    <section
+                        class="layout_header"
+                        v-html="item.attrs.header.container"
+                        v-if="item.attrs.header.open"
+                    >
                         <section class="editor ck-content"></section>
                     </section>
                     <section class="layout_body">

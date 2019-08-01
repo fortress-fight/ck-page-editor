@@ -1,6 +1,6 @@
 <template>
     <div class="c_switch">
-        <el-radio v-bind="$attrs">
+        <el-radio v-bind="$attrs" v-on="$listeners">
             <slot></slot>
         </el-radio>
     </div>
@@ -29,6 +29,11 @@ export default Vue.extend({
 
     border-color: #dfdfdf;
 }
+.el-radio__inner::after {
+    transition: transform 0.1s ease-in, -webkit-transform 0.1s ease-in;
+
+    background-color: #677ae2;
+}
 .el-radio__inner:hover {
     border-color: #dfdfdf;
 }
@@ -36,7 +41,7 @@ export default Vue.extend({
     color: inherit;
 }
 .el-radio__input.is-checked .el-radio__inner {
-    border-color: rgb(104, 122, 226);
-    background: rgb(104, 122, 226);
+    border-color: #dcdfe6;
+    background: #fff;
 }
 </style>

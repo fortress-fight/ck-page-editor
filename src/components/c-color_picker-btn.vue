@@ -2,13 +2,13 @@
     <div class="color_picker-btn">
         <div
             class="color_picker-btn_inner"
-            :style="`background-color: ${value};`"
+            :style="`background-color: ${c_value};`"
             @click="tab_show_panel(true)"
         >
             <c-color-picker-dialog
                 :is_show="show_panel"
                 :dialog_option="dialog_option"
-                v-model="value"
+                v-model="c_value"
                 @color_picker_dialog_cancel="color_picker_dialog_cancel"
             ></c-color-picker-dialog>
         </div>
@@ -22,7 +22,6 @@ export default Vue.extend({
     data() {
         interface data {
             show_panel: boolean;
-            value: string;
             dialog_option: Dialogoption;
         }
 
@@ -31,11 +30,26 @@ export default Vue.extend({
         }
         let result: data = {
             show_panel: false,
-            value: "#fff",
             dialog_option: {}
         };
 
         return result;
+    },
+    computed: {
+        c_value: {
+            get() {
+                return this.value;
+            },
+            set(value) {
+                this.$emit("input", value);
+            }
+        }
+    },
+    props: {
+        value: {
+            type: String,
+            default: "#fff"
+        }
     },
     methods: {
         tab_show_panel(turn_show) {
