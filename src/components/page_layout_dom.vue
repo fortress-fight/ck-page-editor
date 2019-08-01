@@ -245,7 +245,7 @@ export default Vue.extend({
             this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 option: {
-                    dialog_pos: ev.currentTarget
+                    dialog_pos: $(ev.currentTarget).closest(".layout_group")[0]
                 },
                 type: "delete_layout",
                 data: {

@@ -136,6 +136,28 @@ export default Vue.extend({
         }
     },
     methods: {
+        correcting_pos() {
+            let dialog_el = this.$refs.dialog;
+            if (!dialog_el) return false;
+
+            let dialog_pos = this.calculate_dialog_pos(
+                dialog_el,
+                this.c_options.dialog_pos,
+                this.c_options.dialog_pos_detail
+            );
+            if (dialog_pos) {
+                let dialog_target_post = adjustment_pos(
+                    dialog_el as HTMLElement,
+                    dialog_pos,
+                    {
+                        distance: 10
+                    }
+                );
+                dialog_target_post && $(dialog_el).css(dialog_target_post);
+            }
+
+            (this as any).set_dialog_arrow_pos();
+        },
         pop_in_before_enter(el) {
             $(el).css({ opacity: 0, transition: "0s" });
             if (this.c_options.only_show) {
@@ -144,72 +166,44 @@ export default Vue.extend({
         },
         pop_in_enter(el, done) {
             let dialog_el = this.$refs.dialog;
-            Vue.nextTick().then(() => {
-                $(el)
-                    .velocity("stop")
-                    .velocity(
-                        {
-                            opacity: 1,
-                            tween: [1, 0.95]
+            $(el)
+                .velocity("stop")
+                .velocity(
+                    {
+                        opacity: 1,
+                        tween: [1, 0.95]
+                    },
+                    {
+                        begin: elements => {
+                            this.correcting_pos();
+                            $(dialog_el).css({
+                                transform: "scale(0.95)"
+                            });
+                            this.$emit("dialog_before_enter");
                         },
-                        {
-                            begin: elements => {
-                                let dialog_pos = this.calculate_dialog_pos(
-                                    dialog_el,
-                                    this.c_options.dialog_pos,
-                                    this.c_options.dialog_pos_detail
-                                );
-                                if (dialog_pos) {
-                                    $(dialog_el).css(
-                                        adjustment_pos(
-                                            dialog_el as HTMLElement,
-                                            dialog_pos
-                                        )
-                                    );
-                                }
+                        progress: (
+                            elements,
+                            complete,
+                            remaining,
+                            start,
+                            tweenValue
+                        ) => {
+                            if (this.c_is_show) {
+                                this.correcting_pos();
+                            }
 
-                                (this as any).set_dialog_arrow_pos();
-                                $(dialog_el).css({
-                                    transform: "scale(0.95)"
+                            $(elements)
+                                .find(".dialog")
+                                .css({
+                                    transform: "scale(" + tweenValue + ")"
                                 });
-                                this.$emit("dialog_before_enter");
-                            },
-                            progress: (
-                                elements,
-                                complete,
-                                remaining,
-                                start,
-                                tweenValue
-                            ) => {
-                                if (this.c_is_show) {
-                                    let dialog_pos = this.calculate_dialog_pos(
-                                        dialog_el,
-                                        this.c_options.dialog_pos,
-                                        this.c_options.dialog_pos_detail
-                                    );
-                                    if (dialog_pos) {
-                                        $(dialog_el).css(
-                                            adjustment_pos(
-                                                dialog_el as HTMLElement,
-                                                dialog_pos
-                                            )
-                                        );
-                                    }
-                                }
-
-                                $(elements)
-                                    .find(".dialog")
-                                    .css({
-                                        transform: "scale(" + tweenValue + ")"
-                                    });
-                            },
-                            complete: elements => {
-                                this.$emit("dialog_enter");
-                            },
-                            duration: 150
-                        }
-                    );
-            });
+                        },
+                        complete: elements => {
+                            this.$emit("dialog_enter");
+                        },
+                        duration: 150
+                    }
+                );
         },
         pop_leave(el, done) {
             $(el)
@@ -341,22 +335,7 @@ export default Vue.extend({
     mounted() {
         let time;
         this.window_resize = () => {
-            clearTimeout(time);
-            time = setTimeout(() => {
-                if (!this.$refs.dialog) return false;
-                let dialog_pos = this.calculate_dialog_pos(
-                    this.$refs.dialog,
-                    this.c_options.dialog_pos,
-                    this.c_options.dialog_pos_detail
-                );
-                if (dialog_pos) {
-                    $(this.$refs.dialog).css(
-                        adjustment_pos(this.$refs.dialog, dialog_pos)
-                    );
-                }
-
-                this.set_dialog_arrow_pos();
-            }, 500);
+            this.correcting_pos();
         };
         $(window).on("resize", this.window_resize);
         $(this.$el).appendTo("body");

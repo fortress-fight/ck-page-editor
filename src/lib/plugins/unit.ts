@@ -74,22 +74,34 @@ export function judge_is_dom(item) {
 
 export function adjustment_pos(
     oper_dom: HTMLElement,
-    pos?: { left: number; top: number }
+    pos?: { left: number; top: number },
+    option?: { distance: number }
 ) {
     let result: { left: number; top: number };
     let oper_dom_pos = get_el_pos(oper_dom);
+    option = Object.assign({ distance: 0 }, option);
 
     if (!pos) {
         pos = { left: oper_dom_pos.left, top: oper_dom_pos.top };
     }
 
     result = pos;
-    if (pos.left + oper_dom_pos.client_width > window.innerWidth) {
-        result.left = window.innerWidth - oper_dom_pos.width;
+    if (
+        pos.left + oper_dom_pos.client_width + option.distance >
+        document.body.clientWidth
+    ) {
+        result.left =
+            document.body.clientWidth -
+            oper_dom_pos.client_width -
+            option.distance;
     }
-    if (pos.top + oper_dom_pos.client_height > window.innerHeight) {
-        result.top = 0;
+    if (
+        pos.top + oper_dom_pos.client_height + option.distance >
+        document.body.clientHeight
+    ) {
+        result.top = option.distance;
     }
+
     return result;
 }
 function _copy() {
