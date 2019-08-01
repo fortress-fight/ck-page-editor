@@ -28,6 +28,7 @@ let unit_layout_module = {
                     },
                     background_color: "rgba(255,255,255,0)",
                     window_width: false,
+                    window_height: false,
                     limit_width: false,
                     bg: {
                         pc: {
@@ -106,43 +107,6 @@ let unit_layout_module = {
             }
         }
         return result;
-    }
-};
-const dialogs_manage_module = {
-    namespaced: true,
-    state() {
-        return {
-            dialogs_group: []
-        };
-    },
-
-    mutations: {
-        add_dialog(state, dialog_components) {
-            state.dialog_group.push(dialog_components);
-        }
-    },
-    actions: {
-        remove_dialog({ state, getters }, dialog_components_id) {
-            state.dialogs_group.splice(
-                getters.search_dialog(dialog_components_id).index,
-                1
-            );
-        }
-    },
-    getters: {
-        search_dialog: state => id => {
-            let result = {
-                index: NaN,
-                value: null
-            };
-            state.dialogs_group.forEach((layout_component, i) => {
-                if (layout_component.id === id) {
-                    result.index = i;
-                    result.value = layout_component;
-                }
-            });
-            return result;
-        }
     }
 };
 const layout_module = {
@@ -318,6 +282,13 @@ const layout_module = {
         },
         set_oper_layout_groups_id({ state }, { layout_group_id }) {
             state.oper_layout_groups_id = layout_group_id;
+        },
+        set_layout_group_data({ state }, { layout_group_id, data }) {
+            state.layout_data.forEach((v, i) => {
+                if (layout_group_id == v.id) {
+                    state.layout_data.splice(i, 1, data);
+                }
+            });
         }
     },
     getters: {
@@ -431,7 +402,8 @@ const editor_layout_dom_dialog_module = {
             },
             type: "",
             data: {},
-            editor_target_layout_group_data: {}
+            editor_target_layout_group_data: {},
+            backup_group_data: {}
         };
     },
     mutations: {
@@ -440,10 +412,21 @@ const editor_layout_dom_dialog_module = {
         }
     },
     actions: {
+        reset_data({ state, dispatch }) {
+            dispatch(
+                "layout_module/set_layout_group_data",
+                {
+                    layout_group_id: state.editor_target_layout_group_data.id,
+                    data: JSON.parse(state.backup_group_data)
+                },
+                { root: true }
+            );
+        },
         tab_show(
             { state, commit, dispatch, rootGetters },
             {
                 turn_on,
+                reset,
                 type,
                 option,
                 data = {
@@ -452,24 +435,31 @@ const editor_layout_dom_dialog_module = {
                 }
             }
         ) {
-            dispatch("layout_module/set_oper_layout_groups_id", data, {
-                root: true
-            });
-            state.editor_target_layout_group_data = rootGetters[
-                "layout_module/search_layout_group"
-            ](data.layout_group_id).data;
-            console.log(state.editor_target_layout_group_data);
             state.show = turn_on;
-            if (turn_on == false) {
-                commit("clear_data");
+            if (turn_on) {
+                if (option) {
+                    state.option = Object.assign(option, state.option);
+                }
+                dispatch("layout_module/set_oper_layout_groups_id", data, {
+                    root: true
+                });
 
-                return false;
+                state.editor_target_layout_group_data = rootGetters[
+                    "layout_module/search_layout_group"
+                ](data.layout_group_id).data;
+
+                state.backup_group_data = JSON.stringify(
+                    state.editor_target_layout_group_data
+                );
+
+                state.type = type;
+                state.data = data || {};
+            } else {
+                if (reset) {
+                    dispatch("reset_data");
+                }
+                commit("clear_data");
             }
-            if (option) {
-                state.option = Object.assign(option, state.option);
-            }
-            state.type = type;
-            state.data = data || {};
         }
     }
 };

@@ -5,6 +5,7 @@
         class="editor_layout_panel"
         :is_show="layout_editor_dialog_show"
         :options="c_layout_editor_dialog_option"
+        @confirm="layout_editor_confirm"
         @cancel="layout_editor_cancel"
     >
         <template #header>
@@ -52,6 +53,15 @@
                                     class="space_normal"
                                     v-inout.clipX.reverse="layout_group_data.attrs.window_width"
                                     v-model="layout_group_data.attrs.limit_width"
+                                ></c-switch>
+                            </div>
+                            <div
+                                class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                            >
+                                <c-switch
+                                    active-text="屏幕高度"
+                                    class="space_normal"
+                                    v-model="layout_group_data.attrs.window_height"
                                 ></c-switch>
                             </div>
                         </div>
@@ -159,17 +169,13 @@ export default Vue.extend({
                     width: "100%"
                 },
                 dragger_dom: null
-            }
+            },
+            local_data: this.layout_group_data
         };
     },
     computed: {
         layout_group_data: {
             get() {
-                console.log(
-                    "this.$store.state.editor_layout_dom_dialog_module .editor_target_layout_group_data:",
-                    this.$store.state.editor_layout_dom_dialog_module
-                        .editor_target_layout_group_data
-                );
                 return this.$store.state.editor_layout_dom_dialog_module
                     .editor_target_layout_group_data;
             },
@@ -192,6 +198,12 @@ export default Vue.extend({
     },
     methods: {
         layout_editor_cancel() {
+            this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
+                turn_on: false,
+                reset: true
+            });
+        },
+        layout_editor_confirm() {
             this.$store.dispatch("editor_layout_dom_dialog_module/tab_show", {
                 turn_on: false
             });

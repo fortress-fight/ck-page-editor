@@ -17,6 +17,7 @@
     "element-ui": "^2.4.5",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
+    "lodash": "^4.17.15",
     "normalize.css": "^8.0.1",
     "slick-carousel": "^1.8.1",
     "string-random": "^0.1.3",

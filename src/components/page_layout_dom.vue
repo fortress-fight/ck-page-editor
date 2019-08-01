@@ -3,7 +3,7 @@
         <div
             :id="item.id"
             class="layout_group"
-            :class="{is_oper: item.id == oper_layout_groups_id}"
+            :class="{is_oper: item.id == oper_layout_groups_id, window_height: item.attrs.window_height}"
             v-for="(item) in layout_groups"
             :style="{backgroundColor: item.attrs.background_color}"
             :key="item.id"
