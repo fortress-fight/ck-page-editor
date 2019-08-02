@@ -584,12 +584,33 @@ const editor_layout_dialog_module = {
     }
 };
 
+const layout_editor_manage_module = {
+    namespaced: true,
+    state() {
+        return {
+            editor: null,
+            data: "layout_editor_manage_module",
+            dom: document.body
+        };
+    },
+    actions: {
+        set_state({ state }, { data, dom }) {
+            state.data = data;
+            state.dom = dom;
+        },
+        set_editor({state}, {editor}) {
+            state.editor = editor;
+        }
+    }
+};
+
 export default new Vuex.Store({
     modules: {
         layout_module,
         add_layout_dom_dialog_module,
         delete_layout_dom_dialog_module,
         editor_layout_group_dialog_module,
-        editor_layout_dialog_module
+        editor_layout_dialog_module,
+        layout_editor_manage_module
     }
 });

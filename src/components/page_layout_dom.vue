@@ -80,22 +80,12 @@
             </section>
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
-                    <!--  -->
                     <template v-if="item.attrs.header.open">
-                        <!-- <section class="layout_header">
-                            <section class="editor ck-content">
-                                <c-ckeditor
-                                    editor="ClassicEditor"
-                                    v-model="item.attrs.header.container"
-                                ></c-ckeditor>
-                            </section>
-                        </section>-->
-                        <section class="layout_header">
-                            <section
-                                class="editor ck-content"
-                                v-html="item.attrs.header.container"
-                                @click="set_editor($event, item.attrs.header.container)"
-                            ></section>
+                        <section
+                            class="layout_header editor_wrapper"
+                            @click="set_editor($event, item.attrs.header.container)"
+                        >
+                            <section class="editor ck-content" v-html="item.attrs.header.container"></section>
                         </section>
                     </template>
                     <section class="layout_body">
@@ -170,7 +160,11 @@
                         </section>
                     </section>
 
-                    <section class="layout_footer" v-if="item.attrs.footer.open">
+                    <section
+                        class="layout_footer"
+                        v-if="item.attrs.footer.open"
+                        @click="set_editor($event, item.attrs.footer.container)"
+                    >
                         <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
                     </section>
                 </section>
@@ -187,10 +181,6 @@ import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
         return {
-            editor: {
-                value: "",
-                box: document.body
-            },
             default_layout_groups: []
         };
     },
@@ -309,8 +299,10 @@ export default Vue.extend({
             });
         },
         set_editor(ev, data) {
-            this.editor.value = data;
-            this.editor.box = ev.currentTarget;
+            this.$store.dispatch("layout_editor_manage_module/set_state", {
+                data,
+                dom: ev.currentTarget
+            });
         }
     },
     props: {
@@ -322,11 +314,31 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
-#page_body_editor-wrapper.is_editing {
-    .layout-editor_bar,
-    .layout_group-editor_bar {
-        .item {
-            display: none;
+#page_body_editor-wrapper {
+    .editor_wrapper {
+        &.is_editing {
+            .editor:not(.layout_editor) {
+                position: absolute;
+                top: 0;
+                left: 0;
+
+                width: 100%;
+                height: 100%;
+            }
+            .layout_editor {
+                position: relative;
+            }
+        }
+    }
+    .ck-content {
+        position: relative;
+    }
+    .is_editing {
+        .layout-editor_bar,
+        .layout_group-editor_bar {
+            .item {
+                display: none;
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
         <editor-layout-group-panel></editor-layout-group-panel>
         <editor-layout-panel></editor-layout-panel>
 
-        <layout-editor v-model="editor.value"></layout-editor>
+        <layout-editor></layout-editor>
     </div>
 </template>
 <script lang="ts">
@@ -26,12 +26,7 @@ import page_layout_dom from "@/components/page_layout_dom.vue";
 import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
-        return {
-            editor: {
-                value: "",
-                box: document.body
-            }
-        };
+        return {};
     },
     components: {
         "add-layout-group-dialog": add_layout_dom_dialog,
