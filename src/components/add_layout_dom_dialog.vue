@@ -1,6 +1,6 @@
 <template>
     <c-dialog
-        :options="page_editor_dialog"
+        :options="c_page_editor_dialog"
         @confirm="confirm_layout"
         @cancel="cancel_layout"
         @dialog_before_enter="dialog_before_enter"
@@ -12,7 +12,7 @@
         </template>
         <template #body>
             <c-tab-card :tab_cards="tab_cards" ref="tab_card">
-                <template #custome_layout>
+                <template #custom_layout>
                     <div class="page_editor-layout" data-pop="body">
                         <div
                             class="page_editor-layout_options layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
@@ -21,9 +21,9 @@
                                 v-for="(item, key) in custom_options"
                                 :key="key"
                                 class="item layout_grid"
-                                :class="[`layout_grid-col-${item.grid_col}`, {'layout_grid-colspac-3': item.grid_col > 1}, {'active': type=='custome' && value == item.value}]"
+                                :class="[`layout_grid-col-${item.grid_col}`, {'layout_grid-colspac-3': item.grid_col > 1}, {'active': type=='custom' && value == item.value}]"
                                 :data-value="item.value"
-                                @click="type='custome'; value = item.value"
+                                @click="type='custom'; value = item.value"
                             >
                                 <div
                                     v-for="(son_item, son_key) in item.value.split('_')"
@@ -57,6 +57,20 @@
                         </div>
                     </div>
                 </template>
+                <template #fix_layout>
+                    <div class="page_editor-layout" data-pop="body">
+                        <div class="page_editor-layout_options layout_grid layout_grid-col-1">
+                            <c-input
+                                type="textarea"
+                                :rows="10"
+                                placeholder="请输入复制的板块内容"
+                                v-model="code"
+                                resize="none"
+                                @change="type='code';value = code"
+                            ></c-input>
+                        </div>
+                    </div>
+                </template>
             </c-tab-card>
         </template>
     </c-dialog>
@@ -65,12 +79,14 @@
 import Vue from "vue";
 import dialog from "@/components/c-dialog.vue";
 import tab_card from "@/components/c-tab_card.vue";
+import { decrypt } from "@/lib/plugins/crypto";
 
 export default Vue.extend({
     data() {
         return {
-            type: "custome",
+            type: "custom",
             value: "100",
+            code: "",
             custom_options: [
                 {
                     grid_col: 1,
@@ -135,30 +151,40 @@ export default Vue.extend({
             ],
             page_editor_dialog: {
                 box_size: "big"
-            },
-
-            tab_cards: [
+            }
+        };
+    },
+    computed: {
+        tab_cards() {
+            let result = [
                 {
                     nav: "自定义布局",
-                    card_slot_name: "custome_layout"
+                    card_slot_name: "custom_layout"
                 },
                 {
                     nav: "功能布局",
                     card_slot_name: "fun_layout"
-                },
-                {
-                    nav: "tab3",
-                    card_slot_name: "tab3"
                 }
-            ]
-        };
-    },
-    computed: {
+            ];
+            if (this.whitch_dialog == "add_layout_group") {
+                result.push({
+                    nav: "固定布局",
+                    card_slot_name: "fix_layout"
+                });
+            }
+            return result;
+        },
         dialog_show() {
             return (this as any).$store.state.add_layout_dom_dialog_module.show;
         },
         whitch_dialog() {
             return (this as any).$store.state.add_layout_dom_dialog_module.type;
+        },
+        c_page_editor_dialog() {
+            return Object.assign(
+                this.page_editor_dialog,
+                this.$store.state.add_layout_dom_dialog_module.option
+            );
         }
     },
     components: {
@@ -167,22 +193,41 @@ export default Vue.extend({
     },
     methods: {
         confirm_layout() {
+            let result: any = this.value;
+            if (this.type === "code") {
+                try {
+                    result = JSON.parse(decrypt(result));
+                    console.log(result);
+                    if (!result && !result.id) {
+                        throw new Error("格式错误");
+                    }
+                } catch (error) {
+                    this.$message({
+                        message: "请输入正确格式",
+                        offset: -1,
+                        duration: 1000,
+                        type: "warning"
+                    });
+                    return false;
+                }
+            }
             let dialog_prop_data = this.$store.state
                 .add_layout_dom_dialog_module.data;
             if (this.whitch_dialog == "add_layout_group") {
                 this.$store.dispatch("layout_module/add_layout_group", {
                     type: this.type,
-                    value: this.value,
+                    value: result,
                     layout_group_id: dialog_prop_data.layout_group_id
                 });
             } else if (this.whitch_dialog == "add_layout") {
                 this.$store.dispatch("layout_module/add_layout", {
                     type: this.type,
-                    value: this.value,
+                    value: result,
                     layout_group_id: dialog_prop_data.layout_group_id,
                     layout_id: dialog_prop_data.layout_id
                 });
             }
+            this.code = "";
         },
         dialog_before_enter() {
             (this.$refs.tab_card as any).reset_ui(true);

@@ -1,27 +1,32 @@
 interface El_pos extends ClientRect {
-    client_width?: Number;
-    client_height?: Number;
+    client_width?: number;
+    client_height?: number;
 }
 
-export function get_el_pos(el: HTMLElement | HTMLAllCollection | JQuery) {
-    let result: El_pos | El_pos[];
-    if (length in el) {
+function _get_el_pos(el: HTMLElement): El_pos;
+function _get_el_pos(el: HTMLAllCollection | JQuery): El_pos[];
+function _get_el_pos(el: HTMLElement | HTMLAllCollection | JQuery) {
+    let result;
+    if ((<HTMLAllCollection | JQuery>el).length) {
         result = [];
         for (let i = 0; i < (el as HTMLAllCollection | JQuery).length; i++) {
             const _el: HTMLElement = el[i];
             let _el_pos: El_pos = _el.getBoundingClientRect();
             _el_pos.client_width = _el.clientWidth;
             _el_pos.client_height = _el.clientHeight;
-            result.push();
+            result.push(_el_pos);
         }
+        return <El_pos[]>result;
     } else {
-        let el_pos: El_pos = (el as HTMLElement).getBoundingClientRect();
-        el_pos.client_width = (el as HTMLElement).clientWidth;
-        el_pos.client_height = (el as HTMLElement).clientHeight;
+        let el_pos: El_pos = (<HTMLElement>el).getBoundingClientRect();
+        el_pos.client_width = (<HTMLElement>el).clientWidth;
+        el_pos.client_height = (<HTMLElement>el).clientHeight;
         result = el_pos;
+        return <El_pos>result;
     }
-    return result;
 }
+
+export let get_el_pos = _get_el_pos;
 
 export function get_el_dis_pos(
     el: HTMLElement,
@@ -56,3 +61,106 @@ export function get_el_dis_pos(
 
     return result;
 }
+
+export function judge_is_dom(item) {
+    // 首先判断是否支持HTMLELement，如果支持，使用HTMLElement，如果不支持，通过判断DOM的特征，如果拥有这些特征说明就是ODM节点，特征使用的越多越准确
+    return typeof HTMLElement === "function"
+        ? item instanceof HTMLElement
+        : item &&
+              typeof item === "object" &&
+              item.nodeType === 1 &&
+              typeof item.nodeName === "string";
+}
+
+export function adjustment_pos(
+    oper_dom: HTMLElement,
+    pos?: { left: number; top: number },
+    option?: { distance: number }
+) {
+    let result: { left: number; top: number };
+    let oper_dom_pos = get_el_pos(oper_dom);
+    option = Object.assign({ distance: 0 }, option);
+
+    if (!pos) {
+        pos = { left: oper_dom_pos.left, top: oper_dom_pos.top };
+    }
+
+    let beyond_width =
+        pos.left + oper_dom_pos.client_width + option.distance >
+        document.body.clientWidth;
+
+    let beyond_height =
+        pos.top + oper_dom_pos.client_height + option.distance >
+        document.body.clientHeight;
+
+    result = pos;
+    if (!beyond_width && !beyond_height) return false;
+    if (beyond_width) {
+        result.left =
+            document.body.clientWidth -
+            oper_dom_pos.client_width -
+            option.distance;
+    }
+
+    if (beyond_height) {
+        result.top = option.distance;
+    }
+
+    return result;
+}
+function _copy() {
+    var textArea, copy;
+
+    // 判断是不是ios端
+    function isOS() {
+        return navigator.userAgent.match(/ipad|iphone/i);
+    }
+    //创建文本元素
+    function createTextArea(text) {
+        textArea = document.createElement("textArea");
+        textArea.style.position = "fixed";
+        textArea.style.bottom = "0";
+        textArea.style.left = "0";
+        textArea.style.zIndex = "-1";
+        textArea.value = text;
+        document.body.appendChild(textArea);
+    }
+    //选择内容
+    function selectText() {
+        var range, selection;
+
+        if (isOS()) {
+            range = document.createRange();
+            range.selectNodeContents(textArea);
+            selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textArea.setSelectionRange(0, 999999);
+        } else {
+            textArea.select();
+        }
+    }
+
+    //复制到剪贴板
+    function copyToClipboard(suc_callback?, fall_callback?) {
+        try {
+            if (document.execCommand("Copy")) {
+                suc_callback && suc_callback();
+            } else {
+                fall_callback && fall_callback();
+            }
+        } catch (err) {
+            fall_callback && fall_callback();
+        }
+        document.body.removeChild(textArea);
+    }
+
+    copy = function(text, suc_callback?, fall_callback?) {
+        createTextArea(text);
+        selectText();
+        copyToClipboard(suc_callback, fall_callback);
+    };
+
+    return copy;
+}
+export const copy = _copy();

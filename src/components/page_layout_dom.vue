@@ -1,6 +1,17 @@
 <template>
-    <div id="page_body_editor-wrapper" class="page_body_editor-wrapper">
-        <div :id="item.id" class="layout_group" v-for="(item, index) in layout_groups" :key="index">
+    <div
+        id="page_body_editor-wrapper"
+        class="page_body_editor-wrapper"
+        :class="{is_editing: !!oper_layout_groups_id}"
+    >
+        <div
+            :id="item.id"
+            class="layout_group"
+            :class="{is_oper: item.id == oper_layout_groups_id, window_height: item.attrs.window_height}"
+            v-for="(item) in layout_groups"
+            :style="{backgroundColor: item.attrs.background_color}"
+            :key="item.id"
+        >
             <div class="layout_group-editor_bar" v-if="can_editor">
                 <div
                     class="item"
@@ -10,6 +21,15 @@
                 >
                     <span class="text">添加</span>
                     <i class="fa fa-plus"></i>
+                </div>
+                <div
+                    class="item"
+                    data-key="editor"
+                    title="编辑"
+                    @click="open_editor_layout_group_dialog($event,item.id)"
+                >
+                    <span class="text">编辑</span>
+                    <i class="fa fa-pencil"></i>
                 </div>
                 <div
                     class="item"
@@ -29,11 +49,15 @@
                     <span class="text">下移</span>
                     <i class="fa fa-arrow-down"></i>
                 </div>
+                <div class="item" data-key="copy" title="复制" @click="copy_layout_group(item.id)">
+                    <span class="text">复制</span>
+                    <i class="fa fa-copy"></i>
+                </div>
                 <div
                     class="item"
                     data-key="delete"
                     title="删除"
-                    @click="open_delete_layout_dialog($event,item.id)"
+                    @click="open_delete_layout_group_dialog($event,item.id)"
                 >
                     <span class="text">删除</span>
                     <i class="fa fa-trash"></i>
@@ -42,29 +66,34 @@
 
             <section
                 class="layout_bg layout_bg_pc"
-                :style=" `background-image: url(${item.attrs.bg.pc});`"
-                v-if="item.attrs.bg.pc"
+                :style=" `background-image: url(${item.attrs.bg.pc.path});`"
+                v-if="item.attrs.bg.pc.path"
             >
-                <img :src="item.attrs.bg.pc" style="opacity: 0" />
+                <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
             </section>
             <section
                 class="layout_bg layout_bg_mo"
-                :style=" `background-image: url(${item.attrs.bg.mo || item.attrs.bg.pc});`"
-                v-if="item.attrs.bg.mo || item.attrs.bg.pc"
+                :style=" `background-image: url(${item.attrs.bg.mo.path || item.attrs.bg.pc.path});`"
+                v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path"
             >
-                <img :src="item.attrs.bg.mo || item.attrs.bg.pc" style="opacity: 0" />
+                <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
             </section>
             <section class="layout_limit_wrapper">
-                <section class="layout_container" v-if="item.attrs.header.open">
-                    <section class="layout_header" v-html="item.attrs.header.container">
+                <section class="layout_container">
+                    <section
+                        class="layout_header"
+                        v-html="item.attrs.header.container"
+                        v-if="item.attrs.header.open"
+                    >
                         <section class="editor ck-content"></section>
                     </section>
                     <section class="layout_body">
                         <section
                             :id="layout_item.id"
                             class="layout"
-                            v-for="(layout_item, layout_key) in item.body"
-                            :key="layout_key"
+                            :class="{is_oper: layout_item.id == oper_layout_id}"
+                            v-for="(layout_item) in item.body"
+                            :key="layout_item.id"
                         >
                             <section class="row">
                                 <section
@@ -73,10 +102,19 @@
                                     v-for="(col_item,col_index) in layout_item.col_container"
                                     :key="col_index"
                                 >
-                                    <section class="editor ck-content" v-html="col_item.dom"></section>
+                                    <section
+                                        class="editor ck-content"
+                                        v-html="col_item.dom"
+                                        :style="{backgroundColor: col_item.background_color}"
+                                    ></section>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
-                                    <div class="item" data-key="editor" title="编辑">
+                                    <div
+                                        class="item"
+                                        data-key="editor"
+                                        title="编辑"
+                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
+                                    >
                                         <span class="text">编辑</span>
                                         <i class="fa fa-pencil"></i>
                                     </div>
@@ -111,7 +149,7 @@
                                         class="item"
                                         data-key="delete"
                                         title="删除"
-                                        @click="delete_layout(item.id, layout_item.id, 'up')"
+                                        @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
                                     >
                                         <span class="text">删除</span>
                                         <i class="fa fa-trash"></i>
@@ -132,6 +170,8 @@
 <script lang="ts">
 import Vue from "vue";
 import "@/pages/app/app.scss";
+import { copy } from "@/lib/plugins/unit";
+import { encrypt } from "@/lib/plugins/crypto";
 export default Vue.extend({
     data() {
         return {
@@ -144,6 +184,12 @@ export default Vue.extend({
                 this.$store.state.layout_module.layout_data ||
                 this.default_layout_groups
             );
+        },
+        oper_layout_groups_id() {
+            return this.$store.state.layout_module.oper_layout_groups_id;
+        },
+        oper_layout_id() {
+            return this.$store.state.layout_module.oper_layout_id;
         }
     },
     methods: {
@@ -172,10 +218,13 @@ export default Vue.extend({
                 dir
             });
         },
-        delete_layout_group(layout_group_id) {
+        open_delete_layout_group_dialog(ev, layout_group_id) {
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 type: "delete_layout_group",
+                option: {
+                    dialog_pos: ev.currentTarget
+                },
                 data: {
                     layout_group_id
                 }
@@ -188,18 +237,58 @@ export default Vue.extend({
                 dir
             });
         },
+        copy_layout_group(layout_group_id) {
+            let layout_group_data = JSON.stringify(
+                this.$store.getters["layout_module/search_layout_group"](
+                    layout_group_id
+                ).data
+            );
+            copy(encrypt(layout_group_data), () => {
+                this.$message({
+                    message: "代码复制成功",
+                    offset: -1,
+                    duration: 1000,
+                    type: "success"
+                });
+            });
+        },
         open_delete_layout_dialog(ev, layout_group_id, layout_id) {
-            let { top, right } = ev.currentTarget.getBoundingClientRect();
+            // let { top, right } = ev.currentTarget.getBoundingClientRect();
 
             this.$store.dispatch("delete_layout_dom_dialog_module/tab_show", {
                 turn_on: true,
                 option: {
-                    dialog_pos: [top + "px", right + "px"]
+                    dialog_pos: ev.currentTarget
                 },
                 type: "delete_layout",
                 data: {
                     layout_group_id,
                     layout_id
+                }
+            });
+        },
+        open_editor_layout_group_dialog(ev, layout_group_id, layout_id) {
+            this.$store.dispatch("editor_layout_group_dialog_module/tab_show", {
+                turn_on: true,
+                option: {
+                    dialog_pos: $(ev.currentTarget).closest(".layout_group")[0]
+                },
+                data: {
+                    layout_group_id,
+                    layout_id
+                }
+            });
+        },
+        open_editor_layout_dialog(ev, layout_group_id, layout_id, type) {
+            this.$store.dispatch("editor_layout_dialog_module/tab_show", {
+                turn_on: true,
+                option: {
+                    dialog_pos: $(ev.currentTarget).closest(".layout")[0]
+                },
+                data: {
+                    layout_group_id,
+                    layout_id,
+                    type
                 }
             });
         }
@@ -214,4 +303,12 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
+#page_body_editor-wrapper.is_editing {
+    .layout-editor_bar,
+    .layout_group-editor_bar {
+        .item {
+            display: none;
+        }
+    }
+}
 </style>

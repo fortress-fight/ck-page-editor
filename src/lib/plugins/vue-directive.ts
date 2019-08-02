@@ -25,7 +25,7 @@ export function directive(Vue: any) {
             if (param.modifiers.clipY || param.modifiers.clipX) {
                 let attr = function(value: number) {
                     return param.modifiers.clipX
-                        ? `inset(0% ${value} 0% 0%)`
+                        ? `inset(0% ${value}% 0% 0%)`
                         : `inset(0% 0% ${value}% 0%)`;
                 };
                 let tween = param.modifiers.reverse ? [0, 100] : [100, 0];
@@ -52,7 +52,8 @@ export function directive(Vue: any) {
                                 },
                                 begin: function(elements) {
                                     $(elements).css({
-                                        display: ""
+                                        display: "",
+                                        opacity: 1
                                     });
                                     $(elements).css({
                                         clipPath: attr(tween[0]),

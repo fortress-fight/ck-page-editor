@@ -53,7 +53,7 @@ body {
 .page_body_editor .layout_group {
     border: 2px solid #eee;
     border-bottom: none;
-
+    &.is_oper,
     &:hover {
         .layout_group-editor_bar {
             visibility: visible;
@@ -73,9 +73,9 @@ body {
     .layout_group-editor_bar .item:hover {
         // color: #000;
         color: #fff;
+        background: #171717;
         // box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.25);
-        background: #171717;
     }
 }
 
@@ -131,6 +131,7 @@ body {
 
 // layout
 .layout {
+    &.is_oper,
     &:hover {
         .layout-editor_bar {
             visibility: visible;

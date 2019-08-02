@@ -1,3 +1,4 @@
+import _set from "lodash/set";
 import stringRandom from "string-random";
 import Vue from "vue";
 import Vuex from "vuex";
@@ -5,54 +6,91 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 let unit_layout_module = {
-    get_layout_group_data(type, value) {
-        return {
-            id: stringRandom(16, { numbers: false }),
-            dom: null,
-            attrs: {
-                header: {
-                    open: true,
-                    container: "<p>头部</p>"
+    get_layout_group_data(type: string, value: any) {
+        let result: any;
+        if (type == "code") {
+            result = value;
+            result.id = stringRandom(16, { numbers: false });
+            result.body.forEach(layout_data => {
+                layout_data.id = stringRandom(16, { numbers: false });
+            });
+        } else {
+            result = {
+                id: stringRandom(16, { numbers: false }),
+                dom: null,
+                attrs: {
+                    header: {
+                        open: true,
+                        container: "<p>头部</p>"
+                    },
+                    footer: {
+                        open: true,
+                        container: "<p>底部</p>"
+                    },
+                    background_color: "rgba(255,255,255,0)",
+                    window_width: false,
+                    window_height: false,
+                    limit_width: false,
+                    bg: {
+                        pc: {
+                            path: "",
+                            cover: false,
+                            repeat: false,
+                            effect: "normal",
+                            size: "normal",
+                            position: "tl"
+                        },
+                        mo: {
+                            path: "",
+                            cover: false,
+                            repeat: false,
+
+                            effect: "normal",
+                            size: "normal",
+                            position: "tl"
+                        }
+                    }
                 },
-                footer: {
-                    open: true,
-                    container: "<p>底部</p>"
-                },
-                width: "",
-                space: "",
-                window_width: false,
-                limit_width: false,
-                bg: {
-                    pc: "",
-                    mo: "",
-                    cover: false,
-                    repeat: false,
-                    parallax: false,
-                    align_center: false
-                }
-            },
-            body: [this.get_layout_data(type, value)]
-        };
+                body: [this.get_layout_data(type, value)]
+            };
+        }
+        return result;
     },
     get_layout_data(type, value) {
         let result = {
             id: stringRandom(16, { numbers: false }),
             animate: 0,
+            type,
+            type_fun: value,
             x_align: false,
             y_align: false,
+            width: {
+                value: "",
+                unit: "px"
+            },
+            space: {
+                value: "",
+                unit: "px"
+            },
             body_dom: null,
-            padding_x: "",
-            padding_y: "",
-            backgroundColor: [],
+            padding_x: {
+                value: "",
+                unit: "px"
+            },
+            padding_y: {
+                value: "",
+                unit: "px"
+            },
             col_container: [],
             col: ""
         };
-        if (type == "custome") {
+        if (type == "custom") {
             let cols_dom = String(value)
                 .split("_")
                 .map(v => {
                     return {
                         col: v,
+                        background_color: "rgba(255,255,255,0)",
                         dom: "<p>编辑器</p>"
                     };
                 });
@@ -61,25 +99,39 @@ let unit_layout_module = {
         }
 
         if (type == "fun") {
-            if (value == "slider") {
-                result.col_container = [
-                    {
-                        col: 100,
-                        dom: "<div class='slider'>幻灯</div>"
-                    }
-                ];
-                result.col = value || "100";
+            switch (value) {
+                case "slider":
+                    result.col_container = [
+                        {
+                            col: 100,
+                            dom: "<div class='slider'>幻灯</div>"
+                        }
+                    ];
+                    result.col = value || "100";
+                    break;
+                case "block":
+                    result.col_container = [
+                        {
+                            col: 100,
+                            dom: "<div class='block'>分隔块</div>"
+                        }
+                    ];
+                    result.col = value || "100";
+                    break;
+
+                default:
+                    break;
             }
         }
-
         return result;
     }
 };
-
 const layout_module = {
     namespaced: true,
     state() {
         return {
+            oper_layout_groups_id: NaN,
+            oper_layout_id: NaN,
             active_layout_group_id: NaN,
             layout_data: []
         };
@@ -245,6 +297,23 @@ const layout_module = {
                 },
                 { root: true }
             );
+        },
+        set_oper_layout_groups_id({ state }, { layout_group_id }) {
+            state.oper_layout_groups_id = layout_group_id;
+        },
+        set_oper_layout_id(
+            { state, dispatch },
+            { layout_group_id, layout_id }
+        ) {
+            dispatch("set_oper_layout_groups_id", { layout_group_id });
+            state.oper_layout_id = layout_id;
+        },
+        set_layout_group_data({ state }, { layout_group_id, data }) {
+            state.layout_data.forEach((v, i) => {
+                if (layout_group_id == v.id) {
+                    state.layout_data.splice(i, 1, data);
+                }
+            });
         }
     },
     getters: {
@@ -287,7 +356,9 @@ const add_layout_dom_dialog_module = {
     state() {
         return {
             show: false,
-            option: {},
+            option: {
+                only_show: true
+            },
             type: "",
             data: {}
         };
@@ -300,12 +371,14 @@ const add_layout_dom_dialog_module = {
     actions: {
         tab_show({ commit, state }, { turn_on, type, option, data }) {
             state.show = turn_on;
+            state.option.only_show = true;
             if (turn_on == false) {
                 commit("clear_data");
+                state.option.only_show = false;
                 return false;
             }
             if (option) {
-                state.option = option;
+                state.option = Object.assign(option, state.option);
             }
             state.data = data || {};
             state.type = type;
@@ -344,10 +417,171 @@ const delete_layout_dom_dialog_module = {
     }
 };
 
+const editor_layout_group_dialog_module = {
+    namespaced: true,
+    state() {
+        return {
+            show: false,
+            option: {
+                mask: false
+            },
+
+            data: {},
+            editor_target_layout_group_data: {},
+            backup_group_data: {}
+        };
+    },
+    mutations: {
+        clear_data(state) {
+            state.data = {};
+        }
+    },
+    actions: {
+        reset_data({ state, dispatch }) {
+            dispatch(
+                "layout_module/set_layout_group_data",
+                {
+                    layout_group_id: state.editor_target_layout_group_data.id,
+                    data: JSON.parse(state.backup_group_data)
+                },
+                { root: true }
+            );
+        },
+        tab_show(
+            { state, commit, dispatch, rootGetters },
+            {
+                turn_on,
+                reset,
+
+                option,
+                data = {
+                    layout_group_id: NaN,
+                    layout_id: NaN
+                }
+            }
+        ) {
+            if (turn_on) {
+                if (option) {
+                    state.option = Object.assign(option, state.option);
+                }
+                dispatch("layout_module/set_oper_layout_groups_id", data, {
+                    root: true
+                });
+
+                state.editor_target_layout_group_data = rootGetters[
+                    "layout_module/search_layout_group"
+                ](data.layout_group_id).data;
+
+                state.backup_group_data = JSON.stringify(
+                    state.editor_target_layout_group_data
+                );
+
+                state.data = data || {};
+            } else {
+                if (reset) {
+                    dispatch("reset_data");
+                }
+
+                dispatch("layout_module/set_oper_layout_groups_id", data, {
+                    root: true
+                });
+
+                commit("clear_data");
+            }
+            state.show = turn_on;
+        }
+    }
+};
+
+const editor_layout_dialog_module = {
+    namespaced: true,
+    state() {
+        return {
+            show: false,
+            option: {
+                mask: false
+            },
+            data: {},
+            editor_target_layout_data: {},
+            backup_layout_data: {}
+        };
+    },
+
+    mutations: {
+        clear_data(state) {
+            state.data = {};
+        }
+    },
+
+    actions: {
+        change_data({ state }, { path, value }) {
+            _set(state.editor_target_layout_data, path, value);
+        },
+        reset_data({ state, dispatch }) {
+            dispatch(
+                "layout_module/set_layout_group_data",
+                {
+                    layout_group_id: state.editor_target_layout_data.id,
+                    data: JSON.parse(state.backup_group_data)
+                },
+                { root: true }
+            );
+        },
+        tab_show(
+            { state, commit, dispatch, rootGetters },
+            {
+                turn_on,
+                reset,
+                type,
+                option,
+                data = {
+                    layout_group_id: NaN,
+                    layout_id: NaN,
+                    type: "custom"
+                }
+            }
+        ) {
+            if (turn_on) {
+                if (option) {
+                    // state.option = Object.assign(option, state.option);
+                    option.mask = false;
+
+                    state.option = option;
+                }
+                dispatch("layout_module/set_oper_layout_id", data, {
+                    root: true
+                });
+
+                state.editor_target_layout_data = rootGetters[
+                    "layout_module/search_layout"
+                ](data.layout_group_id, data.layout_id).data;
+
+                state.backup_layout_data = JSON.stringify(
+                    state.editor_target_layout_data
+                );
+                state.type = type;
+                state.data = data || {};
+            } else {
+                if (reset) {
+                    dispatch("reset_data");
+                }
+                dispatch("layout_module/set_oper_layout_id", data, {
+                    root: true
+                });
+
+                commit("clear_data");
+            }
+            state.show = turn_on;
+        }
+    }
+};
+
 export default new Vuex.Store({
     modules: {
         layout_module,
         add_layout_dom_dialog_module,
-        delete_layout_dom_dialog_module
+        delete_layout_dom_dialog_module,
+        editor_layout_group_dialog_module,
+        editor_layout_dialog_module
     }
 });

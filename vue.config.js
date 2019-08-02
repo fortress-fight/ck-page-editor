@@ -67,62 +67,15 @@ function create_pages_config() {
 
 module.exports = {
     runtimeCompiler: true,
-    chainWebpack: config => {},
-    css: {
-        loaderOptions: {
-            // 给 sass-loader 传递选项
-            sass: {
-                // @/ 是 src/ 的别名
-                // 所以这里假设你有 `src/variables.scss` 这个文件
-                data: `@import "@/assets/style/mixin.scss";`,
-                use: [
-                    "vue-style-loader",
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: true
-                        }
-                    },
-                    "sass-loader"
-                ]
+    devServer: {
+        proxy: {
+            "/service": {
+                target: "http://127.0.0.1:3003/",
+                changeOrigin: true, // target是域名的话，需要这个参数，
+                secure: false // 设置支持https协议的代理
             }
         }
     },
-    pages: create_pages_config(),
-    configureWebpack: {
-        optimization: {
-            splitChunks: {
-                cacheGroups: {
-                    lib: {
-                        test: /[\\/]node_modules[\\/].+\.js$/,
-                        name: "lib",
-                        priority: 10,
-                        minChunks: 1,
-                        minSize: 1000,
-                        chunks: "all",
-                        enforce: true
-                    }
-                }
-            }
-        },
-        watchOptions: {
-            // 不监听的 node_modules 目录下的文件
-            ignored: /node_modules/
-        },
-        plugins: [
-            new webpack.ProvidePlugin({
-                $: "jquery",
-                jQuery: "jquery",
-                Velocity: "velocity-animate",
-                axios: "axios",
-                slick: "slick-carousel"
-            })
-        ]
-    }
-};
-
-module.exports = {
-    runtimeCompiler: true,
     chainWebpack: config => {},
     css: {
         loaderOptions: {
@@ -180,7 +133,8 @@ module.exports = {
                 $: "jquery",
                 jQuery: "jquery",
                 Velocity: "velocity-animate",
-                axios: "axios"
+                axios: "axios",
+                slick: "slick-carousel"
             })
         ]
     }

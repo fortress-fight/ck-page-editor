@@ -1,1 +1,5 @@
 @import "./app/main.scss";
+
+:focus {
+    outline: none;
+}
