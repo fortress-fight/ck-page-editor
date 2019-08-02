@@ -437,6 +437,14 @@ const editor_layout_group_dialog_module = {
         }
     },
     actions: {
+        change_data({ state }, { path, value }) {
+            console.log(
+                "editor_target_layout_group_data:",
+                state.editor_target_layout_group_data
+            );
+            console.log("path, value:", path, value);
+            _set(state.editor_target_layout_group_data, path, value);
+        },
         reset_data({ state, dispatch }) {
             dispatch(
                 "layout_module/set_layout_group_data",

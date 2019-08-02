@@ -213,6 +213,7 @@ export default Vue.extend({
             }
             let dialog_prop_data = this.$store.state
                 .add_layout_dom_dialog_module.data;
+
             if (this.whitch_dialog == "add_layout_group") {
                 this.$store.dispatch("layout_module/add_layout_group", {
                     type: this.type,

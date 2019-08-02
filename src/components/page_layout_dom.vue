@@ -80,13 +80,24 @@
             </section>
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
-                    <section
-                        class="layout_header"
-                        v-html="item.attrs.header.container"
-                        v-if="item.attrs.header.open"
-                    >
-                        <section class="editor ck-content"></section>
-                    </section>
+                    <!--  -->
+                    <template v-if="item.attrs.header.open">
+                        <!-- <section class="layout_header">
+                            <section class="editor ck-content">
+                                <c-ckeditor
+                                    editor="ClassicEditor"
+                                    v-model="item.attrs.header.container"
+                                ></c-ckeditor>
+                            </section>
+                        </section>-->
+                        <section class="layout_header">
+                            <section
+                                class="editor ck-content"
+                                v-html="item.attrs.header.container"
+                                @click="set_editor($event, item.attrs.header.container)"
+                            ></section>
+                        </section>
+                    </template>
                     <section class="layout_body">
                         <section
                             :id="layout_item.id"
@@ -172,9 +183,14 @@ import Vue from "vue";
 import "@/pages/app/app.scss";
 import { copy } from "@/lib/plugins/unit";
 import { encrypt } from "@/lib/plugins/crypto";
+import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
         return {
+            editor: {
+                value: "",
+                box: document.body
+            },
             default_layout_groups: []
         };
     },
@@ -291,6 +307,10 @@ export default Vue.extend({
                     type
                 }
             });
+        },
+        set_editor(ev, data) {
+            this.editor.value = data;
+            this.editor.box = ev.currentTarget;
         }
     },
     props: {
@@ -298,8 +318,7 @@ export default Vue.extend({
             type: Boolean,
             default: true
         }
-    },
-    beforeMount() {}
+    }
 });
 </script>
 <style lang="scss">

@@ -8,6 +8,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-vue": "^1.0.0-beta.2",
     "@types/jquery": "^3.3.30",
     "@types/slick-carousel": "^1.6.33",
     "@types/velocity-animate": "^1.2.33",
