@@ -21,9 +21,9 @@ body {
     }
 
     .ck-widget.table
-        td.ck-editor__nested-editable.ck-editor__nested-editable_focused,
+    td.ck-editor__nested-editable.ck-editor__nested-editable_focused,
     .ck-widget.table
-        th.ck-editor__nested-editable.ck-editor__nested-editable_focused {
+    th.ck-editor__nested-editable.ck-editor__nested-editable_focused {
         background: rgba(123, 123, 123, 0.4);
     }
 
@@ -131,6 +131,7 @@ body {
 
 // layout
 .layout {
+    &.is_oper,
     &:hover {
         .layout-editor_bar {
             visibility: visible;
@@ -661,11 +662,7 @@ body {
         }
     }
 
-    &[data-align_center="true"]
-        > .layout_limit_wrapper
-        > .layout_container
-        > .row
-        > .col {
+    &[data-align_center="true"] > .layout_limit_wrapper > .layout_container > .row > .col {
         display: flex;
 
         align-items: center;
@@ -1035,14 +1032,14 @@ body {
 @keyframes fadeInUp {
     from {
         -webkit-transform: translate3d(0, 100%, 0);
-        transform: translate3d(0, 100%, 0);
+                transform: translate3d(0, 100%, 0);
 
         opacity: 0;
     }
 
     to {
         -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
 
         opacity: 1;
     }
@@ -1051,14 +1048,14 @@ body {
 @keyframes fadeInRight {
     from {
         -webkit-transform: translate3d(100%, 0, 0);
-        transform: translate3d(100%, 0, 0);
+                transform: translate3d(100%, 0, 0);
 
         opacity: 0;
     }
 
     to {
         -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
 
         opacity: 1;
     }
@@ -1079,14 +1076,14 @@ body {
 @keyframes fadeInLeft {
     from {
         -webkit-transform: translate3d(-100%, 0, 0);
-        transform: translate3d(-100%, 0, 0);
+                transform: translate3d(-100%, 0, 0);
 
         opacity: 0;
     }
 
     to {
         -webkit-transform: translate3d(0, 0, 0);
-        transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
 
         opacity: 1;
     }

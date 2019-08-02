@@ -12,7 +12,7 @@
         </template>
         <template #body>
             <c-tab-card :tab_cards="tab_cards" ref="tab_card">
-                <template #custome_layout>
+                <template #custom_layout>
                     <div class="page_editor-layout" data-pop="body">
                         <div
                             class="page_editor-layout_options layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
@@ -21,9 +21,9 @@
                                 v-for="(item, key) in custom_options"
                                 :key="key"
                                 class="item layout_grid"
-                                :class="[`layout_grid-col-${item.grid_col}`, {'layout_grid-colspac-3': item.grid_col > 1}, {'active': type=='custome' && value == item.value}]"
+                                :class="[`layout_grid-col-${item.grid_col}`, {'layout_grid-colspac-3': item.grid_col > 1}, {'active': type=='custom' && value == item.value}]"
                                 :data-value="item.value"
-                                @click="type='custome'; value = item.value"
+                                @click="type='custom'; value = item.value"
                             >
                                 <div
                                     v-for="(son_item, son_key) in item.value.split('_')"
@@ -84,7 +84,7 @@ import { decrypt } from "@/lib/plugins/crypto";
 export default Vue.extend({
     data() {
         return {
-            type: "custome",
+            type: "custom",
             value: "100",
             code: "",
             custom_options: [
@@ -159,7 +159,7 @@ export default Vue.extend({
             let result = [
                 {
                     nav: "自定义布局",
-                    card_slot_name: "custome_layout"
+                    card_slot_name: "custom_layout"
                 },
                 {
                     nav: "功能布局",

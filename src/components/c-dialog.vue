@@ -138,15 +138,16 @@ export default Vue.extend({
         }
     },
     methods: {
-        correcting_pos() {
+        correcting_pos(dom) {
             let dialog_el = this.$refs.dialog;
             if (!dialog_el) return false;
 
             let dialog_pos = this.calculate_dialog_pos(
                 dialog_el,
-                this.c_options.dialog_pos,
+                dom,
                 this.c_options.dialog_pos_detail
             );
+
             if (dialog_pos) {
                 let dialog_target_post = adjustment_pos(
                     dialog_el as HTMLElement,
@@ -177,7 +178,7 @@ export default Vue.extend({
                     },
                     {
                         begin: elements => {
-                            this.correcting_pos();
+                            this.correcting_pos(this.c_options.dialog_pos);
                             $(dialog_el).css({
                                 transform: "scale(0.95)"
                             });
@@ -191,7 +192,7 @@ export default Vue.extend({
                             tweenValue
                         ) => {
                             if (this.c_is_show) {
-                                this.correcting_pos();
+                                this.correcting_pos(this.c_options.dialog_pos);
                             }
 
                             $(elements)
@@ -344,7 +345,7 @@ export default Vue.extend({
     mounted() {
         let time;
         this.window_resize = () => {
-            this.correcting_pos();
+            this.correcting_pos(this.$refs.dialog);
         };
         $(window).on("resize", this.window_resize);
         $(this.$el).appendTo("body");

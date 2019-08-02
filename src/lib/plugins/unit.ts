@@ -85,21 +85,24 @@ export function adjustment_pos(
         pos = { left: oper_dom_pos.left, top: oper_dom_pos.top };
     }
 
-    result = pos;
-    if (
+    let beyond_width =
         pos.left + oper_dom_pos.client_width + option.distance >
-        document.body.clientWidth
-    ) {
+        document.body.clientWidth;
+
+    let beyond_height =
+        pos.top + oper_dom_pos.client_height + option.distance >
+        document.body.clientHeight;
+
+    result = pos;
+    if (!beyond_width && !beyond_height) return false;
+    if (beyond_width) {
         result.left =
             document.body.clientWidth -
             oper_dom_pos.client_width -
             option.distance;
     }
 
-    if (
-        pos.top + oper_dom_pos.client_height + option.distance >
-        document.body.clientHeight
-    ) {
+    if (beyond_height) {
         result.top = option.distance;
     }
 

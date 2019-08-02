@@ -1,3 +1,4 @@
+import _set from "lodash/set";
 import stringRandom from "string-random";
 import Vue from "vue";
 import Vuex from "vuex";
@@ -59,21 +60,37 @@ let unit_layout_module = {
         let result = {
             id: stringRandom(16, { numbers: false }),
             animate: 0,
+            type,
+            type_fun: value,
             x_align: false,
             y_align: false,
+            width: {
+                value: "",
+                unit: "px"
+            },
+            space: {
+                value: "",
+                unit: "px"
+            },
             body_dom: null,
-            padding_x: "",
-            padding_y: "",
-            backgroundColor: [],
+            padding_x: {
+                value: "",
+                unit: "px"
+            },
+            padding_y: {
+                value: "",
+                unit: "px"
+            },
             col_container: [],
             col: ""
         };
-        if (type == "custome") {
+        if (type == "custom") {
             let cols_dom = String(value)
                 .split("_")
                 .map(v => {
                     return {
                         col: v,
+                        background_color: "rgba(255,255,255,0)",
                         dom: "<p>编辑器</p>"
                     };
                 });
@@ -114,6 +131,7 @@ const layout_module = {
     state() {
         return {
             oper_layout_groups_id: NaN,
+            oper_layout_id: NaN,
             active_layout_group_id: NaN,
             layout_data: []
         };
@@ -282,6 +300,13 @@ const layout_module = {
         },
         set_oper_layout_groups_id({ state }, { layout_group_id }) {
             state.oper_layout_groups_id = layout_group_id;
+        },
+        set_oper_layout_id(
+            { state, dispatch },
+            { layout_group_id, layout_id }
+        ) {
+            dispatch("set_oper_layout_groups_id", { layout_group_id });
+            state.oper_layout_id = layout_id;
         },
         set_layout_group_data({ state }, { layout_group_id, data }) {
             state.layout_data.forEach((v, i) => {
@@ -477,8 +502,8 @@ const editor_layout_dialog_module = {
                 mask: false
             },
             data: {},
-            editor_target_layout_group_data: {},
-            backup_group_data: {}
+            editor_target_layout_data: {},
+            backup_layout_data: {}
         };
     },
 
@@ -489,11 +514,14 @@ const editor_layout_dialog_module = {
     },
 
     actions: {
+        change_data({ state }, { path, value }) {
+            _set(state.editor_target_layout_data, path, value);
+        },
         reset_data({ state, dispatch }) {
             dispatch(
                 "layout_module/set_layout_group_data",
                 {
-                    layout_group_id: state.editor_target_layout_group_data.id,
+                    layout_group_id: state.editor_target_layout_data.id,
                     data: JSON.parse(state.backup_group_data)
                 },
                 { root: true }
@@ -508,35 +536,38 @@ const editor_layout_dialog_module = {
                 option,
                 data = {
                     layout_group_id: NaN,
-                    layout_id: NaN
+                    layout_id: NaN,
+                    type: "custom"
                 }
             }
         ) {
             if (turn_on) {
                 if (option) {
-                    state.option = Object.assign(option, state.option);
+                    // state.option = Object.assign(option, state.option);
+                    option.mask = false;
+
+                    state.option = option;
                 }
-                // dispatch("layout_module/set_oper_layout_groups_id", data, {
-                //     root: true
-                // });
+                dispatch("layout_module/set_oper_layout_id", data, {
+                    root: true
+                });
 
-                // state.editor_target_layout_group_data = rootGetters[
-                //     "layout_module/search_layout_group"
-                // ](data.layout_group_id).data;
+                state.editor_target_layout_data = rootGetters[
+                    "layout_module/search_layout"
+                ](data.layout_group_id, data.layout_id).data;
 
-                // state.backup_group_data = JSON.stringify(
-                //     state.editor_target_layout_group_data
-                // );
+                state.backup_layout_data = JSON.stringify(
+                    state.editor_target_layout_data
+                );
                 state.type = type;
                 state.data = data || {};
             } else {
                 if (reset) {
                     dispatch("reset_data");
                 }
-
-                // dispatch("layout_module/set_oper_layout_groups_id", data, {
-                //     root: true
-                // });
+                dispatch("layout_module/set_oper_layout_id", data, {
+                    root: true
+                });
 
                 commit("clear_data");
             }

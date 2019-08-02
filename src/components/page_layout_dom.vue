@@ -91,6 +91,7 @@
                         <section
                             :id="layout_item.id"
                             class="layout"
+                            :class="{is_oper: layout_item.id == oper_layout_id}"
                             v-for="(layout_item) in item.body"
                             :key="layout_item.id"
                         >
@@ -101,14 +102,18 @@
                                     v-for="(col_item,col_index) in layout_item.col_container"
                                     :key="col_index"
                                 >
-                                    <section class="editor ck-content" v-html="col_item.dom"></section>
+                                    <section
+                                        class="editor ck-content"
+                                        v-html="col_item.dom"
+                                        :style="{backgroundColor: col_item.background_color}"
+                                    ></section>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
                                     <div
                                         class="item"
                                         data-key="editor"
                                         title="编辑"
-                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id)"
+                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
                                     >
                                         <span class="text">编辑</span>
                                         <i class="fa fa-pencil"></i>
@@ -182,6 +187,9 @@ export default Vue.extend({
         },
         oper_layout_groups_id() {
             return this.$store.state.layout_module.oper_layout_groups_id;
+        },
+        oper_layout_id() {
+            return this.$store.state.layout_module.oper_layout_id;
         }
     },
     methods: {
@@ -271,7 +279,7 @@ export default Vue.extend({
                 }
             });
         },
-        open_editor_layout_dialog(ev, layout_group_id, layout_id) {
+        open_editor_layout_dialog(ev, layout_group_id, layout_id, type) {
             this.$store.dispatch("editor_layout_dialog_module/tab_show", {
                 turn_on: true,
                 option: {
@@ -279,7 +287,8 @@ export default Vue.extend({
                 },
                 data: {
                     layout_group_id,
-                    layout_id
+                    layout_id,
+                    type
                 }
             });
         }
