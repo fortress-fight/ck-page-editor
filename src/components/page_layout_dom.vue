@@ -1,8 +1,9 @@
 <template>
     <div
         id="page_body_editor-wrapper"
+        :data-type="editor_type && `${editor_type}-editing`"
         class="page_body_editor-wrapper"
-        :class="{is_editing: !!oper_layout_groups_id}"
+        :class="{is_editing: editor_type}"
     >
         <div
             :id="item.id"
@@ -80,24 +81,13 @@
             </section>
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
-                    <!--  -->
-                    <template v-if="item.attrs.header.open">
-                        <!-- <section class="layout_header">
-                            <section class="editor ck-content">
-                                <c-ckeditor
-                                    editor="ClassicEditor"
-                                    v-model="item.attrs.header.container"
-                                ></c-ckeditor>
-                            </section>
-                        </section>-->
-                        <section class="layout_header">
-                            <section
-                                class="editor ck-content"
-                                v-html="item.attrs.header.container"
-                                @click="set_editor($event, item.attrs.header.container)"
-                            ></section>
-                        </section>
-                    </template>
+                    <section
+                        :id="item.attrs.header.id"
+                        v-show="item.attrs.header.open"
+                        class="layout_header editor_wrapper"
+                    >
+                        <section class="editor ck-content" v-html="item.attrs.header.container"></section>
+                    </section>
                     <section class="layout_body">
                         <section
                             :id="layout_item.id"
@@ -108,16 +98,19 @@
                         >
                             <section class="row">
                                 <section
-                                    class="col"
+                                    :id="col_item.id"
+                                    class="col editor_wrapper"
                                     :class="`col-${col_item.col}`"
                                     v-for="(col_item,col_index) in layout_item.col_container"
+                                    :style="{backgroundColor: col_item.background_color}"
                                     :key="col_index"
                                 >
                                     <section
                                         class="editor ck-content"
-                                        v-html="col_item.dom"
-                                        :style="{backgroundColor: col_item.background_color}"
+                                        v-html="col_item.container"
+                                        v-if="layout_item.type == 'custom'"
                                     ></section>
+                                    <section v-html="col_item.container" v-else></section>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
                                     <div
@@ -170,7 +163,11 @@
                         </section>
                     </section>
 
-                    <section class="layout_footer" v-if="item.attrs.footer.open">
+                    <section
+                        class="layout_footer editor_wrapper"
+                        v-show="item.attrs.footer.open"
+                        :id="item.attrs.footer.id"
+                    >
                         <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
                     </section>
                 </section>
@@ -187,17 +184,17 @@ import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
         return {
-            editor: {
-                value: "",
-                box: document.body
-            },
             default_layout_groups: []
         };
     },
     computed: {
+        editor_type() {
+            return this.$store.state.layout_module.editor_type;
+        },
+
         layout_groups() {
             return (
-                this.$store.state.layout_module.layout_data ||
+                this.$store.state.layout_module.all_layouts_data ||
                 this.default_layout_groups
             );
         },
@@ -307,10 +304,6 @@ export default Vue.extend({
                     type
                 }
             });
-        },
-        set_editor(ev, data) {
-            this.editor.value = data;
-            this.editor.box = ev.currentTarget;
         }
     },
     props: {
@@ -322,9 +315,57 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
-#page_body_editor-wrapper.is_editing {
+#page_body_editor-wrapper {
+    .layout_editor {
+        position: relative;
+    }
+    &.is_editing {
+        .layout-editor_bar .item,
+        .layout_group-editor_bar .item {
+            display: none;
+        }
+        &[data-type="layout-editing"] {
+            .layout_group.is_oper .col.editor_wrapper {
+                position: relative;
+                .editor:not(.layout_editor) {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0;
+                    visibility: hidden;
+                }
+            }
+        }
+        &[data-type="layout_group-editing"] {
+            .layout_group.is_oper .layout_container > .editor_wrapper {
+                position: relative;
+                .editor:not(.layout_editor) {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0;
+                    visibility: hidden;
+                }
+            }
+        }
+    }
+}
+#page_body_editor-wrapper {
+    .ck-content {
+        position: relative;
+        width: 100%;
+    }
     .layout-editor_bar,
     .layout_group-editor_bar {
+        z-index: 500;
+    }
+    .is_editing {
         .item {
             display: none;
         }

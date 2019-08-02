@@ -228,6 +228,7 @@ export default Vue.extend({
             this.cancel_dialog.show = true;
         },
         layout_editor_confirm() {
+            this.$store.dispatch("layout_editor_manage_module/save_editor");
             this.$store.dispatch("editor_layout_group_dialog_module/tab_show", {
                 turn_on: false
             });
@@ -235,6 +236,7 @@ export default Vue.extend({
         cancel_change_confirm() {
             this.cancel_dialog.show = false;
             this.$el.style.visibility = "hidden";
+
             this.$nextTick(() => {
                 this.$store.dispatch(
                     "editor_layout_group_dialog_module/tab_show",

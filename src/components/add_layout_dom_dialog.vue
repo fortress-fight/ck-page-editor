@@ -197,7 +197,6 @@ export default Vue.extend({
             if (this.type === "code") {
                 try {
                     result = JSON.parse(decrypt(result));
-                    console.log(result);
                     if (!result && !result.id) {
                         throw new Error("格式错误");
                     }

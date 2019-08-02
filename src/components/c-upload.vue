@@ -200,16 +200,13 @@ export default Vue.extend({
             set(new_value) {
                 let result = Object.assign(this.value, new_value);
                 this.img_prev_link = result.path;
-                console.log(result);
                 this.$emit("input", result);
             }
         }
     },
     methods: {
         upload() {
-            console.log(
-                this.$refs.upload_btn.$refs["upload-inner"].handleClick()
-            );
+            this.$refs.upload_btn.$refs["upload-inner"].handleClick();
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -350,7 +347,7 @@ export default Vue.extend({
 
             cursor: pointer;
             -webkit-transition: color 0.2s ease;
-                    transition: color 0.2s ease;
+            transition: color 0.2s ease;
 
             color: #a7a7a7;
             border-radius: 0;
