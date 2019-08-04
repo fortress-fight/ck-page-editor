@@ -2,6 +2,7 @@ import _set from "lodash/set";
 import stringRandom from "string-random";
 import Vue from "vue";
 import Vuex from "vuex";
+import vueDirective from "./lib/plugins/vue-directive";
 
 Vue.use(Vuex);
 
@@ -461,7 +462,8 @@ const editor_layout_group_dialog_module = {
         return {
             show: false,
             option: {
-                mask: false
+                mask: false,
+                dialog_pos: document.body
             },
 
             data: {},
@@ -511,7 +513,7 @@ const editor_layout_group_dialog_module = {
         ) {
             if (turn_on) {
                 if (option) {
-                    state.option = Object.assign(option, state.option);
+                    state.option = Object.assign(state.option, option);
                 }
 
                 commit("layout_module/set_editor_type", "layout_group", {
@@ -565,7 +567,8 @@ const editor_layout_dialog_module = {
         return {
             show: false,
             option: {
-                mask: false
+                mask: false,
+                dialog_pos: document.body
             },
             data: {},
             editor_target_layout_data: {},
@@ -621,9 +624,9 @@ const editor_layout_dialog_module = {
             if (turn_on) {
                 if (option) {
                     // state.option = Object.assign(option, state.option);
-                    option.mask = false;
+                    // option.mask = false;
 
-                    state.option = option;
+                    state.option = Object.assign(state.option, option);
                 }
 
                 commit("layout_module/set_editor_type", "layout", {
