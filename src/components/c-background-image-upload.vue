@@ -347,7 +347,7 @@ export default Vue.extend({
 
             cursor: pointer;
             -webkit-transition: color 0.2s ease;
-            transition: color 0.2s ease;
+                    transition: color 0.2s ease;
 
             color: #a7a7a7;
             border-radius: 0;

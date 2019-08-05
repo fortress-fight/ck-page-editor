@@ -84,18 +84,18 @@
                             <c-tab-card :tab_cards="background_upload_cards">
                                 <template #background_upload_pc>
                                     <div class="layout_uploder_wrapper">
-                                        <c-upload
+                                        <c-background-image-upload
                                             tip="上传背景图"
                                             v-model="layout_group_data.attrs.bg.pc"
-                                        ></c-upload>
+                                        ></c-background-image-upload>
                                     </div>
                                 </template>
                                 <template #background_upload_mo>
                                     <div class="layout_uploder_wrapper">
-                                        <c-upload
+                                        <c-background-image-upload
                                             tip="上传背景图"
                                             v-model="layout_group_data.attrs.bg.mo"
-                                        ></c-upload>
+                                        ></c-background-image-upload>
                                     </div>
                                 </template>
                             </c-tab-card>

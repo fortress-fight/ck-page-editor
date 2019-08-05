@@ -1,8 +1,8 @@
+import C_Background_Image_Upload from "@/components/c-background-image-upload.vue";
 import C_Icon from "@/components/c-icon.vue";
 import C_Input from "@/components/c-input.vue";
 import C_Radio from "@/components/c-radio.vue";
 import C_Switch from "@/components/c-switch.vue";
-import C_Upload from "@/components/c-upload.vue";
 import {
     Alert,
     Aside,
@@ -83,8 +83,9 @@ import {
     Upload
 } from "element-ui";
 import Vue from "vue";
+
 Vue.component("c-input", C_Input);
-Vue.component("c-upload", C_Upload);
+Vue.component("c-background-image-upload", C_Background_Image_Upload);
 Vue.component("c-switch", C_Switch);
 Vue.component("c-radio", C_Radio);
 Vue.component("c-icon", C_Icon);
