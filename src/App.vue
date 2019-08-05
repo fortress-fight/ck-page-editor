@@ -10,8 +10,9 @@
         <delete-layout-group-dialog></delete-layout-group-dialog>
         <editor-layout-group-panel></editor-layout-group-panel>
         <editor-layout-panel></editor-layout-panel>
-
-        <layout-editor></layout-editor>
+        <keep-alive>
+            <layout-editor></layout-editor>
+        </keep-alive>
     </div>
 </template>
 <script lang="ts">

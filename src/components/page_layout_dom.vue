@@ -362,6 +362,13 @@ export default Vue.extend({
             type: Boolean,
             default: true
         }
+    },
+    mounted() {
+        $("body").on("click", () => {
+            console.log(
+                this.$store.getters["layout_module/layout_dom"].$el.outerHTML
+            );
+        });
     }
 });
 </script>

@@ -1,3 +1,4 @@
+import layout_components from "@/components/page_layout_dom.vue";
 import _set from "lodash/set";
 import stringRandom from "string-random";
 import Vue from "vue";
@@ -398,6 +399,14 @@ const layout_module = {
         },
         active_layout_group: (state, getters) => {
             return getters.search_layout_group(state.active_layout_group_index);
+        },
+        layout_dom: (state)=> {
+            return  new Vue({
+                store,
+                render(h) {
+                    return h(layout_components)
+                },
+            }).$mount();
         }
     }
 };
@@ -764,7 +773,7 @@ const layout_editor_manage_module = {
     }
 };
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
     modules: {
         layout_module,
         add_layout_dom_dialog_module,
@@ -774,3 +783,5 @@ export default new Vuex.Store({
         layout_editor_manage_module
     }
 });
+
+export default store
