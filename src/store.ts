@@ -25,6 +25,8 @@ let unit_layout_module = {
             result = {
                 id: stringRandom(16, { numbers: false }),
                 dom: null,
+                type,
+                type_detail: type == "custom" ? "custom" : value,
                 attrs: {
                     header: {
                         open: true,
@@ -66,16 +68,14 @@ let unit_layout_module = {
         return result;
     },
     get_layout_data(type, value) {
-        let result:any;
-        if (type=='code') {
+        let result: any;
+        if (type == "code") {
             result = value;
-            console.log('result:', result)
             result.id = stringRandom(16, { numbers: false });
             result.col_container.forEach(col => {
                 col.id = stringRandom(16, { numbers: false });
             });
         } else {
-
             result = {
                 id: stringRandom(16, { numbers: false }),
                 animate: 0,
@@ -119,7 +119,7 @@ let unit_layout_module = {
                 result.col_container = cols_dom;
                 result.col = value || "100";
             }
-    
+
             if (type == "fun") {
                 switch (value) {
                     case "slider":
@@ -129,7 +129,9 @@ let unit_layout_module = {
                                 id: stringRandom(16, {
                                     numbers: false
                                 }),
-                                container: "<div class='slider'>幻灯</div>"
+                                container: [{
+                                    img: "https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
+                                }]
                             }
                         ];
                         result.col = value || "100";
@@ -146,7 +148,7 @@ let unit_layout_module = {
                         ];
                         result.col = value || "100";
                         break;
-    
+
                     default:
                         break;
                 }

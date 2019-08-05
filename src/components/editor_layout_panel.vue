@@ -165,7 +165,18 @@
                     </div>
                 </template>
                 <template #slider_container>
-                    <div>123</div>
+                    <div class="attr_set_group">
+                        <div
+                            class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                        >
+                            <div
+                                v-for="(item_img, key) in layout_data.col_container[0].container"
+                                :key="key"
+                            >
+                                <img :src="item_img.img" alt />
+                            </div>
+                        </div>
+                    </div>
                 </template>
                 <template #slider_attribute>
                     <div>321</div>
@@ -215,12 +226,20 @@ export default Vue.extend({
             ],
             slider_tab_cards: [
                 {
-                    nav: "幻灯内容",
+                    nav: "幻灯",
                     card_slot_name: "slider_container"
                 },
                 {
-                    nav: "幻灯属性",
-                    card_slot_name: "slider_attribute"
+                    nav: "结构",
+                    card_slot_name: "layout_dom"
+                },
+                {
+                    nav: "属性",
+                    card_slot_name: "layout_attr"
+                },
+                {
+                    nav: "动效",
+                    card_slot_name: "layout_animate"
                 }
             ],
             dragger_option: {

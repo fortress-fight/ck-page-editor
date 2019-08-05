@@ -105,12 +105,32 @@
                                     :style="{backgroundColor: col_item.background_color}"
                                     :key="col_index"
                                 >
-                                    <section
-                                        class="editor ck-content"
-                                        v-html="col_item.container"
-                                        v-if="layout_item.type == 'custom'"
-                                    ></section>
-                                    <section v-html="col_item.container" v-else></section>
+                                    <template v-if="item.type_detail==`custom`">
+                                        <section
+                                            class="editor ck-content"
+                                            v-html="col_item.container"
+                                        ></section>
+                                    </template>
+                                    <template v-if="item.type_detail=='slider'">
+                                        <div class="slider">
+                                            <template v-if="col_item.container.length">
+                                                <div
+                                                    class="slider_item"
+                                                    v-for="(slider_item, key) in col_item.container"
+                                                    :key="key"
+                                                >
+                                                    <img :src="slider_item.img" alt srcset />
+                                                </div>
+                                            </template>
+                                            <div class="slider_item" v-else>
+                                                <img
+                                                    src="https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
+                                                    title="占位图片"
+                                                    srcset
+                                                />
+                                            </div>
+                                        </div>
+                                    </template>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
                                     <div
