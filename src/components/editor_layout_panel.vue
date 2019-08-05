@@ -165,7 +165,18 @@
                     </div>
                 </template>
                 <template #slider_container>
-                    <div>123</div>
+                    <div class="attr_set_group">
+                        <div
+                            class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                        >
+                            <div
+                                v-for="(item_img, key) in layout_data.col_container[0].container"
+                                :key="key"
+                            >
+                                <img :src="item_img.img" alt />
+                            </div>
+                        </div>
+                    </div>
                 </template>
                 <template #slider_attribute>
                     <div>321</div>
@@ -215,12 +226,20 @@ export default Vue.extend({
             ],
             slider_tab_cards: [
                 {
-                    nav: "幻灯内容",
+                    nav: "幻灯",
                     card_slot_name: "slider_container"
                 },
                 {
-                    nav: "幻灯属性",
-                    card_slot_name: "slider_attribute"
+                    nav: "结构",
+                    card_slot_name: "layout_dom"
+                },
+                {
+                    nav: "属性",
+                    card_slot_name: "layout_attr"
+                },
+                {
+                    nav: "动效",
+                    card_slot_name: "layout_animate"
                 }
             ],
             dragger_option: {
@@ -292,7 +311,7 @@ export default Vue.extend({
                     result = this.custom_tab_cards;
                     break;
                 case "fun":
-                    result = this[this.layout_data.type_fun + `_tab_cards`];
+                    result = this[this.layout_data.type_detail + `_tab_cards`];
                     break;
 
                 default:
@@ -308,6 +327,8 @@ export default Vue.extend({
             this.cancel_dialog.show = true;
         },
         layout_editor_confirm() {
+            this.$store.dispatch("layout_editor_manage_module/save_editor");
+
             this.$store.dispatch("editor_layout_dialog_module/tab_show", {
                 turn_on: false
             });
@@ -315,6 +336,9 @@ export default Vue.extend({
         cancel_change_confirm() {
             this.cancel_dialog.show = false;
             this.$el.style.visibility = "hidden";
+
+            this.$store.dispatch("layout_editor_manage_module/cancel_editor");
+
             this.$nextTick(() => {
                 this.$store.dispatch("editor_layout_dialog_module/tab_show", {
                     turn_on: false,

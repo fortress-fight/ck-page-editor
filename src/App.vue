@@ -10,6 +10,8 @@
         <delete-layout-group-dialog></delete-layout-group-dialog>
         <editor-layout-group-panel></editor-layout-group-panel>
         <editor-layout-panel></editor-layout-panel>
+
+        <layout-editor></layout-editor>
     </div>
 </template>
 <script lang="ts">
@@ -21,6 +23,7 @@ import editor_layout_group_panel from "@/components/editor_layout_group_panel.vu
 import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 
+import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
         return {};
@@ -30,7 +33,8 @@ export default Vue.extend({
         "delete-layout-group-dialog": delete_layout_dom_dialog,
         "editor-layout-group-panel": editor_layout_group_panel,
         "page-layout-dom": page_layout_dom,
-        "editor-layout-panel": editor_layout_panel
+        "editor-layout-panel": editor_layout_panel,
+        "layout-editor": layout_editor
     },
     methods: {
         add_layout() {

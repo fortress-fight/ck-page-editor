@@ -162,51 +162,62 @@ export default Vue.extend({
             (this as any).set_dialog_arrow_pos();
         },
         pop_in_before_enter(el) {
-            $(el).css({ opacity: 0, transition: "0s" });
+            let dialog_el = this.$refs.dialog;
+            $(el).css({
+                opacity: 0,
+                transition: "0s"
+            });
+            $(dialog_el).css({
+                transform: "scale(0.95)"
+            });
             if (this.c_options.only_show) {
                 dialog_manager.only_show(this.id);
             }
         },
         pop_in_enter(el, done) {
             let dialog_el = this.$refs.dialog;
-            $(el)
-                .velocity("stop")
-                .velocity(
-                    {
-                        opacity: 1,
-                        tween: [1, 0.95]
-                    },
-                    {
-                        begin: elements => {
-                            this.correcting_pos(this.c_options.dialog_pos);
-                            $(dialog_el).css({
-                                transform: "scale(0.95)"
-                            });
-                            this.$emit("dialog_before_enter");
+            this.$nextTick().then(() => {
+                $(el)
+                    .velocity("stop")
+                    .velocity(
+                        {
+                            opacity: 1,
+                            tween: [1, 0.95]
                         },
-                        progress: (
-                            elements,
-                            complete,
-                            remaining,
-                            start,
-                            tweenValue
-                        ) => {
-                            if (this.c_is_show) {
+                        {
+                            begin: elements => {
                                 this.correcting_pos(this.c_options.dialog_pos);
-                            }
-
-                            $(elements)
-                                .find(".dialog")
-                                .css({
-                                    transform: "scale(" + tweenValue + ")"
+                                $(dialog_el).css({
+                                    transform: "scale(0.95)"
                                 });
-                        },
-                        complete: elements => {
-                            this.$emit("dialog_enter");
-                        },
-                        duration: 150
-                    }
-                );
+                                this.$emit("dialog_before_enter");
+                            },
+                            progress: (
+                                elements,
+                                complete,
+                                remaining,
+                                start,
+                                tweenValue
+                            ) => {
+                                if (this.c_is_show) {
+                                    this.correcting_pos(
+                                        this.c_options.dialog_pos
+                                    );
+                                }
+
+                                $(elements)
+                                    .find(".dialog")
+                                    .css({
+                                        transform: "scale(" + tweenValue + ")"
+                                    });
+                            },
+                            complete: elements => {
+                                this.$emit("dialog_enter");
+                            },
+                            duration: 200
+                        }
+                    );
+            });
         },
         pop_leave(el, done) {
             $(el)
@@ -466,7 +477,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-// background: #f5f5f5;
+        // background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -530,7 +541,7 @@ export default Vue.extend({
 
             width: 100%;
 
-// margin-right: -10px;
+            // margin-right: -10px;
 
             align-items: center;
 
@@ -566,7 +577,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-// margin-right: 10px;
+            // margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;

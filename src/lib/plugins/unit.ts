@@ -103,7 +103,17 @@ export function adjustment_pos(
     }
 
     if (beyond_height) {
-        result.top = option.distance;
+        if (
+            oper_dom_pos.client_height >
+            document.body.clientHeight + 2 * option.distance
+        ) {
+            result.top = option.distance;
+        } else {
+            result.top =
+                document.body.clientHeight -
+                oper_dom_pos.client_height -
+                option.distance;
+        }
     }
 
     return result;
