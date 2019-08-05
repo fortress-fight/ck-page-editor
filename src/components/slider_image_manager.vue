@@ -1,20 +1,34 @@
 <template>
     <div class="slider_image_manager">
-        <div
-            class="slider_image_manager-slider_item_list layout_grid layout_grid-col-4 layout_grid-rowspac-5 layout_grid-colspac-5"
-        >
+        <div class="slider_image_manager-container">
             <div
-                class="slider_image_manager-slider_item"
-                v-for="(item_img, key) in value"
-                :key="key"
+                class="slider_image_manager-slider_item_list layout_grid layout_grid-col-4 layout_grid-rowspac-5 layout_grid-colspac-5"
             >
-                <div class="img_wrapper" :style="{'background-image': `url(${item_img.img})`}"></div>
+                <div
+                    class="slider_image_manager-slider_item"
+                    v-for="(item_img, key) in c_value"
+                    :key="key"
+                >
+                    <div class="img_wrapper" :style="{'background-image': `url(${item_img.img})`}"></div>
+                </div>
             </div>
         </div>
-        <div class="slider_item-add_btn">
-            <i class="ic fa fa-plus"></i>
-            <span class="text">添加幻灯片</span>
-        </div>
+        <c-upload
+            class="slider_item-add_btn"
+            name="Filedata"
+            ref="upload_btn"
+            action="/service"
+            accept="image/*"
+            :multiple="true"
+            :with-credentials="true"
+            :before-upload="before_upload"
+            :on-success="upload_suc"
+        >
+            <div>
+                <i class="ic fa fa-plus"></i>
+                <span class="text">添加幻灯片</span>
+            </div>
+        </c-upload>
     </div>
 </template>
 <script lang="ts">
@@ -23,10 +37,47 @@ export default Vue.extend({
     data() {
         return {};
     },
+    computed: {
+        c_value: {
+            get() {
+                return this.value;
+            },
+            set(new_value) {
+                console.log("new_value", new_value);
+            }
+        }
+    },
     props: {
         value: {
             type: Array,
             default: []
+        }
+    },
+    methods: {
+        before_upload(file) {
+            if (this.c_value.length > 12) {
+                this.$message({
+                    message: "幻灯片数量不能超出 12 个",
+                    offset: -1,
+                    duration: 2000,
+                    type: "warning"
+                });
+                return false;
+            }
+            if (file.size > 1 * 1024 * 1024) {
+                this.$message({
+                    message: "图片大小不能超出 1M",
+                    offset: -1,
+                    duration: 2000,
+                    type: "warning"
+                });
+                return false;
+            }
+        },
+        upload_suc(file) {
+            this.c_value.push({
+                img: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
+            });
         }
     }
 });
@@ -34,6 +85,15 @@ export default Vue.extend({
 <style lang="scss">
 .slider_image_manager {
     width: 100%;
+    &-container {
+        overflow: auto;
+
+        box-sizing: border-box;
+        height: 214px;
+        padding: 5px;
+
+        border: 1px dashed #ccd5db;
+    }
 }
 .slider_image_manager-slider_item {
     box-sizing: border-box;
@@ -70,8 +130,7 @@ export default Vue.extend({
         margin-right: 6px;
     }
     &:hover {
-        color: #46be8a;
-        border-color: #46be8a;
+        background: #6ccba2;
     }
 }
 </style>

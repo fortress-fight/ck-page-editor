@@ -166,10 +166,8 @@
                 </template>
                 <template #slider_container>
                     <div class="attr_set_group">
-                        <div
-                            class="attr_set_item"
-                        >
-                            <slider-image-manager :value='layout_data.col_container[0].container'></slider-image-manager>
+                        <div class="attr_set_item">
+                            <slider-image-manager v-model="layout_data.col_container[0].container"></slider-image-manager>
                         </div>
                     </div>
                 </template>
@@ -202,7 +200,7 @@ import tab_card from "@/components/c-tab_card.vue";
 import dialog from "@/components/c-dialog.vue";
 import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
 import c_dragger from "@/components/c-dragger.vue";
-import slider_image_manager from "@/components/slider_image_manager.vue"
+import slider_image_manager from "@/components/slider_image_manager.vue";
 export default Vue.extend({
     data() {
         return {
@@ -358,7 +356,7 @@ export default Vue.extend({
         "c-tab-card": tab_card,
         "c-color-picker-btn": c_color_picker_btn,
         "c-dragger": c_dragger,
-        "slider-image-manager":slider_image_manager
+        "slider-image-manager": slider_image_manager
     }
 });
 </script>
