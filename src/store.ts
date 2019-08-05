@@ -129,9 +129,11 @@ let unit_layout_module = {
                                 id: stringRandom(16, {
                                     numbers: false
                                 }),
-                                container: [{
-                                    img: "https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
-                                }]
+                                attrs: {
+                                    num: "1",
+                                    margin: "0px"
+                                },
+                                container: []
                             }
                         ];
                         result.col = value || "100";
@@ -442,7 +444,9 @@ const delete_layout_dom_dialog_module = {
     state() {
         return {
             show: false,
-            option: {},
+            option: {
+                dialog_pos: document.body
+            },
             type: "",
             data: {}
         };
@@ -454,16 +458,20 @@ const delete_layout_dom_dialog_module = {
     },
     actions: {
         tab_show({ state, commit }, { turn_on, type, option, data }) {
-            state.show = turn_on;
             if (turn_on == false) {
+                state.show = turn_on;
                 commit("clear_data");
                 return false;
             }
             if (option) {
-                state.option = option;
+                state.option = Object.assign(state.option, option);
             }
             state.type = type;
             state.data = data || {};
+
+            Vue.nextTick().then(() => {
+                state.show = turn_on;
+            });
         }
     }
 };

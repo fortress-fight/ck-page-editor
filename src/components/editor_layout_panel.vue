@@ -166,14 +166,49 @@
                 </template>
                 <template #slider_container>
                     <div class="attr_set_group">
-                        <div
-                            class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
-                        >
-                            <div
-                                v-for="(item_img, key) in layout_data.col_container[0].container"
-                                :key="key"
-                            >
-                                <img :src="item_img.img" alt />
+                        <div class="attr_set_item">
+                            <slider-image-manager v-model="layout_data.col_container[0].container"></slider-image-manager>
+                        </div>
+                    </div>
+                    <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">显示个数</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.num"
+                                    label="1"
+                                >1个</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.num"
+                                    label="2"
+                                >2个</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.num"
+                                    label="3"
+                                >3个</c-radio>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">幻灯间距</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.margin"
+                                    label="0px"
+                                >0px</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.margin"
+                                    label="15px"
+                                >15px</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.margin"
+                                    label="30px"
+                                >30px</c-radio>
                             </div>
                         </div>
                     </div>
@@ -207,6 +242,7 @@ import tab_card from "@/components/c-tab_card.vue";
 import dialog from "@/components/c-dialog.vue";
 import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
 import c_dragger from "@/components/c-dragger.vue";
+import slider_image_manager from "@/components/slider_image_manager.vue";
 export default Vue.extend({
     data() {
         return {
@@ -361,7 +397,8 @@ export default Vue.extend({
         "c-dialog": dialog,
         "c-tab-card": tab_card,
         "c-color-picker-btn": c_color_picker_btn,
-        "c-dragger": c_dragger
+        "c-dragger": c_dragger,
+        "slider-image-manager": slider_image_manager
     }
 });
 </script>

@@ -147,7 +147,6 @@ export default Vue.extend({
                 dom,
                 this.c_options.dialog_pos_detail
             );
-
             if (dialog_pos) {
                 let dialog_target_post = adjustment_pos(
                     dialog_el as HTMLElement,
@@ -156,7 +155,9 @@ export default Vue.extend({
                         distance: 10
                     }
                 );
-                dialog_target_post && $(dialog_el).css(dialog_target_post);
+                dialog_target_post
+                    ? $(dialog_el).css(dialog_target_post)
+                    : $(dialog_el).css(dialog_pos);
             }
 
             (this as any).set_dialog_arrow_pos();
@@ -251,7 +252,7 @@ export default Vue.extend({
             let dialog_el_pos = get_el_pos(dialog_el);
             let rel_dom_pos = get_el_pos(relate_el);
             let pos = {
-                left: rel_dom_pos.left + rel_dom_pos.width,
+                left: rel_dom_pos.left + rel_dom_pos.client_width,
                 top: rel_dom_pos.top
             };
 
@@ -477,7 +478,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-        // background: #f5f5f5;
+// background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -541,7 +542,7 @@ export default Vue.extend({
 
             width: 100%;
 
-            // margin-right: -10px;
+// margin-right: -10px;
 
             align-items: center;
 
@@ -577,7 +578,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-            // margin-right: 10px;
+// margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;
