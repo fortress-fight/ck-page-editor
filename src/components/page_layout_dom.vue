@@ -1,8 +1,9 @@
 <template>
     <div
         id="page_body_editor-wrapper"
+        :data-type="editor_type && `${editor_type}-editing`"
         class="page_body_editor-wrapper"
-        :class="{is_editing: !!oper_layout_groups_id}"
+        :class="{is_editing: editor_type}"
     >
         <div
             :id="item.id"
@@ -81,11 +82,11 @@
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
                     <section
-                        class="layout_header"
-                        v-html="item.attrs.header.container"
-                        v-if="item.attrs.header.open"
+                        :id="item.attrs.header.id"
+                        v-show="item.attrs.header.open"
+                        class="layout_header editor_wrapper"
                     >
-                        <section class="editor ck-content"></section>
+                        <section class="editor ck-content" v-html="item.attrs.header.container"></section>
                     </section>
                     <section class="layout_body">
                         <section
@@ -97,16 +98,39 @@
                         >
                             <section class="row">
                                 <section
-                                    class="col"
+                                    :id="col_item.id"
+                                    class="col editor_wrapper"
                                     :class="`col-${col_item.col}`"
                                     v-for="(col_item,col_index) in layout_item.col_container"
+                                    :style="{backgroundColor: col_item.background_color}"
                                     :key="col_index"
                                 >
-                                    <section
-                                        class="editor ck-content"
-                                        v-html="col_item.dom"
-                                        :style="{backgroundColor: col_item.background_color}"
-                                    ></section>
+                                    <template v-if="item.type_detail==`custom`">
+                                        <section
+                                            class="editor ck-content"
+                                            v-html="col_item.container"
+                                        ></section>
+                                    </template>
+                                    <template v-if="item.type_detail=='slider'">
+                                        <div class="slider">
+                                            <template v-if="col_item.container.length">
+                                                <div
+                                                    class="slider_item"
+                                                    v-for="(slider_item, key) in col_item.container"
+                                                    :key="key"
+                                                >
+                                                    <img :src="slider_item.img" alt srcset />
+                                                </div>
+                                            </template>
+                                            <div class="slider_item" v-else>
+                                                <img
+                                                    src="https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
+                                                    title="占位图片"
+                                                    srcset
+                                                />
+                                            </div>
+                                        </div>
+                                    </template>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
                                     <div
@@ -147,6 +171,15 @@
                                     </div>
                                     <div
                                         class="item"
+                                        data-key="copy"
+                                        title="复制"
+                                        @click="copy_layout(layout_item)"
+                                    >
+                                        <span class="text">复制</span>
+                                        <i class="fa fa-copy"></i>
+                                    </div>
+                                    <div
+                                        class="item"
                                         data-key="delete"
                                         title="删除"
                                         @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
@@ -159,7 +192,11 @@
                         </section>
                     </section>
 
-                    <section class="layout_footer" v-if="item.attrs.footer.open">
+                    <section
+                        class="layout_footer editor_wrapper"
+                        v-show="item.attrs.footer.open"
+                        :id="item.attrs.footer.id"
+                    >
                         <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
                     </section>
                 </section>
@@ -172,6 +209,7 @@ import Vue from "vue";
 import "@/pages/app/app.scss";
 import { copy } from "@/lib/plugins/unit";
 import { encrypt } from "@/lib/plugins/crypto";
+import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
         return {
@@ -179,9 +217,13 @@ export default Vue.extend({
         };
     },
     computed: {
+        editor_type() {
+            return this.$store.state.layout_module.editor_type;
+        },
+
         layout_groups() {
             return (
-                this.$store.state.layout_module.layout_data ||
+                this.$store.state.layout_module.all_layouts_data ||
                 this.default_layout_groups
             );
         },
@@ -237,13 +279,31 @@ export default Vue.extend({
                 dir
             });
         },
+        copy_layout(data) {
+            console.log("will_copy_code:", data);
+            let will_copy_code = JSON.stringify({
+                type: "layout",
+                data: data
+            });
+            copy(encrypt(will_copy_code), () => {
+                this.$message({
+                    message: "代码复制成功",
+                    offset: -1,
+                    duration: 1000,
+                    type: "success"
+                });
+            });
+        },
         copy_layout_group(layout_group_id) {
-            let layout_group_data = JSON.stringify(
-                this.$store.getters["layout_module/search_layout_group"](
-                    layout_group_id
-                ).data
-            );
-            copy(encrypt(layout_group_data), () => {
+            let layout_group_data = this.$store.getters[
+                "layout_module/search_layout_group"
+            ](layout_group_id).data;
+
+            let will_copy_code = JSON.stringify({
+                type: "layout_group",
+                data: layout_group_data
+            });
+            copy(encrypt(will_copy_code), () => {
                 this.$message({
                     message: "代码复制成功",
                     offset: -1,
@@ -298,14 +358,66 @@ export default Vue.extend({
             type: Boolean,
             default: true
         }
-    },
-    beforeMount() {}
+    }
 });
 </script>
 <style lang="scss">
-#page_body_editor-wrapper.is_editing {
+#page_body_editor-wrapper {
+    .layout_editor {
+        position: relative;
+    }
+    &.is_editing {
+        .layout-editor_bar .item,
+        .layout_group-editor_bar .item {
+            display: none;
+        }
+        &[data-type="layout-editing"] {
+            .layout.is_oper .col.editor_wrapper {
+                position: relative;
+                .editor:not(.layout_editor) {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+
+                    visibility: hidden;
+
+                    width: 100%;
+                    height: 100%;
+
+                    opacity: 0;
+                }
+            }
+        }
+        &[data-type="layout_group-editing"] {
+            .layout_group.is_oper .layout_container > .editor_wrapper {
+                position: relative;
+                .editor:not(.layout_editor) {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+
+                    visibility: hidden;
+
+                    width: 100%;
+                    height: 100%;
+
+                    opacity: 0;
+                }
+            }
+        }
+    }
+}
+#page_body_editor-wrapper {
+    .ck-content {
+        position: relative;
+
+        width: 100%;
+    }
     .layout-editor_bar,
     .layout_group-editor_bar {
+        z-index: 500;
+    }
+    .is_editing {
         .item {
             display: none;
         }

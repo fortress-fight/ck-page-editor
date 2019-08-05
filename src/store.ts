@@ -11,20 +11,31 @@ let unit_layout_module = {
         if (type == "code") {
             result = value;
             result.id = stringRandom(16, { numbers: false });
+            result.attrs.header.id = stringRandom(16, { numbers: false });
+            result.attrs.footer.id = stringRandom(16, { numbers: false });
             result.body.forEach(layout_data => {
                 layout_data.id = stringRandom(16, { numbers: false });
+                layout_data.col_container.forEach(layout_col_data => {
+                    layout_col_data.id = stringRandom(16, {
+                        numbers: false
+                    });
+                });
             });
         } else {
             result = {
                 id: stringRandom(16, { numbers: false }),
                 dom: null,
+                type,
+                type_detail: type == "custom" ? "custom" : value,
                 attrs: {
                     header: {
                         open: true,
+                        id: stringRandom(16, { numbers: false }),
                         container: "<p>头部</p>"
                     },
                     footer: {
                         open: true,
+                        id: stringRandom(16, { numbers: false }),
                         container: "<p>底部</p>"
                     },
                     background_color: "rgba(255,255,255,0)",
@@ -57,70 +68,90 @@ let unit_layout_module = {
         return result;
     },
     get_layout_data(type, value) {
-        let result = {
-            id: stringRandom(16, { numbers: false }),
-            animate: 0,
-            type,
-            type_fun: value,
-            x_align: false,
-            y_align: false,
-            width: {
-                value: "",
-                unit: "px"
-            },
-            space: {
-                value: "",
-                unit: "px"
-            },
-            body_dom: null,
-            padding_x: {
-                value: "",
-                unit: "px"
-            },
-            padding_y: {
-                value: "",
-                unit: "px"
-            },
-            col_container: [],
-            col: ""
-        };
-        if (type == "custom") {
-            let cols_dom = String(value)
-                .split("_")
-                .map(v => {
-                    return {
-                        col: v,
-                        background_color: "rgba(255,255,255,0)",
-                        dom: "<p>编辑器</p>"
-                    };
-                });
-            result.col_container = cols_dom;
-            result.col = value || "100";
-        }
+        let result: any;
+        if (type == "code") {
+            result = value;
+            result.id = stringRandom(16, { numbers: false });
+            result.col_container.forEach(col => {
+                col.id = stringRandom(16, { numbers: false });
+            });
+        } else {
+            result = {
+                id: stringRandom(16, { numbers: false }),
+                animate: 0,
+                type,
+                type_detail: type == "custom" ? "custom" : value,
+                x_align: false,
+                y_align: false,
+                width: {
+                    value: "",
+                    unit: "px"
+                },
+                space: {
+                    value: "",
+                    unit: "px"
+                },
+                body_dom: null,
+                padding_x: {
+                    value: "",
+                    unit: "px"
+                },
+                padding_y: {
+                    value: "",
+                    unit: "px"
+                },
+                col_container: [],
+                col: ""
+            };
+            if (type == "custom") {
+                let cols_dom = String(value)
+                    .split("_")
+                    .map(v => {
+                        return {
+                            col: v,
+                            id: stringRandom(16, {
+                                numbers: false
+                            }),
+                            background_color: "rgba(255,255,255,0)",
+                            container: "<p>编辑器</p>"
+                        };
+                    });
+                result.col_container = cols_dom;
+                result.col = value || "100";
+            }
 
-        if (type == "fun") {
-            switch (value) {
-                case "slider":
-                    result.col_container = [
-                        {
-                            col: 100,
-                            dom: "<div class='slider'>幻灯</div>"
-                        }
-                    ];
-                    result.col = value || "100";
-                    break;
-                case "block":
-                    result.col_container = [
-                        {
-                            col: 100,
-                            dom: "<div class='block'>分隔块</div>"
-                        }
-                    ];
-                    result.col = value || "100";
-                    break;
+            if (type == "fun") {
+                switch (value) {
+                    case "slider":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                id: stringRandom(16, {
+                                    numbers: false
+                                }),
+                                container: [{
+                                    img: "https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
+                                }]
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
+                    case "block":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                container: "<div class='block'>分隔块</div>",
+                                id: stringRandom(16, {
+                                    numbers: false
+                                })
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
         return result;
@@ -130,24 +161,30 @@ const layout_module = {
     namespaced: true,
     state() {
         return {
+            editor_type: "",
             oper_layout_groups_id: NaN,
             oper_layout_id: NaN,
             active_layout_group_id: NaN,
-            layout_data: []
+            all_layouts_data: []
         };
     },
-    mutations: {},
+    mutations: {
+        // 记录当前编辑块的类型，如：layout layout_group slider ,,,,
+        set_editor_type(state, type) {
+            state.editor_type = type;
+        }
+    },
     actions: {
         add_layout_group(
             { state, getters, dispatch },
             { type, value, layout_group_id }
         ) {
             if (!layout_group_id) {
-                state.layout_data.push(
+                state.all_layouts_data.push(
                     unit_layout_module.get_layout_group_data(type, value)
                 );
             } else {
-                state.layout_data.splice(
+                state.all_layouts_data.splice(
                     getters.search_layout_group(layout_group_id).index,
                     0,
                     unit_layout_module.get_layout_group_data(type, value)
@@ -179,12 +216,12 @@ const layout_module = {
                 return;
             }
             Vue.set(
-                state.layout_data,
+                state.all_layouts_data,
                 move_origin_group.index,
-                state.layout_data[move_target_index]
+                state.all_layouts_data[move_target_index]
             );
             Vue.set(
-                state.layout_data,
+                state.all_layouts_data,
                 move_target_index,
                 move_origin_group.data
             );
@@ -194,7 +231,7 @@ const layout_module = {
                 console.error("没有输入 layout_group_id");
                 return;
             }
-            state.layout_data.splice(
+            state.all_layouts_data.splice(
                 getters.search_layout_group(layout_group_id).index,
                 1
             );
@@ -309,9 +346,23 @@ const layout_module = {
             state.oper_layout_id = layout_id;
         },
         set_layout_group_data({ state }, { layout_group_id, data }) {
-            state.layout_data.forEach((v, i) => {
+            state.all_layouts_data.forEach((v, i) => {
                 if (layout_group_id == v.id) {
-                    state.layout_data.splice(i, 1, data);
+                    state.all_layouts_data.splice(i, 1, data);
+                }
+            });
+        },
+        set_layout_data(
+            { state, getters },
+            { layout_group_id, layout_id, data }
+        ) {
+            state.all_layouts_data.forEach(v => {
+                if (layout_group_id == v.id) {
+                    v.body.forEach((k, j) => {
+                        if (layout_id == k.id) {
+                            v.body.splice(j, 1, data);
+                        }
+                    });
                 }
             });
         }
@@ -322,7 +373,7 @@ const layout_module = {
                 index: NaN,
                 data: {}
             };
-            state.layout_data.forEach((v, i) => {
+            state.all_layouts_data.forEach((v, i) => {
                 if (id == v.id) {
                     result.index = i;
                     result.data = v;
@@ -423,7 +474,8 @@ const editor_layout_group_dialog_module = {
         return {
             show: false,
             option: {
-                mask: false
+                mask: false,
+                dialog_pos: document.body
             },
 
             data: {},
@@ -437,6 +489,9 @@ const editor_layout_group_dialog_module = {
         }
     },
     actions: {
+        change_data({ state }, { path, value }) {
+            _set(state.editor_target_layout_group_data, path, value);
+        },
         reset_data({ state, dispatch }) {
             dispatch(
                 "layout_module/set_layout_group_data",
@@ -445,6 +500,14 @@ const editor_layout_group_dialog_module = {
                     data: JSON.parse(state.backup_group_data)
                 },
                 { root: true }
+            );
+
+            dispatch(
+                "layout_editor_manage_module/cancel_editor",
+                {},
+                {
+                    root: true
+                }
             );
         },
         tab_show(
@@ -462,8 +525,13 @@ const editor_layout_group_dialog_module = {
         ) {
             if (turn_on) {
                 if (option) {
-                    state.option = Object.assign(option, state.option);
+                    state.option = Object.assign(state.option, option);
                 }
+
+                commit("layout_module/set_editor_type", "layout_group", {
+                    root: true
+                });
+
                 dispatch("layout_module/set_oper_layout_groups_id", data, {
                     root: true
                 });
@@ -471,6 +539,14 @@ const editor_layout_group_dialog_module = {
                 state.editor_target_layout_group_data = rootGetters[
                     "layout_module/search_layout_group"
                 ](data.layout_group_id).data;
+
+                dispatch(
+                    "layout_editor_manage_module/set_state",
+                    { data: state.editor_target_layout_group_data },
+                    {
+                        root: true
+                    }
+                );
 
                 state.backup_group_data = JSON.stringify(
                     state.editor_target_layout_group_data
@@ -487,6 +563,10 @@ const editor_layout_group_dialog_module = {
                 });
 
                 commit("clear_data");
+
+                commit("layout_module/set_editor_type", "", {
+                    root: true
+                });
             }
             state.show = turn_on;
         }
@@ -499,10 +579,12 @@ const editor_layout_dialog_module = {
         return {
             show: false,
             option: {
-                mask: false
+                mask: false,
+                dialog_pos: document.body
             },
             data: {},
             editor_target_layout_data: {},
+            editor_target_layout_group_data: {},
             backup_layout_data: {}
         };
     },
@@ -517,12 +599,22 @@ const editor_layout_dialog_module = {
         change_data({ state }, { path, value }) {
             _set(state.editor_target_layout_data, path, value);
         },
+
         reset_data({ state, dispatch }) {
             dispatch(
-                "layout_module/set_layout_group_data",
+                "layout_editor_manage_module/cancel_editor",
+                {},
                 {
-                    layout_group_id: state.editor_target_layout_data.id,
-                    data: JSON.parse(state.backup_group_data)
+                    root: true
+                }
+            );
+
+            dispatch(
+                "layout_module/set_layout_data",
+                {
+                    layout_id: state.editor_target_layout_data.id,
+                    layout_group_id: state.editor_target_layout_group_data.id,
+                    data: JSON.parse(state.backup_layout_data)
                 },
                 { root: true }
             );
@@ -544,10 +636,15 @@ const editor_layout_dialog_module = {
             if (turn_on) {
                 if (option) {
                     // state.option = Object.assign(option, state.option);
-                    option.mask = false;
+                    // option.mask = false;
 
-                    state.option = option;
+                    state.option = Object.assign(state.option, option);
                 }
+
+                commit("layout_module/set_editor_type", "layout", {
+                    root: true
+                });
+
                 dispatch("layout_module/set_oper_layout_id", data, {
                     root: true
                 });
@@ -555,6 +652,20 @@ const editor_layout_dialog_module = {
                 state.editor_target_layout_data = rootGetters[
                     "layout_module/search_layout"
                 ](data.layout_group_id, data.layout_id).data;
+                state.editor_target_layout_group_data = rootGetters[
+                    "layout_module/search_layout_group"
+                ](data.layout_group_id).data;
+                if (state.editor_target_layout_data.type == "custom") {
+                    dispatch(
+                        "layout_editor_manage_module/set_state",
+                        {
+                            data: state.editor_target_layout_data
+                        },
+                        {
+                            root: true
+                        }
+                    );
+                }
 
                 state.backup_layout_data = JSON.stringify(
                     state.editor_target_layout_data
@@ -565,6 +676,10 @@ const editor_layout_dialog_module = {
                 if (reset) {
                     dispatch("reset_data");
                 }
+
+                commit("layout_module/set_editor_type", "", {
+                    root: true
+                });
                 dispatch("layout_module/set_oper_layout_id", data, {
                     root: true
                 });
@@ -576,12 +691,80 @@ const editor_layout_dialog_module = {
     }
 };
 
+const layout_editor_manage_module = {
+    namespaced: true,
+    state() {
+        return {
+            type: "",
+            data: [
+                { type: "ck_0", container: "", id: "" },
+                { type: "ck_1", container: "", id: "" },
+                { type: "ck_2", container: "", id: "" },
+                { type: "ck_3", container: "", id: "" },
+                { type: "ck_4", container: "", id: "" }
+            ]
+        };
+    },
+    actions: {
+        set_state({ state }, { data }) {
+            if (data.body) {
+                state.type = "layout_group";
+                state.data[0].path = "attrs.header.container";
+                state.data[0].id = data.attrs.header.id;
+                state.data[0].container = data.attrs.header.container;
+                state.data[1].path = "attrs.footer.container";
+                state.data[1].id = data.attrs.footer.id;
+                state.data[1].container = data.attrs.footer.container;
+            } else {
+                state.type = "layout";
+                data.col_container.forEach((v, i) => {
+                    if (v.id) {
+                        state.data[i].path = `col_container.${i}.container`;
+                        state.data[i].id = v.id;
+                        state.data[i].container = v.container;
+                    }
+                });
+            }
+        },
+        save_editor({ state, dispatch }) {
+            let target =
+                state.type == "layout_group"
+                    ? "editor_layout_group_dialog_module/change_data"
+                    : "editor_layout_dialog_module/change_data";
+            state.data.forEach(v => {
+                if (v.path) {
+                    dispatch(
+                        target,
+                        {
+                            path: v.path,
+                            value: v.container
+                        },
+                        { root: true }
+                    );
+                }
+                v.path = "";
+                v.id = "";
+                v.container = "";
+            });
+            state.type = "";
+        },
+        cancel_editor({ state }) {
+            state.data.forEach(v => {
+                v.path = "";
+                v.id = "";
+                v.container = "";
+            });
+        }
+    }
+};
+
 export default new Vuex.Store({
     modules: {
         layout_module,
         add_layout_dom_dialog_module,
         delete_layout_dom_dialog_module,
         editor_layout_group_dialog_module,
-        editor_layout_dialog_module
+        editor_layout_dialog_module,
+        layout_editor_manage_module
     }
 });

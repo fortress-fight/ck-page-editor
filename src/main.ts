@@ -1,9 +1,12 @@
 import c_pop_tran from "@/components/c-pop_tran.vue";
 import { directive, filter } from "@/lib/plugins/vue-directive";
 import store from "@/store";
+import CKEditor from "@ckeditor/ckeditor5-vue";
 import Vue from "vue";
 import App from "./App.vue";
-import './plugins/element.js'
+import "./plugins/element.js";
+
+Vue.use(CKEditor);
 
 // * -- 注册自定义指令
 directive(Vue);
