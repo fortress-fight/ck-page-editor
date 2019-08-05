@@ -51,7 +51,6 @@ export default Vue.extend({
     },
     methods: {
         onEditorInput(value: any, ev: any, editor: any) {
-            this.$emit("input", value);
             this.$emit("onEditorInput", value, ev, editor);
         },
         onEditorReady(editor: any) {
@@ -73,8 +72,8 @@ export default Vue.extend({
             ) {
                 editor.setData("<p>请输入内容</p>");
             }
-
-            this.$emit("onEditorBlur", ev, editor, value);
+            this.$emit("input", value);
+            this.$emit("onEditorBlur", value, ev, editor);
             // this.$store.commit("hideControlPanel", false);
         },
         onEditorFocus(ev: any, editor: any) {

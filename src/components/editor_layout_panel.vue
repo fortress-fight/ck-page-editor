@@ -292,7 +292,7 @@ export default Vue.extend({
                     result = this.custom_tab_cards;
                     break;
                 case "fun":
-                    result = this[this.layout_data.type_fun + `_tab_cards`];
+                    result = this[this.layout_data.type_detail + `_tab_cards`];
                     break;
 
                 default:
@@ -308,6 +308,8 @@ export default Vue.extend({
             this.cancel_dialog.show = true;
         },
         layout_editor_confirm() {
+            this.$store.dispatch("layout_editor_manage_module/save_editor");
+
             this.$store.dispatch("editor_layout_dialog_module/tab_show", {
                 turn_on: false
             });
@@ -315,6 +317,9 @@ export default Vue.extend({
         cancel_change_confirm() {
             this.cancel_dialog.show = false;
             this.$el.style.visibility = "hidden";
+
+            this.$store.dispatch("layout_editor_manage_module/cancel_editor");
+
             this.$nextTick(() => {
                 this.$store.dispatch("editor_layout_dialog_module/tab_show", {
                     turn_on: false,

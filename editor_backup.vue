@@ -189,7 +189,7 @@ export default Vue.extend({
                 {
                     nav: "属性",
                     card_slot_name: "layout_attr"
-                },
+                }
                 // {
                 //     nav: "动效",
                 //     card_slot_name: "layout_animate"
@@ -219,11 +219,6 @@ export default Vue.extend({
     computed: {
         layout_group_data: {
             get() {
-                console.log(
-                    "this.$store.state.editor_layout_dom_dialog_module .editor_target_layout_group_data:",
-                    this.$store.state.editor_layout_dom_dialog_module
-                        .editor_target_layout_group_data
-                );
                 return this.$store.state.editor_layout_dom_dialog_module
                     .editor_target_layout_group_data;
             },
