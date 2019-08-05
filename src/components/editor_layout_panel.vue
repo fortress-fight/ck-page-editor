@@ -213,7 +213,7 @@
                         </div>
                     </div>
                 </template>
-                <template #slider_attribute>
+                <template #block_container>
                     <div>321</div>
                 </template>
             </c-tab-card>
@@ -276,6 +276,16 @@ export default Vue.extend({
                 {
                     nav: "动效",
                     card_slot_name: "layout_animate"
+                }
+            ],
+            block_tab_cards: [
+                {
+                    nav: "分隔块",
+                    card_slot_name: "block_container"
+                },
+                {
+                    nav: "属性",
+                    card_slot_name: "layout_attr"
                 }
             ],
             dragger_option: {
