@@ -1,9 +1,9 @@
 <template>
     <c-dialog
+        :is_show="layout_delete_dialog_show"
         :options="c_layout_delete_dialog_option"
         @confirm="layout_delete_confirm"
         @cancel="layout_delete_cancel"
-        :is_show="layout_delete_dialog_show"
     >
         <template #body>
             <template v-if="whitch_layout_delete_dialog == 'delete_layout_group'">
@@ -47,7 +47,6 @@ export default Vue.extend({
                 {
                     type: "warn",
                     dialog_header: false,
-                    dialog_pos: [],
                     dialog_style: { width: "350px", "font-size": "16px;" },
                     box_size: "big"
                 },
