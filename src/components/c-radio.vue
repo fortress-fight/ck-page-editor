@@ -30,6 +30,9 @@ export default Vue.extend({
     border-color: #dfdfdf;
 }
 .el-radio__inner::after {
+    width: 6px;
+    height: 6px;
+
     transition: transform 0.1s ease-in, -webkit-transform 0.1s ease-in;
 
     background-color: #677ae2;

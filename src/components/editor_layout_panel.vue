@@ -170,6 +170,48 @@
                             <slider-image-manager v-model="layout_data.col_container[0].container"></slider-image-manager>
                         </div>
                     </div>
+                    <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">显示个数</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.num"
+                                    label="1"
+                                >1个</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.num"
+                                    label="2"
+                                >2个</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.num"
+                                    label="3"
+                                >3个</c-radio>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">幻灯间距</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.margin"
+                                    label="0px"
+                                >0px</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.margin"
+                                    label="15px"
+                                >15px</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.margin"
+                                    label="30px"
+                                >30px</c-radio>
+                            </div>
+                        </div>
+                    </div>
                 </template>
                 <template #slider_attribute>
                     <div>321</div>

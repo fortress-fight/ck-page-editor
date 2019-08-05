@@ -129,6 +129,10 @@ let unit_layout_module = {
                                 id: stringRandom(16, {
                                     numbers: false
                                 }),
+                                attrs: {
+                                    num: "1",
+                                    margin: "0px"
+                                },
                                 container: []
                             }
                         ];
