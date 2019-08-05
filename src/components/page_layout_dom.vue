@@ -93,6 +93,7 @@
                             :id="layout_item.id"
                             class="layout"
                             :class="{is_oper: layout_item.id == oper_layout_id}"
+                            :data-type-detail="layout_item.type_detail"
                             v-for="(layout_item) in item.body"
                             :key="layout_item.id"
                         >
@@ -105,14 +106,14 @@
                                     :style="{backgroundColor: col_item.background_color}"
                                     :key="col_index"
                                 >
-                                    <template v-if="item.type_detail==`custom`">
+                                    <template v-if="layout_item.type_detail==`custom`">
                                         <section
                                             class="editor ck-content"
                                             v-html="col_item.container"
                                         ></section>
                                     </template>
-                                    <template v-if="item.type_detail=='slider'">
-                                        <div class="slider">
+                                    <template v-if="layout_item.type_detail=='slider'">
+                                        <div class="layout_slider">
                                             <template v-if="col_item.container.length">
                                                 <div
                                                     class="slider_item"
@@ -130,6 +131,9 @@
                                                 />
                                             </div>
                                         </div>
+                                    </template>
+                                    <template v-if="layout_item.type_detail=='block'">
+                                        <div class="layout_block"></div>
                                     </template>
                                 </section>
                                 <div class="layout-editor_bar" v-if="can_editor">
@@ -413,14 +417,43 @@ export default Vue.extend({
 
         width: 100%;
     }
-    .layout-editor_bar,
-    .layout_group-editor_bar {
+    .layout-editor_bar {
         z-index: 500;
+    }
+    .layout_group-editor_bar {
+        z-index: 550;
     }
     .is_editing {
         .item {
             display: none;
         }
+    }
+
+    .layout {
+        &.is_oper {
+            .layout_block {
+                min-height: 60px;
+            }
+        }
+        &[data-type-detail="block"] {
+            overflow: visible;
+            .row {
+                &:hover {
+                    .layout_block {
+                        min-height: 60px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.layout {
+    .layout_block {
+        width: 100%;
+        min-height: 1px;
+
+        transition: 0.36s ease;
     }
 }
 </style>

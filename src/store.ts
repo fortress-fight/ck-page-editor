@@ -25,8 +25,6 @@ let unit_layout_module = {
             result = {
                 id: stringRandom(16, { numbers: false }),
                 dom: null,
-                type,
-                type_detail: type == "custom" ? "custom" : value,
                 attrs: {
                     header: {
                         open: true,
@@ -142,7 +140,7 @@ let unit_layout_module = {
                         result.col_container = [
                             {
                                 col: 100,
-                                container: "<div class='block'>分隔块</div>",
+                                container: "",
                                 id: stringRandom(16, {
                                     numbers: false
                                 })

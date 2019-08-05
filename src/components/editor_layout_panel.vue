@@ -213,8 +213,20 @@
                         </div>
                     </div>
                 </template>
-                <template #slider_attribute>
-                    <div>321</div>
+                <template #block_container>
+                    <div class="attr_set_group">
+                        <div
+                            class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                        >
+                            <div
+                                class="animate_option"
+                                v-for="(item, key)  in block_layout_options"
+                                :key="key"
+                            >
+                                <div class="des">{{item.name}}</div>
+                            </div>
+                        </div>
+                    </div>
                 </template>
             </c-tab-card>
 
@@ -278,6 +290,16 @@ export default Vue.extend({
                     card_slot_name: "layout_animate"
                 }
             ],
+            block_tab_cards: [
+                {
+                    nav: "分隔块",
+                    card_slot_name: "block_container"
+                },
+                {
+                    nav: "属性",
+                    card_slot_name: "layout_attr"
+                }
+            ],
             dragger_option: {
                 style: {
                     position: "absolute",
@@ -304,6 +326,12 @@ export default Vue.extend({
                 { name: "从右到左", value: 2 },
                 { name: "放大展示", value: 3 },
                 { name: "渐隐渐现", value: 4 }
+            ],
+            block_layout_options: [
+                { name: "大", value: "big" },
+                { name: "中", value: "medium" },
+                { name: "小", value: "small" },
+                { name: "线", value: "line" }
             ]
         };
     },
