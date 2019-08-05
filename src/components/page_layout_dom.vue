@@ -428,14 +428,32 @@ export default Vue.extend({
             display: none;
         }
     }
+
+    .layout {
+        &.is_oper {
+            .layout_block {
+                min-height: 60px;
+            }
+        }
+        &[data-type-detail="block"] {
+            overflow: visible;
+            .row {
+                &:hover {
+                    .layout_block {
+                        min-height: 60px;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .layout {
-    &[data-type-detail="block"] {
-        overflow: visible;
-    }
     .layout_block {
-        min-height: 50px;
+        width: 100%;
+        min-height: 1px;
+
+        transition: 0.36s ease;
     }
 }
 </style>
