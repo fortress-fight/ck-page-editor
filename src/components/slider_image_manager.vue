@@ -1,6 +1,6 @@
 <template>
     <div class="slider_image_manager">
-        <div class="slider_image_manager-container">
+        <div class="slider_image_manager-container" :class="{dragging: drag}">
             <template v-if="c_value.length">
                 <draggable
                     v-model="c_value"
@@ -16,13 +16,16 @@
                     >
                         <div
                             class="slider_image_manager-slider_item"
-                            v-for="(item_img) in c_value"
+                            v-for="(item_img, key) in c_value"
                             :key="item_img.order"
                         >
                             <div
                                 class="img_wrapper"
                                 :style="{'background-image': `url(${item_img.img})`}"
                             ></div>
+                            <div class="oper flex_center" @click="delete_item(key)">
+                                <i class="ic fa fa-trash"></i>
+                            </div>
                         </div>
                     </transition-group>
                 </draggable>
@@ -93,6 +96,9 @@ export default Vue.extend({
         sort() {
             this.c_value = this.c_value.sort((a, b) => a.order - b.order);
         },
+        delete_item(index) {
+            this.c_value.splice(index, 1);
+        },
         before_upload(file) {
             if (this.c_value.length > 12) {
                 this.$message({
@@ -153,8 +159,18 @@ export default Vue.extend({
             margin-right: 6px;
         }
     }
+
+    .dragging {
+        .slider_image_manager-slider_item .oper {
+            visibility: hidden;
+
+            opacity: 0;
+        }
+    }
 }
 .slider_image_manager-slider_item {
+    position: relative;
+
     box-sizing: border-box;
 
     cursor: pointer;
@@ -170,6 +186,31 @@ export default Vue.extend({
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
+    }
+    .oper {
+        font-size: 14px;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        visibility: hidden;
+
+        width: 100%;
+        height: 100%;
+
+        transition: 0.2s ease;
+
+        opacity: 0;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.4);
+    }
+    &:hover {
+        .oper {
+            visibility: visible;
+
+            opacity: 1;
+        }
     }
 }
 .slider_item-add_btn {
