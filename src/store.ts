@@ -11,8 +11,8 @@ let unit_layout_module = {
         if (type == "code") {
             result = value;
             result.id = stringRandom(16, { numbers: false });
-            result.attrs.header = stringRandom(16, { numbers: false });
-            result.attrs.footer = stringRandom(16, { numbers: false });
+            result.attrs.header.id = stringRandom(16, { numbers: false });
+            result.attrs.footer.id = stringRandom(16, { numbers: false });
             result.body.forEach(layout_data => {
                 layout_data.id = stringRandom(16, { numbers: false });
                 layout_data.col_container.forEach(layout_col_data => {
@@ -66,79 +66,90 @@ let unit_layout_module = {
         return result;
     },
     get_layout_data(type, value) {
-        let result = {
-            id: stringRandom(16, { numbers: false }),
-            animate: 0,
-            type,
-            type_detail: type == "custom" ? "custom" : value,
-            x_align: false,
-            y_align: false,
-            width: {
-                value: "",
-                unit: "px"
-            },
-            space: {
-                value: "",
-                unit: "px"
-            },
-            body_dom: null,
-            padding_x: {
-                value: "",
-                unit: "px"
-            },
-            padding_y: {
-                value: "",
-                unit: "px"
-            },
-            col_container: [],
-            col: ""
-        };
-        if (type == "custom") {
-            let cols_dom = String(value)
-                .split("_")
-                .map(v => {
-                    return {
-                        col: v,
-                        id: stringRandom(16, {
-                            numbers: false
-                        }),
-                        background_color: "rgba(255,255,255,0)",
-                        container: "<p>编辑器</p>"
-                    };
-                });
-            result.col_container = cols_dom;
-            result.col = value || "100";
-        }
+        let result:any;
+        if (type=='code') {
+            result = value;
+            console.log('result:', result)
+            result.id = stringRandom(16, { numbers: false });
+            result.col_container.forEach(col => {
+                col.id = stringRandom(16, { numbers: false });
+            });
+        } else {
 
-        if (type == "fun") {
-            switch (value) {
-                case "slider":
-                    result.col_container = [
-                        {
-                            col: 100,
+            result = {
+                id: stringRandom(16, { numbers: false }),
+                animate: 0,
+                type,
+                type_detail: type == "custom" ? "custom" : value,
+                x_align: false,
+                y_align: false,
+                width: {
+                    value: "",
+                    unit: "px"
+                },
+                space: {
+                    value: "",
+                    unit: "px"
+                },
+                body_dom: null,
+                padding_x: {
+                    value: "",
+                    unit: "px"
+                },
+                padding_y: {
+                    value: "",
+                    unit: "px"
+                },
+                col_container: [],
+                col: ""
+            };
+            if (type == "custom") {
+                let cols_dom = String(value)
+                    .split("_")
+                    .map(v => {
+                        return {
+                            col: v,
                             id: stringRandom(16, {
                                 numbers: false
                             }),
-                            container: "<div class='slider'>幻灯</div>"
-                        }
-                    ];
-                    result.col = value || "100";
-                    break;
-                case "block":
-                    result.col_container = [
-                        {
-                            col: 100,
-                            container: "<div class='block'>分隔块</div>",
-                            id: stringRandom(16, {
-                                numbers: false
-                            })
-                        }
-                    ];
-                    result.col = value || "100";
-                    break;
-
-                default:
-                    break;
+                            background_color: "rgba(255,255,255,0)",
+                            container: "<p>编辑器</p>"
+                        };
+                    });
+                result.col_container = cols_dom;
+                result.col = value || "100";
+            }
+    
+            if (type == "fun") {
+                switch (value) {
+                    case "slider":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                id: stringRandom(16, {
+                                    numbers: false
+                                }),
+                                container: "<div class='slider'>幻灯</div>"
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
+                    case "block":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                container: "<div class='block'>分隔块</div>",
+                                id: stringRandom(16, {
+                                    numbers: false
+                                })
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
+    
+                    default:
+                        break;
+                }
             }
         }
         return result;

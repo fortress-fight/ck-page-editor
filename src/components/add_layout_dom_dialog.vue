@@ -164,13 +164,14 @@ export default Vue.extend({
                 {
                     nav: "功能布局",
                     card_slot_name: "fun_layout"
+                },
+                {
+                    nav: "固定布局",
+                    card_slot_name: "fix_layout"
                 }
             ];
             if (this.whitch_dialog == "add_layout_group") {
-                result.push({
-                    nav: "固定布局",
-                    card_slot_name: "fix_layout"
-                });
+                // result.push();
             }
             return result;
         },
@@ -192,24 +193,58 @@ export default Vue.extend({
         "c-tab-card": tab_card
     },
     methods: {
+        /**
+         * 处理粘贴进来的 code
+         * 1. 如果不符合基本格式，抛出错误
+         * 2. 返回转换后的要添加的代码，如果出错返回 false 并弹出错误提示
+         **/
+
+        deal_clipborder_code(code) {
+            let result;
+            try {
+                let transform_result = JSON.parse(decrypt(code));
+                if (!transform_result && !transform_result.type) {
+                    throw new Error("格式错误，请输入正确格式");
+                } else {
+                    if (this.whitch_dialog == "add_layout_group") {
+                        if (transform_result.type != "layout_group") {
+                            throw new Error(
+                                "输入错误，当前添加布局区域容器，您输入的时候布局块代码"
+                            );
+                        }
+                    } else if (this.whitch_dialog == "add_layout") {
+                        if (transform_result.type != "layout") {
+                            throw new Error(
+                                "输入错误，当前添加布局块，您输入的时候布局区域块代码"
+                            );
+                        }
+                    }
+                    result = transform_result.data;
+                }
+            } catch (error) {
+                this.$message({
+                    message: error,
+                    offset: -1,
+                    duration: 2000,
+                    type: "warning"
+                });
+                result = false;
+            }
+
+            return result;
+        },
         confirm_layout() {
             let result: any = this.value;
-            if (this.type === "code") {
-                try {
-                    result = JSON.parse(decrypt(result));
-                    if (!result && !result.id) {
-                        throw new Error("格式错误");
-                    }
-                } catch (error) {
-                    this.$message({
-                        message: "请输入正确格式",
-                        offset: -1,
-                        duration: 1000,
-                        type: "warning"
-                    });
+
+            if (this.type == "code") {
+                let transform_code = this.deal_clipborder_code(result);
+                if (!transform_code) {
                     return false;
+                } else {
+                    result = transform_code;
                 }
             }
+
             let dialog_prop_data = this.$store.state
                 .add_layout_dom_dialog_module.data;
 

@@ -151,6 +151,15 @@
                                     </div>
                                     <div
                                         class="item"
+                                        data-key="copy"
+                                        title="复制"
+                                        @click="copy_layout(layout_item)"
+                                    >
+                                        <span class="text">复制</span>
+                                        <i class="fa fa-copy"></i>
+                                    </div>
+                                    <div
+                                        class="item"
                                         data-key="delete"
                                         title="删除"
                                         @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
@@ -250,13 +259,31 @@ export default Vue.extend({
                 dir
             });
         },
+        copy_layout(data) {
+            console.log("will_copy_code:", data);
+            let will_copy_code = JSON.stringify({
+                type: "layout",
+                data: data
+            });
+            copy(encrypt(will_copy_code), () => {
+                this.$message({
+                    message: "代码复制成功",
+                    offset: -1,
+                    duration: 1000,
+                    type: "success"
+                });
+            });
+        },
         copy_layout_group(layout_group_id) {
-            let layout_group_data = JSON.stringify(
-                this.$store.getters["layout_module/search_layout_group"](
-                    layout_group_id
-                ).data
-            );
-            copy(encrypt(layout_group_data), () => {
+            let layout_group_data = this.$store.getters[
+                "layout_module/search_layout_group"
+            ](layout_group_id).data;
+
+            let will_copy_code = JSON.stringify({
+                type: "layout_group",
+                data: layout_group_data
+            });
+            copy(encrypt(will_copy_code), () => {
                 this.$message({
                     message: "代码复制成功",
                     offset: -1,
@@ -325,17 +352,19 @@ export default Vue.extend({
             display: none;
         }
         &[data-type="layout-editing"] {
-            .layout_group.is_oper .col.editor_wrapper {
+            .layout.is_oper .col.editor_wrapper {
                 position: relative;
                 .editor:not(.layout_editor) {
                     position: absolute;
                     top: 0;
                     left: 0;
 
+                    visibility: hidden;
+
                     width: 100%;
                     height: 100%;
+
                     opacity: 0;
-                    visibility: hidden;
                 }
             }
         }
@@ -347,10 +376,12 @@ export default Vue.extend({
                     top: 0;
                     left: 0;
 
+                    visibility: hidden;
+
                     width: 100%;
                     height: 100%;
+
                     opacity: 0;
-                    visibility: hidden;
                 }
             }
         }
@@ -359,6 +390,7 @@ export default Vue.extend({
 #page_body_editor-wrapper {
     .ck-content {
         position: relative;
+
         width: 100%;
     }
     .layout-editor_bar,
