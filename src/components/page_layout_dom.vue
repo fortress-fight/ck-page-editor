@@ -364,11 +364,11 @@ export default Vue.extend({
         }
     },
     mounted() {
-        $("body").on("click", () => {
-            console.log(
-                this.$store.getters["layout_module/layout_dom"].$el.outerHTML
-            );
-        });
+        // $("body").on("click", () => {
+        //     console.log(
+        //         this.$store.getters["layout_module/layout_dom"].$el.outerHTML
+        //     );
+        // });
     }
 });
 </script>

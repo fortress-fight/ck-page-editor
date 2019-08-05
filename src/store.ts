@@ -400,12 +400,13 @@ const layout_module = {
         active_layout_group: (state, getters) => {
             return getters.search_layout_group(state.active_layout_group_index);
         },
-        layout_dom: (state)=> {
-            return  new Vue({
+        layout_dom: state => {
+            let Comp = Vue.extend(layout_components);
+            return new Comp({
                 store,
-                render(h) {
-                    return h(layout_components)
-                },
+                propsData: {
+                    can_editor: false
+                }
             }).$mount();
         }
     }
@@ -784,4 +785,4 @@ const store = new Vuex.Store({
     }
 });
 
-export default store
+export default store;
