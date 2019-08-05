@@ -1,17 +1,38 @@
 <template>
     <div class="slider_image_manager">
         <div class="slider_image_manager-container">
-            <div
-                class="slider_image_manager-slider_item_list layout_grid layout_grid-col-4 layout_grid-rowspac-5 layout_grid-colspac-5"
-            >
-                <div
-                    class="slider_image_manager-slider_item"
-                    v-for="(item_img, key) in c_value"
-                    :key="key"
+            <template v-if="c_value.length">
+                <draggable
+                    v-model="c_value"
+                    v-bind="dragOptions"
+                    @start="drag = true"
+                    @end="drag = false"
                 >
-                    <div class="img_wrapper" :style="{'background-image': `url(${item_img.img})`}"></div>
+                    <transition-group
+                        class="slider_image_manager-slider_item_list layout_grid layout_grid-col-4 layout_grid-rowspac-5 layout_grid-colspac-5"
+                        type="transition"
+                        tag="div"
+                        :name="!drag ? 'flip-list' : null"
+                    >
+                        <div
+                            class="slider_image_manager-slider_item"
+                            v-for="(item_img) in c_value"
+                            :key="item_img.order"
+                        >
+                            <div
+                                class="img_wrapper"
+                                :style="{'background-image': `url(${item_img.img})`}"
+                            ></div>
+                        </div>
+                    </transition-group>
+                </draggable>
+            </template>
+            <template v-else>
+                <div class="slider_image_manager-placeholder flex_center">
+                    <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
+                    <span class="text">请添加幻灯片</span>
                 </div>
-            </div>
+            </template>
         </div>
         <c-upload
             class="slider_item-add_btn"
@@ -33,9 +54,15 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import draggable from "vuedraggable";
 export default Vue.extend({
     data() {
-        return {};
+        return {
+            drag: false
+        };
+    },
+    components: {
+        draggable
     },
     computed: {
         c_value: {
@@ -44,7 +71,16 @@ export default Vue.extend({
             },
             set(new_value) {
                 console.log("new_value", new_value);
+                this.$emit("input", new_value);
             }
+        },
+        dragOptions() {
+            return {
+                animation: 200,
+                group: "description",
+                disabled: false,
+                ghostClass: "ghost"
+            };
         }
     },
     props: {
@@ -54,6 +90,9 @@ export default Vue.extend({
         }
     },
     methods: {
+        sort() {
+            this.c_value = this.c_value.sort((a, b) => a.order - b.order);
+        },
         before_upload(file) {
             if (this.c_value.length > 12) {
                 this.$message({
@@ -76,6 +115,7 @@ export default Vue.extend({
         },
         upload_suc(file) {
             this.c_value.push({
+                order: this.c_value.length,
                 img: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
             });
         }
@@ -86,6 +126,8 @@ export default Vue.extend({
 .slider_image_manager {
     width: 100%;
     &-container {
+        position: relative;
+
         overflow: auto;
 
         box-sizing: border-box;
@@ -93,6 +135,23 @@ export default Vue.extend({
         padding: 5px;
 
         border: 1px dashed #ccd5db;
+    }
+    &-placeholder {
+        font-size: 15px;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        color: #ccd5db;
+        .ic {
+            font-size: 19px;
+
+            margin-right: 6px;
+        }
     }
 }
 .slider_image_manager-slider_item {

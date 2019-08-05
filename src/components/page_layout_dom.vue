@@ -116,8 +116,8 @@
                                             <template v-if="col_item.container.length">
                                                 <div
                                                     class="slider_item"
-                                                    v-for="(slider_item, key) in col_item.container"
-                                                    :key="key"
+                                                    v-for="(slider_item) in col_item.container"
+                                                    :key="slider_item.order"
                                                 >
                                                     <img :src="slider_item.img" alt srcset />
                                                 </div>

@@ -129,9 +129,7 @@ let unit_layout_module = {
                                 id: stringRandom(16, {
                                     numbers: false
                                 }),
-                                container: [{
-                                    img: "https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
-                                }]
+                                container: []
                             }
                         ];
                         result.col = value || "100";
