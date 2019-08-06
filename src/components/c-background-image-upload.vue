@@ -1,6 +1,6 @@
 <template>
     <div class="c_image_upload-wrapper c_image_upload-theme_light" data-type="background">
-        <template v-if="type == `background` && img_prev_link">
+        <template v-if="type == `background` && c_value.path && c_value.position">
             <div
                 v-for="(item, index) in background_attr_pos_options"
                 class="c_image_upload-background_attrs"
@@ -8,7 +8,6 @@
                 :checked="item.value == c_value.position ? 'checked' : false"
                 :key="index"
                 @click="tab_background_pos(item.value)"
-                v-if="c_value.position"
             >
                 <i class="dot"></i>
             </div>
@@ -16,7 +15,7 @@
         <div class="c_image_upload">
             <div
                 class="c_image_upload-image_preview_box flex_center flex_auto"
-                :style="{'background': (img_prev_link ? '' : '#fff')}"
+                :style="{'background': (c_value.path ? '' : '#fff')}"
             >
                 <el-upload
                     name="Filedata"
@@ -30,14 +29,14 @@
                 ></el-upload>
                 <div
                     class="c_image_upload-image_preview flex_center"
-                    :style="'background-image: url(' + img_prev_link +')'"
+                    :style="'background-image: url(' + c_value.path +')'"
                 >
                     <img
                         v-if="type == `image`"
                         class="c_image_upload-preview_image"
-                        :src="img_prev_link"
+                        :src="c_value.path"
                     />
-                    <div class="flex_center c_image_upload-tip" v-if="!img_prev_link">
+                    <div class="flex_center c_image_upload-tip" v-if="!c_value.path">
                         <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
                         <span class="text">{{tip}}</span>
                     </div>
@@ -47,7 +46,7 @@
                 <div
                     class="c_image_upload-tool_bar-btns layout_grid layout_grid-col-3 layout_grid-colspac-1"
                 >
-                    <template v-if="!img_prev_link">
+                    <template v-if="!c_value.path">
                         <div class="btn flex_center layout_grid-item_clo-3" @click="upload">
                             <i class="ic fa fa-fw fa-upload" style="font-size: 15px;"></i>
                             <span class="text">上传图片</span>

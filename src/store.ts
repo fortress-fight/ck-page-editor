@@ -44,17 +44,12 @@ let unit_layout_module = {
                     bg: {
                         pc: {
                             path: "",
-                            cover: false,
-                            repeat: false,
                             effect: "normal",
                             size: "normal",
                             position: "tl"
                         },
                         mo: {
                             path: "",
-                            cover: false,
-                            repeat: false,
-
                             effect: "normal",
                             size: "normal",
                             position: "tl"

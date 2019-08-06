@@ -13,6 +13,9 @@
                 v-for="(item) in layout_groups"
                 :style="{backgroundColor: item.attrs.background_color}"
                 :key="item.id"
+                :data-window_width="item.attrs.window_width"
+                :data-window_height="item.attrs.window_height"
+                :data-limit_width="item.attrs.limit_width"
             >
                 <div class="layout_group-editor_bar" v-if="can_editor">
                     <div
@@ -70,13 +73,18 @@
                     class="layout_bg layout_bg_pc"
                     :style=" `background-image: url(${item.attrs.bg.pc.path});`"
                     v-if="item.attrs.bg.pc.path"
+                    :data-effect="item.attrs.bg.pc.effect"
+                    :data-size="item.attrs.bg.pc.size"
+                    :data-pos="item.attrs.bg.pc.position"
                 >
                     <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
                 </section>
                 <section
                     class="layout_bg layout_bg_mo"
                     :style=" `background-image: url(${item.attrs.bg.mo.path || item.attrs.bg.pc.path});`"
-                    v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path"
+                    v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path" :data-effect="item.attrs.bg.mo.effect"
+                    :data-size="item.attrs.bg.mo.size"
+                    :data-pos="item.attrs.bg.mo.position"
                 >
                     <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
                 </section>
