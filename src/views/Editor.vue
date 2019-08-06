@@ -1,26 +1,28 @@
 <template>
-    <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
-        <page-layout-dom :can_editor="can_editor"></page-layout-dom>
-        <keep-alive>
-            <div v-if="can_editor" class="page-add_layout_btn" @click="add_layout">
-                <span class="text">添加编辑板块</span>
-                <i class="fa fa-plus"></i>
-            </div>
-        </keep-alive>
+    <div class="body_container">
+        <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
+            <page-layout-dom :can_editor="can_editor"></page-layout-dom>
+            <keep-alive>
+                <div v-if="can_editor" class="page-add_layout_btn" @click="add_layout">
+                    <span class="text">添加编辑板块</span>
+                    <i class="fa fa-plus"></i>
+                </div>
+            </keep-alive>
 
-        <add-layout-group-dialog></add-layout-group-dialog>
-        <delete-layout-group-dialog></delete-layout-group-dialog>
-        <editor-layout-group-panel></editor-layout-group-panel>
-        <editor-layout-panel></editor-layout-panel>
-        <keep-alive>
-            <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
-        </keep-alive>
-        <div class="loader" v-show="!editor_is_ready">
-            <img
-                src="http://demo.uemo.net/templates/ue_content/templates/icon/loading.gif"
-                alt
-                srcset
-            />
+            <add-layout-group-dialog></add-layout-group-dialog>
+            <delete-layout-group-dialog></delete-layout-group-dialog>
+            <editor-layout-group-panel></editor-layout-group-panel>
+            <editor-layout-panel></editor-layout-panel>
+            <keep-alive>
+                <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
+            </keep-alive>
+            <div class="loader" v-show="!editor_is_ready">
+                <img
+                    src="http://demo.uemo.net/templates/ue_content/templates/icon/loading.gif"
+                    alt
+                    srcset
+                />
+            </div>
         </div>
     </div>
 </template>

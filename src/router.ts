@@ -12,17 +12,26 @@ export default new Router({
         {
             path: "/",
             name: "index",
-            component: Editor
+            components: {
+                default: Editor,
+                editor: Editor
+            }
         },
         {
             path: "/index.html",
             name: "editor",
-            component: Editor
+            components: {
+                default: Editor,
+                editor: Editor
+            }
         },
         {
             path: "/about",
             name: "preview",
-            component: Preview
+            components: {
+                default: Preview,
+                preview: Preview
+            }
         }
     ]
 });
