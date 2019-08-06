@@ -44,8 +44,12 @@ const Component = new Vue({
         window.get_data = () => {
             console.log(this);
         };
-        window.preview_page = () => {
-            console.log("preview_page", this.$router);
+        window.preview_page = true_on => {
+            if (true_on) {
+                this.$router.push({ name: "preview" });
+            } else {
+                this.$router.back();
+            }
         };
         if (window.parent !== window) {
             window.parent.editor_page_load(window, this);

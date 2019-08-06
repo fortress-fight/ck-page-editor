@@ -74,7 +74,13 @@ class Page_editor {
             _this.theme = $(this).attr("data-value");
         });
         this.$toolsbar.on("click", ".preview-btn.btn", function() {
-            _this.editor_iframe_win.preview_page(true);
+            if ($(this).hasClass("active")) {
+                _this.editor_iframe_win.preview_page(false);
+                $(this).removeClass("active");
+            } else {
+                _this.editor_iframe_win.preview_page(true);
+                $(this).addClass("active");
+            }
         });
         this.$toolsbar.on("click", ".view_btn .agent .btn", function() {
             _this.agent = $(this).attr("data-value");

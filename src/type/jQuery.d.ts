@@ -11,7 +11,7 @@ declare global {
         set_editor(turn_on: Boolean): void;
         set_data(): void;
         get_data(): void;
-        preview_page(): void;
+        preview_page(true_on: Boolean): void;
         editor_page_load(Window, Vue): void;
     }
 }
