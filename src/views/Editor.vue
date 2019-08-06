@@ -16,7 +16,7 @@
             <keep-alive>
                 <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
             </keep-alive>
-            <div class="loader" v-show="!editor_is_ready">
+            <div class="loader" v-show="is_load && !editor_is_ready">
                 <img
                     src="http://demo.uemo.net/templates/ue_content/templates/icon/loading.gif"
                     alt
@@ -51,6 +51,9 @@ export default Vue.extend({
         "layout-editor": layout_editor
     },
     computed: {
+        is_load() {
+  return this.$root.is_load;
+        },
         can_editor() {
             return this.$root.can_editor;
         }

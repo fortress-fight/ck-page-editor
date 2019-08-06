@@ -19,6 +19,7 @@ const Component = new Vue({
     data() {
         return {
             load_timer: 0,
+            is_load: false,
             can_editor: false
         };
     },
@@ -30,11 +31,13 @@ const Component = new Vue({
         const _this = this;
         window.set_editor = turn_on => {
             if (turn_on) {
+                this.is_load = true;
                 clearTimeout(this.load_timer);
                 this.load_timer = setTimeout(() => {
                     this.can_editor = turn_on;
                 }, 200);
             } else {
+                this.is_load = false;
                 this.can_editor = turn_on;
             }
         };
