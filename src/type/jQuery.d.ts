@@ -8,9 +8,10 @@ interface JQuery {
 
 declare global {
     interface Window {
-        set_editor(): void;
+        set_editor(turn_on: Boolean): void;
         set_data(): void;
         get_data(): void;
+        preview_page(): void;
         editor_page_load(Window, Vue): void;
     }
 }

@@ -5,6 +5,7 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import Vue from "vue";
 import App from "./App.vue";
 import "./plugins/element.js";
+import router from "./router";
 
 Vue.use(CKEditor);
 
@@ -14,7 +15,7 @@ filter(Vue);
 Vue.config.productionTip = false;
 
 const Component = new Vue({
-    //   router,
+    router,
     data() {
         return {
             load_timer: 0,
@@ -26,6 +27,7 @@ const Component = new Vue({
         "c-pop-tran": c_pop_tran
     },
     mounted() {
+        const _this = this;
         window.set_editor = turn_on => {
             if (turn_on) {
                 clearTimeout(this.load_timer);
@@ -42,7 +44,14 @@ const Component = new Vue({
         window.get_data = () => {
             console.log(this);
         };
-        window.parent.editor_page_load(window, this);
+        window.preview_page = () => {
+            console.log("preview_page", this.$router);
+        };
+        if (window.parent !== window) {
+            window.parent.editor_page_load(window, this);
+        } else {
+            this.can_editor = true;
+        }
     },
     render: h => h(App)
 }).$mount();

@@ -1,3 +1,4 @@
+import "@/style/fonts.scss";
 import dialog from "../dialog/dialog";
 import "./page_editor.scss";
 
@@ -60,6 +61,9 @@ class Page_editor {
                 },
                 get_data() {
                     console.log("缺少正确的内部框架");
+                },
+                preview_page() {
+                    console.log("缺少正确的内部框架");
                 }
             };
         }
@@ -68,6 +72,9 @@ class Page_editor {
         let _this = this;
         this.$toolsbar.on("click", ".view_btn .theme .btn", function() {
             _this.theme = $(this).attr("data-value");
+        });
+        this.$toolsbar.on("click", ".preview-btn.btn", function() {
+            _this.editor_iframe_win.preview_page(true);
         });
         this.$toolsbar.on("click", ".view_btn .agent .btn", function() {
             _this.agent = $(this).attr("data-value");
@@ -216,7 +223,7 @@ class Page_editor {
                         }
                     }).init();
                     let close_editor_btn = $(
-                        '<div class="close_editor_btn"  style="display: none"><i class="fa ifont fa-close"></i></div>'
+                        '<div class="close_editor_btn"  style="display: none"><i class="ic ifont ifont-close"></i></div>'
                     ).appendTo(this.$toolsbar);
 
                     close_editor_btn.on("click", ev => {
@@ -270,7 +277,7 @@ class Page_editor {
                 tool.icon
             )}' data-name="${tool.name}" alt="${tool.tip}">`;
             if (tool.icon) {
-                result += `<i class="fa"></i>`;
+                result += `<i class="ic ifont"></i>`;
             }
             if (tool.title) {
                 result += `<span>${tool.title}</span>`;
@@ -281,7 +288,7 @@ class Page_editor {
         this.tools_option.forEach(tool => {
             result += get_btn_dom(tool);
         });
-        result += `</div><div class="view_btn"> <div class="theme"> <span class="theme_white-btn btn active" data-value="white"></span> <span class="theme_black-btn btn" data-value="black"></span> </div> <div class="line"></div> <div class="agent"> <span class="agent_pc-btn btn active fa fa-MacBookPro" data-value="pc"> </span> <span class="agent_mo-btn btn fa fa-iphone" data-value="mo"> </span> </div> </div></div>`;
+        result += `</div><div class="view_btn"> <div class="theme"> <span class="theme_white-btn btn active" data-value="white"></span> <span class="theme_black-btn btn" data-value="black"></span> </div> <div class="line"></div> <div class="agent"> <span class="agent_pc-btn btn active ifont ifont-MacBookPro" data-value="pc"> </span> <span class="agent_mo-btn btn ifont ifont-iphone" data-value="mo"> </span> </div><div class="line"></div> <div class="preview"> <span class="preview-btn btn ifont ifont-185037browserstreamlinewindow"> </span> </div> </div></div>`;
         return result;
     }
 
