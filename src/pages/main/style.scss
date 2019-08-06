@@ -1,12 +1,13 @@
 body {
+    box-sizing: border-box;
+    padding-top: 100px;
+
     background: #fff;
 }
 .editor_box {
     width: 800px;
     min-height: 500px;
     margin: 0 auto;
-    margin: 0 auto;
-    margin-top: 100px;
 
     border: 1px solid rgb(245, 245, 245);
 }

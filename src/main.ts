@@ -15,13 +15,26 @@ Vue.config.productionTip = false;
 
 const Component = new Vue({
     //   router,
+    data() {
+        return {
+            load_timer: 0,
+            can_editor: false
+        };
+    },
     store,
     components: {
         "c-pop-tran": c_pop_tran
     },
     mounted() {
-        window.set_editor = () => {
-            console.log(this);
+        window.set_editor = turn_on => {
+            if (turn_on) {
+                clearTimeout(this.load_timer);
+                this.load_timer = setTimeout(() => {
+                    this.can_editor = turn_on;
+                }, 200);
+            } else {
+                this.can_editor = turn_on;
+            }
         };
         window.set_data = () => {
             console.log(this);

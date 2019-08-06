@@ -1,18 +1,27 @@
 <template>
-    <div id="page_body_editor" class="page_body_editor">
-        <page-layout-dom :can_editor="true"></page-layout-dom>
+    <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
+        <page-layout-dom :can_editor="can_editor"></page-layout-dom>
+        <keep-alive>
+            <div v-if="can_editor" class="page-add_layout_btn" @click="add_layout">
+                <span class="text">添加编辑板块</span>
+                <i class="fa fa-plus"></i>
+            </div>
+        </keep-alive>
 
-        <div class="page-add_layout_btn" @click="add_layout">
-            <span class="text">添加编辑板块</span>
-            <i class="fa fa-plus"></i>
-        </div>
         <add-layout-group-dialog></add-layout-group-dialog>
         <delete-layout-group-dialog></delete-layout-group-dialog>
         <editor-layout-group-panel></editor-layout-group-panel>
         <editor-layout-panel></editor-layout-panel>
         <keep-alive>
-            <layout-editor></layout-editor>
+            <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
         </keep-alive>
+        <div class="loader" v-show="!editor_is_ready">
+            <img
+                src="http://demo.uemo.net/templates/ue_content/templates/icon/loading.gif"
+                alt
+                srcset
+            />
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -27,7 +36,9 @@ import page_layout_dom from "@/components/page_layout_dom.vue";
 import layout_editor from "@/components/layout_editor.vue";
 export default Vue.extend({
     data() {
-        return {};
+        return {
+            editor_is_ready: false
+        };
     },
     components: {
         "add-layout-group-dialog": add_layout_dom_dialog,
@@ -37,12 +48,20 @@ export default Vue.extend({
         "editor-layout-panel": editor_layout_panel,
         "layout-editor": layout_editor
     },
+    computed: {
+        can_editor() {
+            return this.$root.can_editor;
+        }
+    },
     methods: {
         add_layout() {
             this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
                 type: "add_layout_group",
                 turn_on: true
             });
+        },
+        editor_ready() {
+            this.editor_is_ready = true;
         }
     },
     beforeMount() {
@@ -67,6 +86,9 @@ body {
     .editor {
         user-select: initial;
     }
+    #app {
+        min-width: 1230px;
+    }
 }
 .page_body_editor {
     box-sizing: border-box;
@@ -77,30 +99,48 @@ body {
     padding-bottom: 50px;
 }
 .page {
-    @at-root (with: rule) {
-        &-add_layout_btn {
-            display: flex;
+    &-add_layout_btn {
+        position: relative;
+        z-index: 10;
 
-            box-sizing: border-box;
-            width: 100%;
-            height: 100px;
+        display: flex;
 
-            cursor: pointer;
-            transition: 0.2s ease;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100px;
 
-            color: #999;
-            border: 2px solid #eee;
+        cursor: pointer;
+        transition: 0.2s ease;
 
-            justify-content: center;
-            align-items: center;
-            &:hover {
-                color: #333;
-                border-color: #333;
-            }
-            .text {
-                margin-right: 10px;
-            }
+        color: #999;
+        border: 2px solid #eee;
+
+        justify-content: center;
+        align-items: center;
+        &:hover {
+            color: #333;
+            border-color: #333;
+        }
+        .text {
+            margin-right: 10px;
         }
     }
+}
+.loader {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+
+    margin: auto;
+
+    align-items: center;
+    justify-content: center;
 }
 </style>
