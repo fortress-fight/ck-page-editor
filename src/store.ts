@@ -78,11 +78,11 @@ let unit_layout_module = {
                 x_align: false,
                 y_align: false,
                 width: {
-                    value: "",
-                    unit: "px"
+                    value: "100",
+                    unit: "%"
                 },
                 space: {
-                    value: "",
+                    value: "0",
                     unit: "px"
                 },
                 body_dom: null,

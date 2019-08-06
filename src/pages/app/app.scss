@@ -382,107 +382,6 @@ body {
     }
 }
 
-// layout 布局样式
-.layout_group {
-    .row {
-        display: flex;
-        flex: 1 1 auto;
-
-        box-sizing: border-box;
-    }
-
-    .col {
-        display: flex;
-
-        box-sizing: border-box;
-    }
-
-    .col_space {
-        display: block;
-        flex: 0 0 auto;
-    }
-
-    .col-20 {
-        width: 20%;
-    }
-
-    .col-25 {
-        width: 25%;
-    }
-
-    .col-30 {
-        width: 30%;
-    }
-
-    .col-33 {
-        width: 33.3333333%;
-    }
-
-    .col-40 {
-        width: 40%;
-    }
-
-    .col-50 {
-        width: 50%;
-    }
-
-    .col-60 {
-        width: 60%;
-    }
-
-    .col-66 {
-        width: 66.6666666%;
-    }
-
-    .col-70 {
-        width: 70%;
-    }
-
-    .col-100 {
-        width: 100%;
-    }
-
-    .space-3 {
-        & > * {
-            margin-right: 3px;
-
-            &:last-child {
-                margin: 0;
-            }
-        }
-    }
-
-    .space-10 {
-        margin-right: -10px;
-    }
-
-    .space-10 > * {
-        padding-right: 10px;
-    }
-
-    .space-20 {
-        margin-right: -20px;
-    }
-
-    .space-20 > * {
-        padding-right: 20px;
-    }
-
-    .flex {
-        display: flex;
-    }
-
-    .flex-elastic {
-        flex: 1 1 auto;
-    }
-
-    .flex-yc {
-        display: flex;
-
-        align-items: center;
-    }
-}
-
 // layout 结构样式
 .layout {
     &_group {
@@ -596,10 +495,6 @@ body {
         margin-inline-end: 0;
     }
 
-    .layout_container[data-align="center"] {
-        margin: 0 auto;
-    }
-
     &[data-set_border="false"] {
         border: none;
 
@@ -649,13 +544,6 @@ body {
 
             border-color: rgba(211, 211, 211, 0.4);
         }
-    }
-
-    &[data-align_center="true"] > .layout_limit_wrapper > .layout_container > .row > .col {
-        display: flex;
-
-        align-items: center;
-        flex-wrap: wrap;
     }
 
     img {
@@ -1148,6 +1036,7 @@ body {
     z-index: 1;
 
     box-sizing: border-box;
+
     &[data-window_width="true"] {
         width: 100vw !important;
         max-width: none;
@@ -1173,7 +1062,103 @@ body {
             flex: 0 0 auto;
         }
     }
+    .row {
+        display: flex;
+        flex: 1 1 auto;
 
+        box-sizing: border-box;
+    }
+
+    .col {
+        display: flex;
+
+        box-sizing: border-box;
+    }
+
+    .col_space {
+        display: block;
+        flex: 0 0 auto;
+    }
+
+    .col-20 {
+        width: 20%;
+    }
+
+    .col-25 {
+        width: 25%;
+    }
+
+    .col-30 {
+        width: 30%;
+    }
+
+    .col-33 {
+        width: 33.3333333%;
+    }
+
+    .col-40 {
+        width: 40%;
+    }
+
+    .col-50 {
+        width: 50%;
+    }
+
+    .col-60 {
+        width: 60%;
+    }
+
+    .col-66 {
+        width: 66.6666666%;
+    }
+
+    .col-70 {
+        width: 70%;
+    }
+
+    .col-100 {
+        width: 100%;
+    }
+
+    .space-3 {
+        & > * {
+            margin-right: 3px;
+
+            &:last-child {
+                margin: 0;
+            }
+        }
+    }
+
+    .space-10 {
+        margin-right: -10px;
+    }
+
+    .space-10 > * {
+        padding-right: 10px;
+    }
+
+    .space-20 {
+        margin-right: -20px;
+    }
+
+    .space-20 > * {
+        padding-right: 20px;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .flex-elastic {
+        flex: 1 1 auto;
+    }
+
+    .flex-yc {
+        display: flex;
+
+        align-items: center;
+    }
     // * 背景图
     .layout_bg {
         position: absolute;
@@ -1223,7 +1208,7 @@ body {
             background-position: bottom right;
         }
     }
-    
+
     .layout_bg {
         &_mo {
             display: none;
@@ -1232,7 +1217,27 @@ body {
             display: block;
         }
     }
-    
+}
+
+// * 布局块
+
+.layout {
+    .row {
+        max-width: 100%;
+    }
+    &[data-justify_center="true"] {
+        .row {
+            margin: 0 auto;
+        }
+    }
+    &[data-align_center="true"] {
+        .col {
+            display: flex;
+
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    }
 }
 
 // * 电脑独有样式

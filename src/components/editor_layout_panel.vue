@@ -64,7 +64,7 @@
 
                             <div
                                 class="attr_set_item flex_center"
-                                v-if="layout_data.col_container > 1"
+                                v-if="layout_data.col_container.length > 1"
                             >
                                 <div class="item_header flex_fix">布局间距</div>
                                 <div class="item_body flex_center flex_auto">

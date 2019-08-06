@@ -1,119 +1,126 @@
 <template>
-
+    <div
+        id="page_body_editor-wrapper"
+        :data-type="editor_type && `${editor_type}-editing`"
+        class="page_body_editor-wrapper"
+        :class="{is_editing: editor_type}"
+    >
         <div
-            id="page_body_editor-wrapper"
-            :data-type="editor_type && `${editor_type}-editing`"
-            class="page_body_editor-wrapper"
-            :class="{is_editing: editor_type}"
+            :id="item.id"
+            class="layout_group"
+            :class="{is_oper: item.id == oper_layout_groups_id, window_height: item.attrs.window_height}"
+            v-for="(item) in layout_groups"
+            :style="{backgroundColor: item.attrs.background_color}"
+            :key="item.id"
+            :data-window_width="item.attrs.window_width"
+            :data-window_height="item.attrs.window_height"
+            :data-limit_width="item.attrs.limit_width"
         >
-            <div
-                :id="item.id"
-                class="layout_group"
-                :class="{is_oper: item.id == oper_layout_groups_id, window_height: item.attrs.window_height}"
-                v-for="(item) in layout_groups"
-                :style="{backgroundColor: item.attrs.background_color}"
-                :key="item.id"
-                :data-window_width="item.attrs.window_width"
-                :data-window_height="item.attrs.window_height"
-                :data-limit_width="item.attrs.limit_width"
-            >
-                <div class="layout_group-editor_bar" v-if="can_editor">
-                    <div
-                        class="item"
-                        data-key="add"
-                        title="添加"
-                        @click="open_add_layout_group_dialog(item.id)"
-                    >
-                        <span class="text">添加</span>
-                        <i class="fa fa-plus"></i>
-                    </div>
-                    <div
-                        class="item"
-                        data-key="editor"
-                        title="编辑"
-                        @click="open_editor_layout_group_dialog($event,item.id)"
-                    >
-                        <span class="text">编辑</span>
-                        <i class="fa fa-pencil"></i>
-                    </div>
-                    <div
-                        class="item"
-                        data-key="up"
-                        title="上移"
-                        @click="move_layout_group(item.id, 'up')"
-                    >
-                        <span class="text">上移</span>
-                        <i class="fa fa-arrow-up"></i>
-                    </div>
-                    <div
-                        class="item"
-                        data-key="down"
-                        title="下移"
-                        @click="move_layout_group(item.id, 'down')"
-                    >
-                        <span class="text">下移</span>
-                        <i class="fa fa-arrow-down"></i>
-                    </div>
-                    <div class="item" data-key="copy" title="复制" @click="copy_layout_group(item.id)">
-                        <span class="text">复制</span>
-                        <i class="fa fa-copy"></i>
-                    </div>
-                    <div
-                        class="item"
-                        data-key="delete"
-                        title="删除"
-                        @click="open_delete_layout_group_dialog($event,item.id)"
-                    >
-                        <span class="text">删除</span>
-                        <i class="fa fa-trash"></i>
-                    </div>
+            <div class="layout_group-editor_bar" v-if="can_editor">
+                <div
+                    class="item"
+                    data-key="add"
+                    title="添加"
+                    @click="open_add_layout_group_dialog(item.id)"
+                >
+                    <span class="text">添加</span>
+                    <i class="fa fa-plus"></i>
                 </div>
+                <div
+                    class="item"
+                    data-key="editor"
+                    title="编辑"
+                    @click="open_editor_layout_group_dialog($event,item.id)"
+                >
+                    <span class="text">编辑</span>
+                    <i class="fa fa-pencil"></i>
+                </div>
+                <div
+                    class="item"
+                    data-key="up"
+                    title="上移"
+                    @click="move_layout_group(item.id, 'up')"
+                >
+                    <span class="text">上移</span>
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+                <div
+                    class="item"
+                    data-key="down"
+                    title="下移"
+                    @click="move_layout_group(item.id, 'down')"
+                >
+                    <span class="text">下移</span>
+                    <i class="fa fa-arrow-down"></i>
+                </div>
+                <div class="item" data-key="copy" title="复制" @click="copy_layout_group(item.id)">
+                    <span class="text">复制</span>
+                    <i class="fa fa-copy"></i>
+                </div>
+                <div
+                    class="item"
+                    data-key="delete"
+                    title="删除"
+                    @click="open_delete_layout_group_dialog($event,item.id)"
+                >
+                    <span class="text">删除</span>
+                    <i class="fa fa-trash"></i>
+                </div>
+            </div>
 
-                <section
-                    class="layout_bg layout_bg_pc"
-                    :style=" `background-image: url(${item.attrs.bg.pc.path});`"
-                    v-if="item.attrs.bg.pc.path"
-                    :data-effect="item.attrs.bg.pc.effect"
-                    :data-size="item.attrs.bg.pc.size"
-                    :data-pos="item.attrs.bg.pc.position"
-                >
-                    <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
-                </section>
-                <section
-                    class="layout_bg layout_bg_mo"
-                    :style=" `background-image: url(${item.attrs.bg.mo.path || item.attrs.bg.pc.path});`"
-                    v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path" :data-effect="item.attrs.bg.mo.effect"
-                    :data-size="item.attrs.bg.mo.size"
-                    :data-pos="item.attrs.bg.mo.position"
-                >
-                    <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
-                </section>
-                <section class="layout_limit_wrapper">
-                    <section class="layout_container">
+            <section
+                class="layout_bg layout_bg_pc"
+                :style=" `background-image: url(${item.attrs.bg.pc.path});`"
+                v-if="item.attrs.bg.pc.path"
+                :data-effect="item.attrs.bg.pc.effect"
+                :data-size="item.attrs.bg.pc.size"
+                :data-pos="item.attrs.bg.pc.position"
+            >
+                <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
+            </section>
+            <section
+                class="layout_bg layout_bg_mo"
+                :style=" `background-image: url(${item.attrs.bg.mo.path || item.attrs.bg.pc.path});`"
+                v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path"
+                :data-effect="item.attrs.bg.mo.effect"
+                :data-size="item.attrs.bg.mo.size"
+                :data-pos="item.attrs.bg.mo.position"
+            >
+                <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
+            </section>
+            <section class="layout_limit_wrapper">
+                <section class="layout_container">
+                    <section
+                        :id="item.attrs.header.id"
+                        v-show="item.attrs.header.open"
+                        class="layout_header editor_wrapper"
+                    >
+                        <section class="editor ck-content" v-html="item.attrs.header.container"></section>
+                    </section>
+                    <section class="layout_body">
                         <section
-                            :id="item.attrs.header.id"
-                            v-show="item.attrs.header.open"
-                            class="layout_header editor_wrapper"
+                            :id="layout_item.id"
+                            class="layout"
+                            :class="{is_oper: layout_item.id == oper_layout_id}"
+                            :data-type-detail="layout_item.type_detail"
+                            v-for="(layout_item) in item.body"
+                            :key="layout_item.id"
+                            :data-justify_center="layout_item.x_align"
+                            :data-align_center="layout_item.y_align"
                         >
-                            <section class="editor ck-content" v-html="item.attrs.header.container"></section>
-                        </section>
-                        <section class="layout_body">
                             <section
-                                :id="layout_item.id"
-                                class="layout"
-                                :class="{is_oper: layout_item.id == oper_layout_id}"
-                                :data-type-detail="layout_item.type_detail"
-                                v-for="(layout_item) in item.body"
-                                :key="layout_item.id"
+                                class="row"
+                                :style="{width: layout_item.width.value ?layout_item.width.value + layout_item.width.unit : ''}"
                             >
-                                <section class="row">
+                                <template
+                                    v-for="(col_item, col_index) in layout_item.col_container"
+                                >
                                     <section
                                         :id="col_item.id"
                                         class="col editor_wrapper"
                                         :class="`col-${col_item.col}`"
-                                        v-for="(col_item,col_index) in layout_item.col_container"
+                                        :key="col_item.id"
                                         :style="{backgroundColor: col_item.background_color}"
-                                        :key="col_index"
                                     >
                                         <template v-if="layout_item.type_detail==`custom`">
                                             <section
@@ -145,77 +152,84 @@
                                             <div class="layout_block"></div>
                                         </template>
                                     </section>
-                                    <div class="layout-editor_bar" v-if="can_editor">
-                                        <div
-                                            class="item"
-                                            data-key="editor"
-                                            title="编辑"
-                                            @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
-                                        >
-                                            <span class="text">编辑</span>
-                                            <i class="fa fa-pencil"></i>
-                                        </div>
-                                        <div
-                                            class="item"
-                                            data-key="add"
-                                            title="添加"
-                                            @click="open_add_layout_dialog(item.id, layout_item.id)"
-                                        >
-                                            <span class="text">添加</span>
-                                            <i class="fa fa-plus"></i>
-                                        </div>
-                                        <div
-                                            class="item"
-                                            data-key="up"
-                                            title="上移"
-                                            @click="move_layout(item.id, layout_item.id, 'up')"
-                                        >
-                                            <span class="text">上移</span>
-                                            <i class="fa fa-arrow-up"></i>
-                                        </div>
-                                        <div
-                                            class="item"
-                                            data-key="down"
-                                            title="下移"
-                                            @click="move_layout(item.id, layout_item.id, 'down')"
-                                        >
-                                            <span class="text">下移</span>
-                                            <i class="fa fa-arrow-down"></i>
-                                        </div>
-                                        <div
-                                            class="item"
-                                            data-key="copy"
-                                            title="复制"
-                                            @click="copy_layout(layout_item)"
-                                        >
-                                            <span class="text">复制</span>
-                                            <i class="fa fa-copy"></i>
-                                        </div>
-                                        <div
-                                            class="item"
-                                            data-key="delete"
-                                            title="删除"
-                                            @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
-                                        >
-                                            <span class="text">删除</span>
-                                            <i class="fa fa-trash"></i>
-                                        </div>
+                                    <span
+                                        v-if="col_index != layout_item.col_container.length-1"
+                                        class="col_space"
+                                        :style="{width: (layout_item.space.value || 0) + layout_item.space.unit}"
+                                        :key="col_item.col_index"
+                                    ></span>
+                                </template>
+                                <div class="layout-editor_bar" v-if="can_editor">
+                                    <div
+                                        class="item"
+                                        data-key="editor"
+                                        title="编辑"
+                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
+                                    >
+                                        <span class="text">编辑</span>
+                                        <i class="fa fa-pencil"></i>
                                     </div>
-                                </section>
+                                    <div
+                                        class="item"
+                                        data-key="add"
+                                        title="添加"
+                                        @click="open_add_layout_dialog(item.id, layout_item.id)"
+                                    >
+                                        <span class="text">添加</span>
+                                        <i class="fa fa-plus"></i>
+                                    </div>
+                                    <div
+                                        class="item"
+                                        data-key="up"
+                                        title="上移"
+                                        @click="move_layout(item.id, layout_item.id, 'up')"
+                                    >
+                                        <span class="text">上移</span>
+                                        <i class="fa fa-arrow-up"></i>
+                                    </div>
+                                    <div
+                                        class="item"
+                                        data-key="down"
+                                        title="下移"
+                                        @click="move_layout(item.id, layout_item.id, 'down')"
+                                    >
+                                        <span class="text">下移</span>
+                                        <i class="fa fa-arrow-down"></i>
+                                    </div>
+                                    <div
+                                        class="item"
+                                        data-key="copy"
+                                        title="复制"
+                                        @click="copy_layout(layout_item)"
+                                    >
+                                        <span class="text">复制</span>
+                                        <i class="fa fa-copy"></i>
+                                    </div>
+                                    <div
+                                        class="item"
+                                        data-key="delete"
+                                        title="删除"
+                                        @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
+                                    >
+                                        <span class="text">删除</span>
+                                        <i class="fa fa-trash"></i>
+                                    </div>
+                                </div>
                             </section>
                         </section>
+                    </section>
 
-                        <section
-                            class="layout_footer editor_wrapper"
-                            v-show="item.attrs.footer.open"
-                            :id="item.attrs.footer.id"
-                        >
-                            <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
-                        </section>
+                    <section
+                        class="layout_footer editor_wrapper"
+                        v-show="item.attrs.footer.open"
+                        :id="item.attrs.footer.id"
+                    >
+                        <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
                     </section>
                 </section>
-            </div>
+            </section>
         </div>
+    </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
