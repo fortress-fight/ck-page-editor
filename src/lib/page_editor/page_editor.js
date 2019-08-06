@@ -32,26 +32,37 @@ class Page_editor {
         this.set_editor_event();
         this.set_rel_dom();
         this.container.html(this.editor_dom);
-        setTimeout(() => {
+        window.editor_page_load = (win, vue) => {
             this.set_data();
             this.set_view_oper();
             this.init_done();
-        });
+        };
         return this;
     }
 
     set_data() {
-        try {
-            this.editor_iframe[0].contentWindow.set_data(
-                this.editor_frame_data
-            );
-        } catch (error) {
-            console.log("缺少正确的内部框架");
-        }
+        this.editor_iframe_win.set_data(this.editor_frame_data);
     }
 
     get_data() {
-        return this.editor_iframe[0].contentWindow.get_data();
+        return this.editor_iframe_win.get_data();
+    }
+    get editor_iframe_win() {
+        if (this.editor_iframe[0]) {
+            return this.editor_iframe[0].contentWindow;
+        } else {
+            return {
+                set_data() {
+                    console.log("缺少正确的内部框架");
+                },
+                set_editor() {
+                    console.log("缺少正确的内部框架");
+                },
+                get_data() {
+                    console.log("缺少正确的内部框架");
+                }
+            };
+        }
     }
     set_view_oper() {
         let _this = this;
@@ -165,6 +176,11 @@ class Page_editor {
             },
             init_done_ev: btn => {
                 btn.on("close", () => {
+                    console.log(
+                        "this.editor_iframe_win:",
+                        this.editor_iframe_win
+                    );
+                    this.editor_iframe_win.set_editor(false);
                     btn.trigger("enable", true);
                     this.fool_screen("close");
 
@@ -175,6 +191,7 @@ class Page_editor {
                     });
                 });
                 btn.on("open", () => {
+                    this.editor_iframe_win.set_editor(true);
                     btn.trigger("enable", false);
                     Object.values(this.tools).forEach(tool => {
                         tool[0] !== btn[0] && tool.hide();

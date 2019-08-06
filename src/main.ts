@@ -19,6 +19,18 @@ const Component = new Vue({
     components: {
         "c-pop-tran": c_pop_tran
     },
+    mounted() {
+        window.set_editor = () => {
+            console.log(this);
+        };
+        window.set_data = () => {
+            console.log(this);
+        };
+        window.get_data = () => {
+            console.log(this);
+        };
+        window.parent.editor_page_load(window, this);
+    },
     render: h => h(App)
 }).$mount();
 
