@@ -12,51 +12,53 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
-.el-switch__label * {
-    font-size: inherit;
-}
-.space_normal {
-    .el-switch__label--right {
-        margin-left: 16px;
+body {
+    .el-switch__label * {
+        font-size: inherit;
     }
-}
-.el-switch__core {
-    width: 30px;
-    height: 16px;
-
-    border-color: #dfdfdf;
-    background: transparent;
-    &:after {
-        top: 0;
-
-        width: 14px;
-        height: 14px;
-
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    .space_normal {
+        .el-switch__label--right {
+            margin-left: 16px;
+        }
     }
-}
-.el-switch {
-    font-size: inherit;
+    .el-switch__core {
+        width: 30px;
+        height: 16px;
 
-    color: inherit;
-}
-.el-switch__label {
-    font-size: inherit;
+        border-color: #dfdfdf;
+        background: transparent;
+        &:after {
+            top: 0;
 
-    color: inherit;
-    &.is-active {
+            width: 14px;
+            height: 14px;
+
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+    .el-switch {
+        font-size: inherit;
+
         color: inherit;
     }
-}
-.el-switch__label--right {
-    margin-left: 6px;
-}
+    .el-switch__label {
+        font-size: inherit;
 
-.el-switch.is-checked .el-switch__core {
-    border-color: #677ae4;
-    background-color: #677ae4;
-}
-.el-switch.is-checked .el-switch__core::after {
-    margin-left: -14px;
+        color: inherit;
+        &.is-active {
+            color: inherit;
+        }
+    }
+    .el-switch__label--right {
+        margin-left: 6px;
+    }
+
+    .el-switch.is-checked .el-switch__core {
+        border-color: #677ae4;
+        background-color: #677ae4;
+    }
+    .el-switch.is-checked .el-switch__core::after {
+        margin-left: -14px;
+    }
 }
 </style>

@@ -49,9 +49,41 @@ body {
 * --------------------------------------------- start 编辑器内样式 ---------------------------------------------
 */
 
+.page_body_editor {
+    &.has_border {
+        .layout_group {
+            border: 2px solid #eee;
+        }
+        .row {
+            border: 1px solid rgba(211, 211, 211, 0.4);
+            border-top: 0;
+            border-bottom: 0;
+        }
+
+        .col {
+            border: 1px solid rgba(211, 211, 211, 0.4);
+            border-top: 0;
+            border-bottom: 0;
+        }
+        .layout {
+            border-top: 1px solid rgba(211, 211, 211, 0.4);
+            &:last-of-type {
+                border-bottom: 1px solid rgba(211, 211, 211, 0.4);
+            }
+            &[data-limit_width="true"] > .layout_limit_wrapper {
+                border: 1px solid rgba(211, 211, 211, 0.4);
+                border-top: none;
+                border-bottom: none;
+            }
+        }
+        .page_body_editor-wrapper {
+            margin-bottom: -2px;
+        }
+    }
+}
+
 // layout_group
 .page_body_editor .layout_group {
-    border: 2px solid #eee;
     border-bottom: none;
     &.is_oper,
     &:hover {
@@ -453,31 +485,21 @@ body {
 // layout 结构样式
 .layout {
     &_group {
-        @at-root (with: rule) {
+        position: relative;
+
+        .row {
             position: relative;
 
-            .row {
-                position: relative;
+            display: flex;
+            flex: 1 1 auto;
 
-                display: flex;
-                flex: 1 1 auto;
+            box-sizing: border-box;
+        }
 
-                box-sizing: border-box;
+        hr.blank_block {
+            margin: 0;
 
-                border: 1px solid rgba(211, 211, 211, 0.4);
-                border-top: 0;
-                border-bottom: 0;
-            }
-
-            .col {
-                border: 1px solid rgba(211, 211, 211, 0.4);
-            }
-
-            hr.blank_block {
-                margin: 0;
-
-                border: none;
-            }
+            border: none;
         }
     }
 }
@@ -541,10 +563,6 @@ body {
     }
 
     .row {
-        .col {
-            border: 1px solid rgba(211, 211, 211, 0.4);
-        }
-
         .col:first-child {
             margin-left: 0 !important;
         }
@@ -605,10 +623,6 @@ body {
     &[data-limit_width="true"] > .layout_limit_wrapper {
         max-width: 1200px;
         margin: 0 auto;
-
-        border: 1px solid rgba(211, 211, 211, 0.4);
-        border-top: none;
-        border-bottom: none;
     }
 
     &[data-set_border="false"] {

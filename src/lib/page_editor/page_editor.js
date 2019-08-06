@@ -1,3 +1,4 @@
+import "@/style/fonts.scss";
 import dialog from "../dialog/dialog";
 import "./page_editor.scss";
 
@@ -32,26 +33,63 @@ class Page_editor {
         this.set_editor_event();
         this.set_rel_dom();
         this.container.html(this.editor_dom);
-        setTimeout(() => {
+        window.editor_page_load = (win, vue) => {
             this.set_data();
+            this.set_view_oper();
             this.init_done();
-        });
+        };
         return this;
     }
 
     set_data() {
-        this.editor_iframe[0].contentWindow.frame_data = this.editor_frame_data;
+        this.editor_iframe_win.set_data(this.editor_frame_data);
     }
 
     get_data() {
-        return this.editor_iframe[0].contentWindow.data;
+        return this.editor_iframe_win.get_data();
     }
-
+    get editor_iframe_win() {
+        if (this.editor_iframe[0]) {
+            return this.editor_iframe[0].contentWindow;
+        } else {
+            return {
+                set_data() {
+                    console.log("缺少正确的内部框架");
+                },
+                set_editor() {
+                    console.log("缺少正确的内部框架");
+                },
+                get_data() {
+                    console.log("缺少正确的内部框架");
+                },
+                preview_page() {
+                    console.log("缺少正确的内部框架");
+                }
+            };
+        }
+    }
+    set_view_oper() {
+        let _this = this;
+        this.$toolsbar.on("click", ".view_btn .theme .btn", function() {
+            _this.theme = $(this).attr("data-value");
+        });
+        this.$toolsbar.on("click", ".preview-btn.btn", function() {
+            if ($(this).hasClass("active")) {
+                _this.editor_iframe_win.preview_page(false);
+                $(this).removeClass("active");
+            } else {
+                _this.editor_iframe_win.preview_page(true);
+                $(this).addClass("active");
+            }
+        });
+        this.$toolsbar.on("click", ".view_btn .agent .btn", function() {
+            _this.agent = $(this).attr("data-value");
+        });
+    }
     fool_screen(control) {
         switch (control) {
             case "open":
                 this.$editor_dom.addClass("page_editor-fool_screen");
-
                 break;
             case "close":
                 this.$editor_dom.removeClass("page_editor-fool_screen");
@@ -109,7 +147,28 @@ class Page_editor {
             }
         );
     }
-
+    get theme() {
+        return value;
+    }
+    set theme(value) {
+        if (value == this._theme) return;
+        this._theme = value;
+        this.$toolsbar.find(".theme .btn").removeClass("active");
+        this.$toolsbar
+            .find('.theme .btn[data-value="' + value + '"]')
+            .addClass("active");
+    }
+    get agent() {
+        return value;
+    }
+    set agent(value) {
+        if (value == this._agent) return;
+        this._agent = value;
+        this.$toolsbar.find(".agent .btn").removeClass("active");
+        this.$toolsbar
+            .find('.agent .btn[data-value="' + value + '"]')
+            .addClass("active");
+    }
     get fool_screen_btn() {
         return {
             name: "fool_screen",
@@ -130,6 +189,11 @@ class Page_editor {
             },
             init_done_ev: btn => {
                 btn.on("close", () => {
+                    console.log(
+                        "this.editor_iframe_win:",
+                        this.editor_iframe_win
+                    );
+                    this.editor_iframe_win.set_editor(false);
                     btn.trigger("enable", true);
                     this.fool_screen("close");
 
@@ -140,6 +204,7 @@ class Page_editor {
                     });
                 });
                 btn.on("open", () => {
+                    this.editor_iframe_win.set_editor(true);
                     btn.trigger("enable", false);
                     Object.values(this.tools).forEach(tool => {
                         tool[0] !== btn[0] && tool.hide();
@@ -164,7 +229,7 @@ class Page_editor {
                         }
                     }).init();
                     let close_editor_btn = $(
-                        '<div class="close_editor_btn"  style="display: none"><i class="fa ifont fa-close"></i></div>'
+                        '<div class="close_editor_btn"  style="display: none"><i class="ic ifont ifont-close"></i></div>'
                     ).appendTo(this.$toolsbar);
 
                     close_editor_btn.on("click", ev => {
@@ -218,7 +283,7 @@ class Page_editor {
                 tool.icon
             )}' data-name="${tool.name}" alt="${tool.tip}">`;
             if (tool.icon) {
-                result += `<i class="fa"></i>`;
+                result += `<i class="ic ifont"></i>`;
             }
             if (tool.title) {
                 result += `<span>${tool.title}</span>`;
@@ -229,7 +294,7 @@ class Page_editor {
         this.tools_option.forEach(tool => {
             result += get_btn_dom(tool);
         });
-        result += "</div></div>";
+        result += `</div><div class="view_btn"> <div class="theme"> <span class="theme_white-btn btn active" data-value="white"></span> <span class="theme_black-btn btn" data-value="black"></span> </div> <div class="line"></div> <div class="agent"> <span class="agent_pc-btn btn active ifont ifont-MacBookPro" data-value="pc"> </span> <span class="agent_mo-btn btn ifont ifont-iphone" data-value="mo"> </span> </div><div class="line"></div> <div class="preview"> <span class="preview-btn btn ifont ifont-185037browserstreamlinewindow"> </span> </div> </div></div>`;
         return result;
     }
 

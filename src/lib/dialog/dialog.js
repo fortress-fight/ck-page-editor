@@ -155,7 +155,7 @@ class Dialog {
     }
     get dialog_header_dom() {
         let result;
-        let close_btn_dom = `<div class="dialog_close_btn" style=""><i class="fa ifont fa-close"></i></div>`;
+        let close_btn_dom = `<div class="dialog_close_btn" style=""><i class="fa ifont ifont-close"></i></div>`;
         result = $(
             `
                 <div class="dialog_header">
