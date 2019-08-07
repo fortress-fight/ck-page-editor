@@ -14,7 +14,7 @@
             :key="item.id"
             :data-window_width="item.attrs.window_width"
             :data-window_height="item.attrs.window_height"
-            :data-limit_width="item.attrs.limit_width"
+            :data-limit_width="item.attrs.window_height && item.attrs.limit_width"
         >
             <div class="layout_group-editor_bar" v-if="can_editor">
                 <div
@@ -112,6 +112,7 @@
                                 class="row"
                                 :style="{width: layout_item.width.value ?layout_item.width.value + layout_item.width.unit : ''}"
                                 :data-animate="layout_item.animate"
+                                :data-col="layout_item.col_container.map((v) => v.col).join('_')"
                             >
                                 <template
                                     v-for="(col_item, col_index) in layout_item.col_container"
@@ -131,7 +132,11 @@
                                             ></section>
                                         </template>
                                         <template v-if="layout_item.type_detail=='slider'">
-                                            <div class="layout_slider">
+                                            <div
+                                                class="layout_slider"
+                                                :data-num="col_item.attrs.num"
+                                                :data-margin="col_item.attrs.margin"
+                                            >
                                                 <template v-if="col_item.container.length">
                                                     <div
                                                         class="slider_item"
@@ -381,9 +386,8 @@ export default Vue.extend({
                 }
             });
         },
-        col_animationend(ev:Event) {
-            
-             $(ev.currentTarget).removeClass("animated");
+        col_animationend(ev: Event) {
+            $(ev.currentTarget).removeClass("animated");
         }
     },
     props: {

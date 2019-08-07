@@ -62,6 +62,9 @@ class Page_editor {
                 get_data() {
                     console.log("缺少正确的内部框架");
                 },
+                set_theme() {
+                    console.log("缺少正确的内部框架");
+                },
                 preview_page() {
                     console.log("缺少正确的内部框架");
                 }
@@ -157,6 +160,8 @@ class Page_editor {
         this.$toolsbar
             .find('.theme .btn[data-value="' + value + '"]')
             .addClass("active");
+
+        this.editor_iframe_win.set_theme(value);
     }
     get agent() {
         return value;
@@ -168,6 +173,7 @@ class Page_editor {
         this.$toolsbar
             .find('.agent .btn[data-value="' + value + '"]')
             .addClass("active");
+        this.editor_iframe_win.set_agent(value);
     }
     get fool_screen_btn() {
         return {

@@ -1,5 +1,5 @@
 <template>
-    <div class="body_container">
+    <div class="body_container" :data-agent="agent" :data-theme="theme">
         <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
             <page-layout-dom :can_editor="can_editor"></page-layout-dom>
             <keep-alive>
@@ -52,7 +52,13 @@ export default Vue.extend({
     },
     computed: {
         is_load() {
-  return this.$root.is_load;
+            return this.$root.is_load;
+        },
+        agent() {
+            return this.$root.agent;
+        },
+        theme() {
+            return this.$root.theme;
         },
         can_editor() {
             return this.$root.can_editor;
@@ -147,5 +153,16 @@ body {
 
     align-items: center;
     justify-content: center;
+}
+.body_container[data-theme="black"] {
+    .page {
+        &-add_layout_btn {
+            border-color: rgba(211, 211, 211, 0.4);
+            &:hover {
+                color: #fff;
+                border-color: #fff;
+            }
+        }
+    }
 }
 </style>

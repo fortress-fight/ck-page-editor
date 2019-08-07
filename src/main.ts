@@ -20,7 +20,9 @@ const Component = new Vue({
         return {
             load_timer: 0,
             is_load: false,
-            can_editor: false
+            can_editor: false,
+            theme: "white",
+            agent: "pc"
         };
     },
     store,
@@ -46,6 +48,12 @@ const Component = new Vue({
         };
         window.get_data = () => {
             console.log(this);
+        };
+        window.set_theme = value => {
+            this.theme = value;
+        };
+        window.set_agent = value => {
+            this.agent = value;
         };
         window.preview_page = true_on => {
             if (true_on) {

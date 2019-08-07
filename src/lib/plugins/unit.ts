@@ -83,6 +83,9 @@ export function adjustment_pos(
 
     if (!pos) {
         pos = { left: oper_dom_pos.left, top: oper_dom_pos.top };
+    } else {
+        pos.left = Math.max(option.distance, pos.left)
+        pos.top = Math.max(option.distance, pos.top)
     }
 
     let beyond_width =
