@@ -10,6 +10,8 @@
 import page_layout_dom from "@/components/page_layout_dom.vue";
 import Vue from "vue";
 import Parallax from "@/lib/plugins/parallax";
+import WOW from "wowjs";
+console.log("WOW:", WOW);
 export default Vue.extend({
     data() {
         return {};
@@ -34,19 +36,30 @@ export default Vue.extend({
     watch: {
         $route(new_value, old_value) {
             setTimeout(() => {
-                if (new_value.name !== 'preview') this.$destroy();
+                if (new_value.name !== "preview") this.$destroy();
             }, 200);
         }
     },
     mounted() {
-        console.log(`$('.layout_bg[data-effect="parallax"]')`, $('.layout_bg[data-effect="parallax"]'));
-        $('.layout_bg[data-effect="parallax"]').each(function(i, e) {
-            new Parallax({
-                scrollBox: document,
-                container: $(e).closest(".layout_group")[0],
-                parallaxDom: ".layout_bg_pc"
-            }).init();
-        });
+        $(function () {
+            
+            $('#page_body_preview .layout_bg[data-effect="parallax"]').each(function(i, e) {
+                new Parallax({
+                    scrollBox: document,
+                    container: $(e).closest(".layout_group")[0],
+                    parallaxDom: ".layout_bg_pc"
+                }).init();
+            });
+
+            var wow = new WOW.WOW({
+                boxClass: "page_body_preview .col", // default
+                animateClass: "animated", // default
+                offset: 0, // default
+                mobile: true, // default
+                live: false // default
+            });
+            wow.init();
+        })
     }
 });
 </script>
