@@ -11,7 +11,9 @@ import page_layout_dom from "@/components/page_layout_dom.vue";
 import Vue from "vue";
 import Parallax from "@/lib/plugins/parallax";
 import WOW from "wowjs";
-console.log("WOW:", WOW);
+import "slick-carousel/slick/slick.css";
+import slick from "slick-carousel/slick/slick.js";
+
 export default Vue.extend({
     data() {
         return {};
@@ -41,15 +43,18 @@ export default Vue.extend({
         }
     },
     mounted() {
-        $(function () {
-            
-            $('#page_body_preview .layout_bg[data-effect="parallax"]').each(function(i, e) {
-                new Parallax({
-                    scrollBox: document,
-                    container: $(e).closest(".layout_group")[0],
-                    parallaxDom: ".layout_bg_pc"
-                }).init();
-            });
+        $(function() {
+            console.log(slick, "slick");
+
+            $('#page_body_preview .layout_bg[data-effect="parallax"]').each(
+                function(i, e) {
+                    new Parallax({
+                        scrollBox: document,
+                        container: $(e).closest(".layout_group")[0],
+                        parallaxDom: ".layout_bg_pc"
+                    }).init();
+                }
+            );
 
             var wow = new WOW.WOW({
                 boxClass: "page_body_preview .col", // default
@@ -59,7 +64,43 @@ export default Vue.extend({
                 live: false // default
             });
             wow.init();
-        })
+            $("#page_body_preview .layout_slider").each(function(i, e) {
+                var showIndex = $(e).attr("data-num"); // 一屏显示个数
+                var autoplay = Boolean(
+                    parseFloat($(e).attr("data-slider-autoplay"))
+                ); // 是否自动播放
+                var isVertical = Boolean(
+                    parseFloat($(e).attr("data-slider-vertical"))
+                ); // 是否垂直滚动
+                var paddingVel = $(e).attr("data-margin"); // 每项间距
+                var fade = Boolean(parseFloat($(e).attr("data-slider-fade"))); // 是否过渡
+                var adaptiveHeight = Boolean(
+                    parseFloat($(e).attr("data-slider-adaptiveHeight"))
+                ); // 是否自适应高度
+
+                $(e).css({
+                    marginRight: paddingVel
+                });
+                $(e).slick({
+                    slidesToShow: showIndex || 1,
+                    autoplay: autoplay || false,
+                    vertical: isVertical || false,
+                    verticalSwiping: isVertical || false,
+                    fade: fade || false,
+                    dots: true,
+                    adaptiveHeight: adaptiveHeight || true,
+                    prevArrow: `<div class="slick-prev"><i class="fa fa-angle-left"></i></div>`,
+                    nextArrow: `<div class="slick-next"><i class="fa fa-angle-right"></i></div>`
+                });
+                
+                $(e)
+                    .find(".slick-slide > div")
+                    .css({
+                        marginRight: paddingVel
+                    });
+
+            });
+        });
     }
 });
 </script>
