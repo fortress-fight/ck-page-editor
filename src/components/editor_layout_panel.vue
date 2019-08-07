@@ -386,6 +386,7 @@ export default Vue.extend({
         },
         change_layout_animate(value) {
             this.layout_data = { animate: value };
+            $('#' + this.layout_data.id).find('.col').addClass("animated");
         },
         layout_editor_cancel() {
             this.cancel_dialog.show = true;

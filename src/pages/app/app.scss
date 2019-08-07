@@ -243,13 +243,9 @@ body {
     }
 }
 
-/*
-* --------------------------------------------- end 编辑器内样式 ---------------------------------------------
-*/
+// * --------------------------------------------- end 编辑器内样式 ---------------------------------------------
 
-/*
-* --------------------------------------------- 页面展示 ---------------------------------------------
-*/
+// * --------------------------------------------- 页面展示 ---------------------------------------------
 
 // 编辑器默认样式
 .layout_group {
@@ -404,59 +400,257 @@ body {
     }
 }
 
-//! 待整理
+// * 主题样式
 
-.layout {
-    font-size: 14px;
-    line-height: 1.6;
+body {
+    margin: 0 auto;
 
-    position: relative;
+    transition: background 0.36s ease;
 
-    overflow: hidden;
+    &.theme_w {
+        background-color: #fff;
+    }
 
+    &.theme_b {
+        color: #eee;
+        background-color: #232323;
+    }
+
+    &.agent_mo {
+        max-width: 375px;
+
+        border-radius: 10px;
+
+        .layout_dom_body {
+            overflow: hidden;
+
+            max-width: 100%;
+
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #eaeaea;
+        }
+
+        .layout {
+            &[data-limit_width="true"] > .layout_limit_wrapper {
+                max-width: 98%;
+            }
+
+            .blank_block.big_blank {
+                height: 50px;
+            }
+
+            .blank_block.normal_blank {
+                height: 25px;
+            }
+
+            .blank_block.small_blank {
+                height: 10px;
+            }
+
+            .text-40,
+            .text-60,
+            .text-72 {
+                font-size: 38px !important;
+            }
+
+            .row {
+                flex-wrap: wrap;
+            }
+
+            &[data-window_width="true"] {
+                width: 375px !important;
+            }
+
+            &[data-col="50_50"],
+            &[data-col="70_30"],
+            &[data-col="30_70"],
+            &[data-col="25_50_25"],
+            &[data-col="33_33_33"] {
+                .col {
+                    flex: 0 0 100%;
+
+                    width: 100%;
+                }
+
+                .col_space {
+                    display: none;
+                }
+            }
+
+            &[data-col="50_25_25"] {
+                .col-50 {
+                    flex: 0 0 100%;
+
+                    width: 100%;
+                }
+
+                .col-25 {
+                    flex: 1 0 auto;
+
+                    width: 34%;
+
+                    & + .col_space {
+                        max-width: 32%;
+                    }
+
+                    &:nth-of-type(2n) + .col_space {
+                        display: none;
+                    }
+                }
+            }
+
+            &[data-col="25_25_50"] {
+                .col-50 {
+                    flex: 0 0 100%;
+
+                    width: 100%;
+                }
+
+                .col-25 {
+                    flex: 1 0 auto;
+
+                    width: 34%;
+
+                    & + .col_space {
+                        max-width: 32%;
+                    }
+
+                    &:nth-of-type(2n) + .col_space {
+                        display: none;
+                    }
+                }
+            }
+
+            &[data-col="25_25_25_25"] {
+                .col-25 {
+                    flex: 1 0 auto;
+
+                    width: 34%;
+
+                    & + .col_space {
+                        max-width: 32%;
+                    }
+
+                    &:nth-of-type(2n) + .col_space {
+                        display: none;
+                    }
+                }
+            }
+
+            &[data-col="20_20_20_20_20"] {
+                .col-20 {
+                    flex: 1 0 auto;
+
+                    width: 34%;
+
+                    & + .col_space {
+                        max-width: 32%;
+                    }
+
+                    &:nth-of-type(2n) + .col_space {
+                        display: none;
+                    }
+                }
+
+                .col-20:nth-of-type(5n) {
+                    flex: 0 0 100%;
+
+                    width: 100%;
+                }
+
+                .col_space:last-child {
+                    width: 100%;
+                    height: 0;
+                }
+            }
+        }
+    }
+
+    &.agent_pc {
+        max-width: 100%;
+    }
+}
+
+// * --------------------------------------------- end 页面展示 ---------------------------------------------
+
+// * --------------------------- 整理后的页面展示 --------------------
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        -webkit-transform: translate3d(0, 100%, 0);
+                transform: translate3d(0, 100%, 0);
+
+        opacity: 0;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        -webkit-transform: translate3d(100%, 0, 0);
+                transform: translate3d(100%, 0, 0);
+
+        opacity: 0;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale3d(0.6, 0.6, 0.6);
+
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        -webkit-transform: translate3d(-100%, 0, 0);
+                transform: translate3d(-100%, 0, 0);
+
+        opacity: 0;
+    }
+
+    to {
+        -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+
+        opacity: 1;
+    }
+}
+
+// * 默认样式
+
+.layout_group {
     tbody {
         vertical-align: top;
-    }
-
-    .layout_header,
-    .layout_footer {
-        display: none;
-
-        min-height: 50px;
-    }
-
-    .blank_block.small_blank {
-        height: 20px;
-    }
-
-    .blank_block.normal_blank {
-        height: 50px;
-    }
-
-    .blank_block.big_blank {
-        height: 100px;
-    }
-
-    &[data-show_header="true"] {
-        .layout_header {
-            display: block;
-        }
-    }
-
-    &[data-show_footer="true"] {
-        .layout_footer {
-            display: block;
-        }
-    }
-
-    .row {
-        .col:first-child {
-            margin-left: 0 !important;
-        }
-
-        [class*="col-"] {
-            padding: 0;
-        }
     }
 
     h1 {
@@ -493,14 +687,6 @@ body {
         margin-block-end: 1em;
         margin-inline-start: 0;
         margin-inline-end: 0;
-    }
-
-    &[data-set_border="false"] {
-        border: none;
-
-        * {
-            border: none;
-        }
     }
 
     blockquote {
@@ -680,358 +866,26 @@ body {
         color: #fff;
         background: #333;
     }
-}
 
-.layout_dom {
-    margin: 0 auto;
-
-    transition: background 0.36s ease;
-
-    &.theme_w {
-        background-color: #fff;
+    .blank_block.small_blank {
+        height: 20px;
     }
 
-    &.theme_b {
-        color: #eee;
-        background-color: #232323;
+    .blank_block.normal_blank {
+        height: 50px;
     }
 
-    &.agent_mo {
-        max-width: 375px;
-
-        border-radius: 10px;
-
-        .layout_dom_body {
-            overflow: hidden;
-
-            max-width: 100%;
-
-            border: 1px solid #eaeaea;
-            border-radius: 10px;
-            box-shadow: 0 0 10px #eaeaea;
-        }
-
-        .layout {
-            &[data-limit_width="true"] > .layout_limit_wrapper {
-                max-width: 98%;
-            }
-
-            .blank_block.big_blank {
-                height: 50px;
-            }
-
-            .blank_block.normal_blank {
-                height: 25px;
-            }
-
-            .blank_block.small_blank {
-                height: 10px;
-            }
-
-            .text-40,
-            .text-60,
-            .text-72 {
-                font-size: 38px !important;
-            }
-
-            .row {
-                flex-wrap: wrap;
-            }
-
-            &[data-window_width="true"] {
-                width: 375px !important;
-            }
-
-            &[data-col="50_50"],
-            &[data-col="70_30"],
-            &[data-col="30_70"],
-            &[data-col="25_50_25"],
-            &[data-col="33_33_33"] {
-                .col {
-                    flex: 0 0 100%;
-
-                    width: 100%;
-                }
-
-                .col_space {
-                    display: none;
-                }
-            }
-
-            &[data-col="50_25_25"] {
-                .col-50 {
-                    flex: 0 0 100%;
-
-                    width: 100%;
-                }
-
-                .col-25 {
-                    flex: 1 0 auto;
-
-                    width: 34%;
-
-                    & + .col_space {
-                        max-width: 32%;
-                    }
-
-                    &:nth-of-type(2n) + .col_space {
-                        display: none;
-                    }
-                }
-            }
-
-            &[data-col="25_25_50"] {
-                .col-50 {
-                    flex: 0 0 100%;
-
-                    width: 100%;
-                }
-
-                .col-25 {
-                    flex: 1 0 auto;
-
-                    width: 34%;
-
-                    & + .col_space {
-                        max-width: 32%;
-                    }
-
-                    &:nth-of-type(2n) + .col_space {
-                        display: none;
-                    }
-                }
-            }
-
-            &[data-col="25_25_25_25"] {
-                .col-25 {
-                    flex: 1 0 auto;
-
-                    width: 34%;
-
-                    & + .col_space {
-                        max-width: 32%;
-                    }
-
-                    &:nth-of-type(2n) + .col_space {
-                        display: none;
-                    }
-                }
-            }
-
-            &[data-col="20_20_20_20_20"] {
-                .col-20 {
-                    flex: 1 0 auto;
-
-                    width: 34%;
-
-                    & + .col_space {
-                        max-width: 32%;
-                    }
-
-                    &:nth-of-type(2n) + .col_space {
-                        display: none;
-                    }
-                }
-
-                .col-20:nth-of-type(5n) {
-                    flex: 0 0 100%;
-
-                    width: 100%;
-                }
-
-                .col_space:last-child {
-                    width: 100%;
-                    height: 0;
-                }
-            }
-        }
-    }
-
-    &.agent_pc {
-        max-width: 100%;
+    .blank_block.big_blank {
+        height: 100px;
     }
 }
-
-// 预览的样式
-
-.layout {
-    .layout_container {
-        max-width: 100%;
-    }
-}
-
-/*
-* -------------------------------------------animate-------------------------------------------
-*/
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        -webkit-transform: translate3d(0, 100%, 0);
-                transform: translate3d(0, 100%, 0);
-
-        opacity: 0;
-    }
-
-    to {
-        -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
-
-        opacity: 1;
-    }
-}
-
-@keyframes fadeInRight {
-    from {
-        -webkit-transform: translate3d(100%, 0, 0);
-                transform: translate3d(100%, 0, 0);
-
-        opacity: 0;
-    }
-
-    to {
-        -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
-
-        opacity: 1;
-    }
-}
-
-@keyframes zoomIn {
-    from {
-        transform: scale3d(0.6, 0.6, 0.6);
-
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeInLeft {
-    from {
-        -webkit-transform: translate3d(-100%, 0, 0);
-                transform: translate3d(-100%, 0, 0);
-
-        opacity: 0;
-    }
-
-    to {
-        -webkit-transform: translate3d(0, 0, 0);
-                transform: translate3d(0, 0, 0);
-
-        opacity: 1;
-    }
-}
-
-.layout_dom {
-    &.agent_mo {
-        .layout_limit_wrapper {
-            @for $i from 1 through 10 {
-                .row .col:nth-of-type(#{$i}) {
-                    animation-delay: 0.1s * $i;
-                }
-            }
-
-            &[data-animate="2"] {
-                .col {
-                    animation-name: fadeInRight;
-                }
-            }
-        }
-    }
-}
-
-.layout_limit_wrapper {
-    .layout_header,
-    .layout_footer,
-    .col {
-        &.animated {
-            animation-duration: 1s;
-
-            animation-fill-mode: both;
-        }
-    }
-
-    &[data-animate] {
-        .layout_container {
-            .layout_header,
-            .layout_footer {
-                &:not(.animated) {
-                    animation-name: none;
-                }
-            }
-        }
-
-        .row .col:not(.animated) {
-            animation-name: none;
-        }
-    }
-
-    &[data-animate="1"],
-    &[data-animate="3"],
-    &[data-animate="4"] {
-        @for $i from 1 through 10 {
-            .row .col:nth-of-type(#{$i}) {
-                animation-delay: 0.1s * $i;
-            }
-        }
-    }
-
-    &[data-animate="4"] {
-        .layout_header,
-        .layout_footer,
-        .col {
-            animation-name: fadeIn;
-        }
-    }
-
-    &[data-animate="3"] {
-        .layout_header,
-        .layout_footer,
-        .col {
-            animation-name: zoomIn;
-        }
-    }
-
-    &[data-animate="2"] {
-        .layout_header,
-        .layout_footer,
-        .col {
-            animation-name: fadeInRight;
-        }
-    }
-
-    &[data-animate="1"] {
-        .layout_header,
-        .layout_footer,
-        .col {
-            animation-name: fadeInUp;
-        }
-    }
-}
-
-/*
-* --------------------------------------------- end 页面展示 ---------------------------------------------
-*/
-
-/*
-* --------------------------- 整理后的页面展示 --------------------
-*/
 
 // * 布局容器
 
 .layout_group {
+    font-size: 14px;
+    line-height: 1.6;
+
     position: relative;
     z-index: 1;
 
@@ -1062,13 +916,20 @@ body {
             flex: 0 0 auto;
         }
     }
+
     .row {
         display: flex;
         flex: 1 1 auto;
 
         box-sizing: border-box;
-    }
+        .col:first-child {
+            margin-left: 0 !important;
+        }
 
+        [class*="col-"] {
+            padding: 0;
+        }
+    }
     .col {
         display: flex;
 
@@ -1224,6 +1085,52 @@ body {
 .layout {
     .row {
         max-width: 100%;
+        &[data-animate] {
+            .col {
+                &:not(.animated) {
+                    animation-name: none;
+                }
+                &.animated {
+                    animation-duration: 1s;
+
+                    animation-fill-mode: both;
+                }
+            }
+        }
+
+        &[data-animate="1"],
+        &[data-animate="3"],
+        &[data-animate="4"] {
+            @for $i from 1 through 10 {
+                .col:nth-of-type(#{$i}) {
+                    animation-delay: 0.1s * $i;
+                }
+            }
+        }
+
+        &[data-animate="4"] {
+            .col {
+                animation-name: fadeIn;
+            }
+        }
+
+        &[data-animate="3"] {
+            .col {
+                animation-name: zoomIn;
+            }
+        }
+
+        &[data-animate="2"] {
+            .col {
+                animation-name: fadeInRight;
+            }
+        }
+
+        &[data-animate="1"] {
+            .col {
+                animation-name: fadeInUp;
+            }
+        }
     }
     &[data-justify_center="true"] {
         .row {
@@ -1263,6 +1170,13 @@ body {
 
         &_pc {
             display: none;
+        }
+    }
+    .row {
+        &[data-animate="2"] {
+            .col {
+                animation-name: fadeInRight;
+            }
         }
     }
 }

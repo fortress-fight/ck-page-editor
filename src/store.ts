@@ -80,6 +80,7 @@ let unit_layout_module = {
                 width: {
                     value: "100",
                     unit: "%"
+
                 },
                 space: {
                     value: "0",
@@ -87,11 +88,11 @@ let unit_layout_module = {
                 },
                 body_dom: null,
                 padding_x: {
-                    value: "",
+                    value: "0",
                     unit: "px"
                 },
                 padding_y: {
-                    value: "",
+                    value: "0",
                     unit: "px"
                 },
                 col_container: [],

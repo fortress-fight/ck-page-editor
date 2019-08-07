@@ -111,6 +111,7 @@
                             <section
                                 class="row"
                                 :style="{width: layout_item.width.value ?layout_item.width.value + layout_item.width.unit : ''}"
+                                :data-animate="layout_item.animate"
                             >
                                 <template
                                     v-for="(col_item, col_index) in layout_item.col_container"
@@ -120,7 +121,8 @@
                                         class="col editor_wrapper"
                                         :class="`col-${col_item.col}`"
                                         :key="col_item.id"
-                                        :style="{backgroundColor: col_item.background_color}"
+                                        :style="{backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
+                                        @animationend="col_animationend"
                                     >
                                         <template v-if="layout_item.type_detail==`custom`">
                                             <section
@@ -378,6 +380,10 @@ export default Vue.extend({
                     type
                 }
             });
+        },
+        col_animationend(ev:Event) {
+            
+             $(ev.currentTarget).removeClass("animated");
         }
     },
     props: {
