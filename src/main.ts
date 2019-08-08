@@ -22,7 +22,12 @@ const Component = new Vue({
             is_load: false,
             can_editor: false,
             theme: "white",
-            agent: "pc"
+            agent: "pc",
+            resource_link: "http://127.0.0.1:3003/",
+            img_upload: {
+                name: "Filedata",
+                action: "/service"
+            }
         };
     },
     store,

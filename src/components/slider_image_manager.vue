@@ -39,9 +39,9 @@
         </div>
         <c-upload
             class="slider_item-add_btn"
-            name="Filedata"
+            :name="img_upload.name"
+            :action="img_upload.action"
             ref="upload_btn"
-            action="/service"
             accept="image/*"
             :multiple="true"
             :with-credentials="true"
@@ -75,6 +75,9 @@ export default Vue.extend({
             set(new_value) {
                 this.$emit("input", new_value);
             }
+        },
+        img_upload() {
+            return this.$root.img_upload;
         },
         dragOptions() {
             return {
@@ -121,7 +124,7 @@ export default Vue.extend({
         upload_suc(file) {
             this.c_value.push({
                 order: this.c_value.length,
-                img: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
+                img: this.$root.resource_link + file.url.replace("\\", "/")
             });
         }
     }

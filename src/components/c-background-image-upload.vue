@@ -18,14 +18,15 @@
                 :style="{'background': (c_value.path ? '' : '#fff')}"
             >
                 <el-upload
-                    name="Filedata"
+                    :name="img_upload.name"
+                    :action="img_upload.action"
                     class="c_image_upload-btn"
                     ref="upload_btn"
-                    action="/service"
                     accept="image/*"
                     :with-credentials="true"
                     :on-preview="handlePreview"
                     :on-success="upload_suc"
+                    :before-upload="before_upload"
                 ></el-upload>
                 <div
                     class="c_image_upload-image_preview flex_center"
@@ -192,6 +193,9 @@ export default Vue.extend({
         }
     },
     computed: {
+        img_upload() {
+            return this.$root.img_upload;
+        },
         c_value: {
             get() {
                 return this.value;
@@ -199,6 +203,7 @@ export default Vue.extend({
             set(new_value) {
                 let result = Object.assign(this.value, new_value);
                 this.img_prev_link = result.path;
+                console.log("result:", result);
                 this.$emit("input", result);
             }
         }
@@ -225,8 +230,19 @@ export default Vue.extend({
         },
         upload_suc(file) {
             this.c_value = {
-                path: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
+                path: this.$root.resource_link + file.url.replace("\\", "/")
             };
+        },
+        before_upload(file) {
+            if (file.size > 1 * 1024 * 1024) {
+                this.$message({
+                    message: "图片大小不能超出 1M",
+                    offset: -1,
+                    duration: 2000,
+                    type: "warning"
+                });
+                return false;
+            }
         },
         setting() {
             this.background_setting_dialog.dialog_pos = this.$refs.setting_btn;
@@ -346,7 +362,7 @@ export default Vue.extend({
 
             cursor: pointer;
             -webkit-transition: color 0.2s ease;
-                    transition: color 0.2s ease;
+            transition: color 0.2s ease;
 
             color: #a7a7a7;
             border-radius: 0;
