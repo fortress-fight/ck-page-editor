@@ -170,6 +170,9 @@ const layout_module = {
         // 记录当前编辑块的类型，如：layout layout_group slider ,,,,
         set_editor_type(state, type) {
             state.editor_type = type;
+        },
+        set_all_layouts_data(state, store) {
+            state.all_layouts_data = store;
         }
     },
     actions: {

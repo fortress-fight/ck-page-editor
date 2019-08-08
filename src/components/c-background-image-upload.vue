@@ -203,7 +203,6 @@ export default Vue.extend({
             set(new_value) {
                 let result = Object.assign(this.value, new_value);
                 this.img_prev_link = result.path;
-                console.log("result:", result);
                 this.$emit("input", result);
             }
         }

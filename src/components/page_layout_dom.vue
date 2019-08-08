@@ -5,7 +5,6 @@
         class="page_body_editor-wrapper"
         :class="{is_editing: editor_type}"
     >
-        
         <div
             :id="item.id"
             class="layout_group"
@@ -150,7 +149,7 @@
                                                 </template>
                                                 <div class="slider_item" v-else>
                                                     <img
-                                                        src="https://via.placeholder.com/1200x400.png?text=1200%20x%20auto"
+                                                        src="@/assets/1200x400.png"
                                                         title="占位图片"
                                                         srcset
                                                     />
@@ -398,7 +397,6 @@ export default Vue.extend({
         }
     },
     mounted() {
-        console.log(process.env.NODE_ENV);
         // $("body").on("click", () => {
         //     console.log(
         //         this.$store.getters["layout_module/layout_dom"].$el.outerHTML

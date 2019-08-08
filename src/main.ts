@@ -23,10 +23,16 @@ const Component = new Vue({
             can_editor: false,
             theme: "white",
             agent: "pc",
-            resource_link: "http://127.0.0.1:3003/",
+            resource_link:
+                process.env.NODE_ENV === "development"
+                    ? "http://127.0.0.1:3003/"
+                    : "http://resources.jsmo.xin",
             img_upload: {
                 name: "Filedata",
-                action: "/service"
+                action:
+                    process.env.NODE_ENV === "development"
+                        ? "/service"
+                        : "/service/editorUpload.php?action=uploadimage&encode=utf-8"
             }
         };
     },
@@ -48,11 +54,17 @@ const Component = new Vue({
                 this.can_editor = turn_on;
             }
         };
-        window.set_data = () => {
-            console.log(this);
+        window.set_data = data => {
+            this.$store.commit("layout_module/set_all_layouts_data", data);
         };
         window.get_data = () => {
-            console.log(this);
+            return {
+                data: this.$store.getters["layout_module/layout_dom"].$el
+                    .outerHTML,
+                store: JSON.stringify(
+                    this.$store.state.layout_module.all_layouts_data
+                )
+            };
         };
         window.set_theme = value => {
             this.theme = value;

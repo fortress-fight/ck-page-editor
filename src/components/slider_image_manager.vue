@@ -61,6 +61,7 @@ import draggable from "vuedraggable";
 export default Vue.extend({
     data() {
         return {
+            img_count: this.value.length,
             drag: false
         };
     },
@@ -91,7 +92,9 @@ export default Vue.extend({
     props: {
         value: {
             type: Array,
-            default: []
+            default() {
+                return [];
+            }
         }
     },
     methods: {
@@ -100,9 +103,10 @@ export default Vue.extend({
         },
         delete_item(index) {
             this.c_value.splice(index, 1);
+            this.img_count -= 1;
         },
         before_upload(file) {
-            if (this.c_value.length > 12) {
+            if (this.img_count + 1 > 12) {
                 this.$message({
                     message: "幻灯片数量不能超出 12 个",
                     offset: -1,
@@ -120,6 +124,7 @@ export default Vue.extend({
                 });
                 return false;
             }
+            this.img_count += 1;
         },
         upload_suc(file) {
             this.c_value.push({
