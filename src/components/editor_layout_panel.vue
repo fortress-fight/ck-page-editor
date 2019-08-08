@@ -227,7 +227,9 @@
                             <div
                                 class="animate_option"
                                 v-for="(item, key)  in block_layout_options"
+                                :class="{active: item.value === layout_data.col_container[0].attrs.size}"
                                 :key="key"
+                                @click="change_block_layout_size(item.value)"
                             >
                                 <div class="des">{{item.name}}</div>
                             </div>
@@ -395,6 +397,9 @@ export default Vue.extend({
             $("#" + this.layout_data.id)
                 .find(".col")
                 .addClass("animated");
+        },
+        change_block_layout_size(value) {
+            this.layout_data = { "col_container[0].attrs.size": value };
         },
         layout_editor_cancel() {
             this.cancel_dialog.show = true;

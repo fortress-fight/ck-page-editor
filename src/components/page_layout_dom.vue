@@ -157,7 +157,10 @@
                                             </div>
                                         </template>
                                         <template v-if="layout_item.type_detail=='block'">
-                                            <div class="layout_block"></div>
+                                            <div
+                                                class="layout_block"
+                                                :data-size="layout_item.col_container[0].attrs.size"
+                                            ></div>
                                         </template>
                                     </section>
                                     <span
@@ -490,13 +493,5 @@ export default Vue.extend({
 
 body {
     min-width: 1250px;
-}
-.layout {
-    .layout_block {
-        width: 100%;
-        min-height: 1px;
-
-        transition: 0.36s ease;
-    }
 }
 </style>

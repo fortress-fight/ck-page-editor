@@ -142,6 +142,10 @@ let unit_layout_module = {
                                 id: stringRandom(16, {
                                     numbers: false
                                 })
+                                ,
+                                attrs: {
+                                    size: "normal"
+                                }
                             }
                         ];
                         result.col = value || "100";
