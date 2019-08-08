@@ -14,7 +14,7 @@
             :key="item.id"
             :data-window_width="item.attrs.window_width"
             :data-window_height="item.attrs.window_height"
-            :data-limit_width="item.attrs.window_height && item.attrs.limit_width"
+            :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
         >
             <div class="layout_group-editor_bar" v-if="can_editor">
                 <div
@@ -135,7 +135,8 @@
                                             <div
                                                 class="layout_slider"
                                                 :data-num="col_item.attrs.num"
-                                                :data-margin="col_item.attrs.margin"
+                                                :data-autoplay="col_item.attrs.autoplay"
+                                                :data-margin-size="col_item.attrs.margin_size"
                                             >
                                                 <template v-if="col_item.container.length">
                                                     <div

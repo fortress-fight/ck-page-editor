@@ -172,6 +172,12 @@
                     </div>
                     <div class="attr_set_group">
                         <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">自动播放</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-switch v-model="layout_data.col_container[0].attrs.autoplay"></c-switch>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">显示个数</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-3">
                                 <c-radio
@@ -196,19 +202,19 @@
                             <div class="item_body flex_auto layout_grid layout_grid-col-3">
                                 <c-radio
                                     class="space_normal"
-                                    v-model="layout_data.col_container[0].attrs.margin"
-                                    label="0px"
-                                >0px</c-radio>
+                                    v-model="layout_data.col_container[0].attrs.margin_size"
+                                    label="small"
+                                >小</c-radio>
                                 <c-radio
                                     class="space_normal"
-                                    v-model="layout_data.col_container[0].attrs.margin"
-                                    label="15px"
-                                >15px</c-radio>
+                                    v-model="layout_data.col_container[0].attrs.margin_size"
+                                    label="middle"
+                                >中</c-radio>
                                 <c-radio
                                     class="space_normal"
-                                    v-model="layout_data.col_container[0].attrs.margin"
-                                    label="30px"
-                                >30px</c-radio>
+                                    v-model="layout_data.col_container[0].attrs.margin_size"
+                                    label="big"
+                                >大</c-radio>
                             </div>
                         </div>
                     </div>
@@ -386,7 +392,9 @@ export default Vue.extend({
         },
         change_layout_animate(value) {
             this.layout_data = { animate: value };
-            $('#' + this.layout_data.id).find('.col').addClass("animated");
+            $("#" + this.layout_data.id)
+                .find(".col")
+                .addClass("animated");
         },
         layout_editor_cancel() {
             this.cancel_dialog.show = true;

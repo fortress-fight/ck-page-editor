@@ -261,8 +261,6 @@ body {
     }
 }
 
-// * --------------------------------------------- end 编辑器内样式 ---------------------------------------------
-
 // * --------------------------------------------- 页面展示 ---------------------------------------------
 
 // * 主题样式
@@ -315,8 +313,6 @@ div.body_container {
         max-width: 100%;
     }
 }
-
-// * --------------------------------------------- end 页面展示 ---------------------------------------------
 
 // * --------------------------- 整理后的页面展示 --------------------
 
@@ -1151,6 +1147,9 @@ div.body_container {
             }
         }
     }
+    .slider_item {
+        box-sizing: border-box;
+    }
     &[data-justify_center="true"] {
         .row {
             margin: 0 auto;
@@ -1168,14 +1167,42 @@ div.body_container {
 
 // * 电脑独有样式
 
-.body_container {
-    &[data-agent="pc"] {
-        .layout_bg {
-            &_mo {
-                display: none;
+.body_container[data-agent="pc"] {
+    .layout_bg {
+        &_mo {
+            display: none;
+        }
+        &_pc {
+            display: block;
+        }
+    }
+
+    .slider_item {
+        box-sizing: border-box;
+    }
+    .layout_slider {
+        &[data-margin-size="small"] {
+            .slick-list {
+                margin-right: -10px;
             }
-            &_pc {
-                display: block;
+            .slick-slide {
+                margin-right: 10px;
+            }
+        }
+        &[data-margin-size="middle"] {
+            .slick-list {
+                margin-right: -20px;
+            }
+            .slick-slide {
+                margin-right: 20px;
+            }
+        }
+        &[data-margin-size="big"] {
+            .slick-list {
+                margin-right: -30px;
+            }
+            .slick-slide {
+                margin-right: 30px;
             }
         }
     }
@@ -1328,6 +1355,32 @@ div.body_container {
                         height: 0;
                     }
                 }
+            }
+        }
+    }
+    .layout_slider {
+        &[data-margin-size="small"] {
+            .slick-list {
+                margin-right: -5px;
+            }
+            .slick-slide {
+                margin-right: 5px;
+            }
+        }
+        &[data-margin-size="middle"] {
+            .slick-list {
+                margin-right: -10px;
+            }
+            .slick-slide {
+                margin-right: 10px;
+            }
+        }
+        &[data-margin-size="big"] {
+            .slick-list {
+                margin-right: -15px;
+            }
+            .slick-slide {
+                margin-right: 15px;
             }
         }
     }

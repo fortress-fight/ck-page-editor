@@ -40,12 +40,18 @@ export default Vue.extend({
             setTimeout(() => {
                 if (new_value.name !== "preview") this.$destroy();
             }, 200);
+        },
+        agent(new_value, old_value) {
+            $("#page_body_preview .layout_slider").each(function(i, e) {
+                if (e.slick) {
+                    e.slick.resize();
+                }
+            });
         }
     },
     mounted() {
+        console.log("_slick:", slick);
         $(function() {
-            console.log(slick, "slick");
-
             $('#page_body_preview .layout_bg[data-effect="parallax"]').each(
                 function(i, e) {
                     new Parallax({
@@ -65,40 +71,19 @@ export default Vue.extend({
             });
             wow.init();
             $("#page_body_preview .layout_slider").each(function(i, e) {
-                var showIndex = $(e).attr("data-num"); // 一屏显示个数
-                var autoplay = Boolean(
-                    parseFloat($(e).attr("data-slider-autoplay"))
-                ); // 是否自动播放
-                var isVertical = Boolean(
-                    parseFloat($(e).attr("data-slider-vertical"))
-                ); // 是否垂直滚动
-                var paddingVel = $(e).attr("data-margin"); // 每项间距
-                var fade = Boolean(parseFloat($(e).attr("data-slider-fade"))); // 是否过渡
-                var adaptiveHeight = Boolean(
-                    parseFloat($(e).attr("data-slider-adaptiveHeight"))
-                ); // 是否自适应高度
-
-                $(e).css({
-                    marginRight: paddingVel
-                });
                 $(e).slick({
-                    slidesToShow: showIndex || 1,
-                    autoplay: autoplay || false,
-                    vertical: isVertical || false,
-                    verticalSwiping: isVertical || false,
-                    fade: fade || false,
+                    slidesToShow: $(e).attr("data-num") || 1,
+                    autoplay: $(e).attr("data-autoplay") || false,
+                    vertical: $(e).attr("data-slider-vertical") || false,
+                    verticalSwiping: $(e).attr("data-slider-vertical") || false,
+                    fade: $(e).attr("data-slider-fade") || false,
                     dots: true,
-                    adaptiveHeight: adaptiveHeight || true,
+                    adaptiveHeight:
+                        $(e).attr("data-slider-adaptiveHeight") || true,
                     prevArrow: `<div class="slick-prev"><i class="fa fa-angle-left"></i></div>`,
                     nextArrow: `<div class="slick-next"><i class="fa fa-angle-right"></i></div>`
                 });
-                
-                $(e)
-                    .find(".slick-slide > div")
-                    .css({
-                        marginRight: paddingVel
-                    });
-
+                $(e).data("_slick", e.slick);
             });
         });
     }

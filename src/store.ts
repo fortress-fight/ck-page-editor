@@ -126,7 +126,8 @@ let unit_layout_module = {
                                 }),
                                 attrs: {
                                     num: "1",
-                                    margin: "0px"
+                                    margin_size: "middle",
+                                    autoplay: false
                                 },
                                 container: []
                             }
