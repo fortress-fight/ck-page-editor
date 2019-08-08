@@ -68,6 +68,8 @@ function create_pages_config() {
 module.exports = {
     runtimeCompiler: true,
     devServer: {
+        port: 80,
+        disableHostCheck: true,
         proxy: {
             "/service": {
                 target: "http://127.0.0.1:3003/",

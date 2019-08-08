@@ -147,6 +147,7 @@ export default Vue.extend({
                 dom,
                 this.c_options.dialog_pos_detail
             );
+
             if (dialog_pos) {
                 let dialog_target_post = adjustment_pos(
                     dialog_el as HTMLElement,
@@ -478,7 +479,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-// background: #f5f5f5;
+        // background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -542,7 +543,7 @@ export default Vue.extend({
 
             width: 100%;
 
-// margin-right: -10px;
+            // margin-right: -10px;
 
             align-items: center;
 
@@ -578,7 +579,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-// margin-right: 10px;
+            // margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;

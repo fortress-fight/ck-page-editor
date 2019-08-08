@@ -6,7 +6,7 @@
         @cancel="color_picker_dialog_cancel"
     >
         <template #body>
-            <c-color-picker v-model="new_value">
+            <c-color-picker v-model="new_value" @change="color_change">
                 <template #color_picker_name>
                     <c-dragger :options="dragger_option">
                         <template #dragger_btn>
@@ -32,6 +32,7 @@ export default Vue.extend({
                 dialog_header: false,
                 dialog_footer: false,
                 only_show: true,
+                dialog_pos: "center",
                 dialog_style: {
                     width: "280px",
                     position: "relative"
@@ -107,6 +108,9 @@ export default Vue.extend({
     methods: {
         color_picker_dialog_cancel() {
             this.$emit("color_picker_dialog_cancel");
+        },
+        color_change(value) {
+            this.$emit('change', value);
         }
     }
 });

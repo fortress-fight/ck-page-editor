@@ -44,17 +44,12 @@ let unit_layout_module = {
                     bg: {
                         pc: {
                             path: "",
-                            cover: false,
-                            repeat: false,
                             effect: "normal",
                             size: "normal",
                             position: "tl"
                         },
                         mo: {
                             path: "",
-                            cover: false,
-                            repeat: false,
-
                             effect: "normal",
                             size: "normal",
                             position: "tl"
@@ -83,20 +78,21 @@ let unit_layout_module = {
                 x_align: false,
                 y_align: false,
                 width: {
-                    value: "",
-                    unit: "px"
+                    value: "100",
+                    unit: "%"
+
                 },
                 space: {
-                    value: "",
+                    value: "0",
                     unit: "px"
                 },
                 body_dom: null,
                 padding_x: {
-                    value: "",
+                    value: "0",
                     unit: "px"
                 },
                 padding_y: {
-                    value: "",
+                    value: "0",
                     unit: "px"
                 },
                 col_container: [],
@@ -130,7 +126,8 @@ let unit_layout_module = {
                                 }),
                                 attrs: {
                                     num: "1",
-                                    margin: "0px"
+                                    margin_size: "middle",
+                                    autoplay: false
                                 },
                                 container: []
                             }
@@ -173,6 +170,9 @@ const layout_module = {
         // 记录当前编辑块的类型，如：layout layout_group slider ,,,,
         set_editor_type(state, type) {
             state.editor_type = type;
+        },
+        set_all_layouts_data(state, store) {
+            state.all_layouts_data = store;
         }
     },
     actions: {

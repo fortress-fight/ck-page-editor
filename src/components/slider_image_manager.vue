@@ -39,9 +39,9 @@
         </div>
         <c-upload
             class="slider_item-add_btn"
-            name="Filedata"
+            :name="img_upload.name"
+            :action="img_upload.action"
             ref="upload_btn"
-            action="/service"
             accept="image/*"
             :multiple="true"
             :with-credentials="true"
@@ -61,6 +61,7 @@ import draggable from "vuedraggable";
 export default Vue.extend({
     data() {
         return {
+            img_count: this.value.length,
             drag: false
         };
     },
@@ -73,9 +74,11 @@ export default Vue.extend({
                 return this.value;
             },
             set(new_value) {
-                console.log("new_value", new_value);
                 this.$emit("input", new_value);
             }
+        },
+        img_upload() {
+            return this.$root.img_upload;
         },
         dragOptions() {
             return {
@@ -89,7 +92,9 @@ export default Vue.extend({
     props: {
         value: {
             type: Array,
-            default: []
+            default() {
+                return [];
+            }
         }
     },
     methods: {
@@ -98,9 +103,10 @@ export default Vue.extend({
         },
         delete_item(index) {
             this.c_value.splice(index, 1);
+            this.img_count -= 1;
         },
         before_upload(file) {
-            if (this.c_value.length > 12) {
+            if (this.img_count + 1 > 12) {
                 this.$message({
                     message: "幻灯片数量不能超出 12 个",
                     offset: -1,
@@ -118,11 +124,12 @@ export default Vue.extend({
                 });
                 return false;
             }
+            this.img_count += 1;
         },
         upload_suc(file) {
             this.c_value.push({
                 order: this.c_value.length,
-                img: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
+                img: this.$root.resource_link + file.url.replace("\\", "/")
             });
         }
     }

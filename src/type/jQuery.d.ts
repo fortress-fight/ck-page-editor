@@ -13,5 +13,7 @@ declare global {
         get_data(): void;
         preview_page(true_on: Boolean): void;
         editor_page_load(Window, Vue): void;
+        set_theme(string): void;
+        set_agent(string): void;
     }
 }

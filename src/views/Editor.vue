@@ -1,5 +1,5 @@
 <template>
-    <div class="body_container">
+    <div class="body_container" :data-agent="agent" :data-theme="theme">
         <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
             <page-layout-dom :can_editor="can_editor"></page-layout-dom>
             <keep-alive>
@@ -13,10 +13,11 @@
             <delete-layout-group-dialog></delete-layout-group-dialog>
             <editor-layout-group-panel></editor-layout-group-panel>
             <editor-layout-panel></editor-layout-panel>
+            <ck-editor-picker></ck-editor-picker>
             <keep-alive>
                 <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
             </keep-alive>
-            <div class="loader" v-show="!editor_is_ready">
+            <div class="loader" v-show="is_load && !editor_is_ready">
                 <img
                     src="http://demo.uemo.net/templates/ue_content/templates/icon/loading.gif"
                     alt
@@ -36,6 +37,7 @@ import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 
 import layout_editor from "@/components/layout_editor.vue";
+import ck_editor_picker from "@/components/ck_editor_picker.vue"
 export default Vue.extend({
     data() {
         return {
@@ -48,9 +50,19 @@ export default Vue.extend({
         "editor-layout-group-panel": editor_layout_group_panel,
         "page-layout-dom": page_layout_dom,
         "editor-layout-panel": editor_layout_panel,
-        "layout-editor": layout_editor
+        "layout-editor": layout_editor,
+        "ck-editor-picker": ck_editor_picker,
     },
     computed: {
+        is_load() {
+            return this.$root.is_load;
+        },
+        agent() {
+            return this.$root.agent;
+        },
+        theme() {
+            return this.$root.theme;
+        },
         can_editor() {
             return this.$root.can_editor;
         }
@@ -144,5 +156,16 @@ body {
 
     align-items: center;
     justify-content: center;
+}
+.body_container[data-theme="black"] {
+    .page {
+        &-add_layout_btn {
+            border-color: rgba(211, 211, 211, 0.4);
+            &:hover {
+                color: #fff;
+                border-color: #fff;
+            }
+        }
+    }
 }
 </style>

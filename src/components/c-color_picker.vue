@@ -267,6 +267,7 @@ export default Vue.extend({
 
             $(this.color_picker).on("change", (ev, color) => {
                 this.new_value = color;
+                this.$emit('change', color);
             });
         });
     }

@@ -22,13 +22,6 @@ export default Vue.extend({
 .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
 }
-.body_container {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-}
 </style>
 
 

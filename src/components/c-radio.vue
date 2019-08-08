@@ -14,37 +14,39 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" >
-.el-radio__label {
-    vertical-align: -1px;
-}
-.el-radio__label,
-.el-radio {
-    font-size: inherit;
+body {
+    .el-radio__label {
+        vertical-align: -1px;
+    }
+    .el-radio__label,
+    .el-radio {
+        font-size: inherit;
 
-    color: inherit;
-}
-.el-radio__inner {
-    width: 16px;
-    height: 16px;
+        color: inherit;
+    }
+    .el-radio__inner {
+        width: 16px;
+        height: 16px;
 
-    border-color: #dfdfdf;
-}
-.el-radio__inner::after {
-    width: 6px;
-    height: 6px;
+        border-color: #dfdfdf;
+    }
+    .el-radio__inner::after {
+        width: 6px;
+        height: 6px;
 
-    transition: transform 0.1s ease-in, -webkit-transform 0.1s ease-in;
+        transition: transform 0.1s ease-in, -webkit-transform 0.1s ease-in;
 
-    background-color: #677ae2;
-}
-.el-radio__inner:hover {
-    border-color: #dfdfdf;
-}
-.el-radio__input.is-checked + .el-radio__label {
-    color: inherit;
-}
-.el-radio__input.is-checked .el-radio__inner {
-    border-color: #dcdfe6;
-    background: #fff;
+        background-color: #677ae2;
+    }
+    .el-radio__inner:hover {
+        border-color: #dfdfdf;
+    }
+    .el-radio__input.is-checked + .el-radio__label {
+        color: inherit;
+    }
+    .el-radio__input.is-checked .el-radio__inner {
+        border-color: #dcdfe6;
+        background: #fff;
+    }
 }
 </style>

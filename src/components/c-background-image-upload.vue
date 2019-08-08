@@ -1,6 +1,6 @@
 <template>
     <div class="c_image_upload-wrapper c_image_upload-theme_light" data-type="background">
-        <template v-if="type == `background` && img_prev_link">
+        <template v-if="type == `background` && c_value.path && c_value.position">
             <div
                 v-for="(item, index) in background_attr_pos_options"
                 class="c_image_upload-background_attrs"
@@ -8,7 +8,6 @@
                 :checked="item.value == c_value.position ? 'checked' : false"
                 :key="index"
                 @click="tab_background_pos(item.value)"
-                v-if="c_value.position"
             >
                 <i class="dot"></i>
             </div>
@@ -16,28 +15,29 @@
         <div class="c_image_upload">
             <div
                 class="c_image_upload-image_preview_box flex_center flex_auto"
-                :style="{'background': (img_prev_link ? '' : '#fff')}"
+                :style="{'background': (c_value.path ? '' : '#fff')}"
             >
                 <el-upload
-                    name="Filedata"
+                    :name="img_upload.name"
+                    :action="img_upload.action"
                     class="c_image_upload-btn"
                     ref="upload_btn"
-                    action="/service"
                     accept="image/*"
                     :with-credentials="true"
                     :on-preview="handlePreview"
                     :on-success="upload_suc"
+                    :before-upload="before_upload"
                 ></el-upload>
                 <div
                     class="c_image_upload-image_preview flex_center"
-                    :style="'background-image: url(' + img_prev_link +')'"
+                    :style="'background-image: url(' + c_value.path +')'"
                 >
                     <img
                         v-if="type == `image`"
                         class="c_image_upload-preview_image"
-                        :src="img_prev_link"
+                        :src="c_value.path"
                     />
-                    <div class="flex_center c_image_upload-tip" v-if="!img_prev_link">
+                    <div class="flex_center c_image_upload-tip" v-if="!c_value.path">
                         <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
                         <span class="text">{{tip}}</span>
                     </div>
@@ -47,7 +47,7 @@
                 <div
                     class="c_image_upload-tool_bar-btns layout_grid layout_grid-col-3 layout_grid-colspac-1"
                 >
-                    <template v-if="!img_prev_link">
+                    <template v-if="!c_value.path">
                         <div class="btn flex_center layout_grid-item_clo-3" @click="upload">
                             <i class="ic fa fa-fw fa-upload" style="font-size: 15px;"></i>
                             <span class="text">上传图片</span>
@@ -193,6 +193,9 @@ export default Vue.extend({
         }
     },
     computed: {
+        img_upload() {
+            return this.$root.img_upload;
+        },
         c_value: {
             get() {
                 return this.value;
@@ -226,8 +229,19 @@ export default Vue.extend({
         },
         upload_suc(file) {
             this.c_value = {
-                path: "http://127.0.0.1:3003/" + file.path.replace("\\", "/")
+                path: this.$root.resource_link + file.url.replace("\\", "/")
             };
+        },
+        before_upload(file) {
+            if (file.size > 1 * 1024 * 1024) {
+                this.$message({
+                    message: "图片大小不能超出 1M",
+                    offset: -1,
+                    duration: 2000,
+                    type: "warning"
+                });
+                return false;
+            }
         },
         setting() {
             this.background_setting_dialog.dialog_pos = this.$refs.setting_btn;
@@ -347,7 +361,7 @@ export default Vue.extend({
 
             cursor: pointer;
             -webkit-transition: color 0.2s ease;
-                    transition: color 0.2s ease;
+            transition: color 0.2s ease;
 
             color: #a7a7a7;
             border-radius: 0;

@@ -28,7 +28,7 @@ class Page_editor {
     }
 
     init() {
-        this.editor_frame_data.editor_data = this.container.html();
+        this.editor_frame_data.editor_data = this.option.editor_data;
 
         this.set_editor_event();
         this.set_rel_dom();
@@ -42,12 +42,18 @@ class Page_editor {
     }
 
     set_data() {
-        this.editor_iframe_win.set_data(this.editor_frame_data);
+        this.editor_iframe_win.set_data(this.editor_frame_data.editor_data);
     }
 
     get_data() {
         return this.editor_iframe_win.get_data();
     }
+
+    confirm_editor() {
+        let { data, store } = this.get_data();
+        this.option.confirm_editor(data, store);
+    }
+
     get editor_iframe_win() {
         if (this.editor_iframe[0]) {
             return this.editor_iframe[0].contentWindow;
@@ -60,6 +66,9 @@ class Page_editor {
                     console.log("缺少正确的内部框架");
                 },
                 get_data() {
+                    console.log("缺少正确的内部框架");
+                },
+                set_theme() {
                     console.log("缺少正确的内部框架");
                 },
                 preview_page() {
@@ -157,6 +166,8 @@ class Page_editor {
         this.$toolsbar
             .find('.theme .btn[data-value="' + value + '"]')
             .addClass("active");
+
+        this.editor_iframe_win.set_theme(value);
     }
     get agent() {
         return value;
@@ -168,6 +179,7 @@ class Page_editor {
         this.$toolsbar
             .find('.agent .btn[data-value="' + value + '"]')
             .addClass("active");
+        this.editor_iframe_win.set_agent(value);
     }
     get fool_screen_btn() {
         return {
@@ -189,10 +201,6 @@ class Page_editor {
             },
             init_done_ev: btn => {
                 btn.on("close", () => {
-                    console.log(
-                        "this.editor_iframe_win:",
-                        this.editor_iframe_win
-                    );
                     this.editor_iframe_win.set_editor(false);
                     btn.trigger("enable", true);
                     this.fool_screen("close");
@@ -221,7 +229,7 @@ class Page_editor {
                         dialog_footer: "",
                         dialog_style: "width: 400px; height: auto;",
                         confirm_ev() {
-                            alert("confirm");
+                            this.confirm_editor();
                             btn.trigger("close");
                         },
                         cancel_ev() {
@@ -239,11 +247,11 @@ class Page_editor {
                     return confirm_dialog;
                 }.call(this));
                 (function set_editor_footer() {
+                    // <div class="page_editor_btn page_editor_btn-cancel" data-name="cancel">取消</div>
                     let editor_footer = $(`
                             <div class="page_editor-footer" style="display: none">
                                 <div class="page_editor-footer_btns">
                                     <div class="page_editor_btn page_editor_btn-confirm" data-name="save">保存</div>
-                                    <div class="page_editor_btn page_editor_btn-cancel" data-name="cancel">取消</div>
                                 </div>            
                             </div>
                         `).appendTo(this.editor_dom);
@@ -251,7 +259,7 @@ class Page_editor {
                     editor_footer.on("click", ".page_editor_btn", ev => {
                         switch ($(ev.currentTarget).data("name")) {
                             case "save":
-                                alert("confirm");
+                                this.confirm_editor();
                                 btn.trigger("close");
                                 break;
                             case "cancel":
@@ -268,7 +276,10 @@ class Page_editor {
     }
     get default_option() {
         return {
-            tools: [this.fool_screen_btn, this.editor_dom_btn]
+            tools: [this.fool_screen_btn, this.editor_dom_btn],
+            confirm_editor(data, store) {
+                console.log(data, store);
+            }
         };
     }
 
@@ -335,8 +346,8 @@ class Page_editor {
     }
 }
 
-function page_editor(dom) {
-    let editor = new Page_editor(dom);
+function page_editor(dom, config) {
+    let editor = new Page_editor(dom, config);
     page_editor.editors = Page_editor.editors;
     return editor;
 }
