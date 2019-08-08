@@ -67,6 +67,11 @@ function create_pages_config() {
 
 module.exports = {
     runtimeCompiler: true,
+    pluginOptions: {
+        webpackBundleAnalyzer: {
+            openAnalyzer: false
+        }
+    },
     devServer: {
         port: 80,
         disableHostCheck: true,
