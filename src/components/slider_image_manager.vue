@@ -73,7 +73,6 @@ export default Vue.extend({
                 return this.value;
             },
             set(new_value) {
-                console.log("new_value", new_value);
                 this.$emit("input", new_value);
             }
         },

@@ -315,7 +315,6 @@ export default Vue.extend({
             });
         },
         copy_layout(data) {
-            console.log("will_copy_code:", data);
             let will_copy_code = JSON.stringify({
                 type: "layout",
                 data: data

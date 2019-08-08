@@ -13,6 +13,7 @@
             <delete-layout-group-dialog></delete-layout-group-dialog>
             <editor-layout-group-panel></editor-layout-group-panel>
             <editor-layout-panel></editor-layout-panel>
+            <ck-editor-picker></ck-editor-picker>
             <keep-alive>
                 <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
             </keep-alive>
@@ -36,6 +37,7 @@ import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 
 import layout_editor from "@/components/layout_editor.vue";
+import ck_editor_picker from "@/components/ck_editor_picker.vue"
 export default Vue.extend({
     data() {
         return {
@@ -48,7 +50,8 @@ export default Vue.extend({
         "editor-layout-group-panel": editor_layout_group_panel,
         "page-layout-dom": page_layout_dom,
         "editor-layout-panel": editor_layout_panel,
-        "layout-editor": layout_editor
+        "layout-editor": layout_editor,
+        "ck-editor-picker": ck_editor_picker,
     },
     computed: {
         is_load() {
