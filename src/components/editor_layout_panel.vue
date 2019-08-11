@@ -24,19 +24,47 @@
                 <template #layout_dom>
                     <div class="attr_set_groups">
                         <div class="attr_set_group">
-                            <div
-                                class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
-                            >
-                                <c-switch
-                                    v-model="layout_data.x_align"
-                                    active-text="横向居中"
-                                    class="space_normal"
-                                ></c-switch>
-                                <c-switch
-                                    v-model="layout_data.y_align"
-                                    active-text="纵向居中"
-                                    class="space_normal"
-                                ></c-switch>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">横向位置</div>
+
+                                <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="layout_data.x_align"
+                                        label="left"
+                                    >居左</c-radio>
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="layout_data.x_align"
+                                        label="center"
+                                    >居中</c-radio>
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="layout_data.x_align"
+                                        label="right"
+                                    >居右</c-radio>
+                                </div>
+                            </div>
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">纵向位置</div>
+
+                                <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="layout_data.y_align"
+                                        label="top"
+                                    >居顶</c-radio>
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="layout_data.y_align"
+                                        label="center"
+                                    >居中</c-radio>
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="layout_data.y_align"
+                                        label="bottom"
+                                    >居底</c-radio>
+                                </div>
                             </div>
                         </div>
                         <div class="attr_set_group">

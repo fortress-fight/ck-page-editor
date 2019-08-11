@@ -75,8 +75,8 @@ let unit_layout_module = {
                 animate: 0,
                 type,
                 type_detail: type == "custom" ? "custom" : value,
-                x_align: false,
-                y_align: false,
+                x_align: "left",
+                y_align: "top",
                 width: {
                     value: "100",
                     unit: "%"

@@ -246,14 +246,25 @@ export default Vue.extend({
                                 const url = match[0];
                                 return (
                                     '<section class="post_video">' +
-                                    `<video controls src="${url.split(
-                                        "&&"
-                                    )[1] ||
-                                        url.split(
-                                            "&&"
-                                        )[1]}" style="width:100%;" poster="${
+                                    `<video controls src="${
+                                        url.split("&&")[1]
+                                            ? url.split("&&")[1]
+                                            : url.split("&&")[0]
+                                    }" style="width:100%;" poster="${
                                         url.split("&&")[0]
                                     }">` +
+                                    "</section>"
+                                );
+                            }
+                        },
+                        {
+                            name: "audio",
+                            url: /^(http|https):\/\/(.*)\.mp3$/,
+                            html: match => {
+                                const url = match[0];
+                                return (
+                                    '<section class="post_audio">' +
+                                    `<audio controls src="${url}" style="width:100%;">` +
                                     "</section>"
                                 );
                             }
@@ -368,6 +379,9 @@ export default Vue.extend({
 body {
     .ck-rounded-corners .ck.ck-balloon-panel {
         position: absolute;
+    }
+    .ck.ck-media-form {
+        padding: var(--ck-spacing-standard);
     }
 }
 </style>

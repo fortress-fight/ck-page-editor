@@ -1203,6 +1203,12 @@ body .layout_group {
 // * 布局块
 
 .layout {
+    &:after {
+        display: block;
+        clear: both;
+
+        content: "";
+    }
     .row {
         max-width: 100%;
         &[data-animate] {
@@ -1274,17 +1280,24 @@ body .layout_group {
             height: 50px;
         }
     }
-    &[data-justify_center="true"] {
+    &[data-justify_center="center"] {
         .row {
             margin: 0 auto;
         }
     }
-    &[data-align_center="true"] {
+    &[data-justify_center="right"] {
+        .row {
+            float: right;
+        }
+    }
+    &[data-align_center="center"] {
         .col {
-            display: flex;
-
             align-items: center;
-            flex-wrap: wrap;
+        }
+    }
+    &[data-align_center="bottom"] {
+        .col {
+            align-items: flex-end;
         }
     }
 }

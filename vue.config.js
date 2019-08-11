@@ -45,8 +45,8 @@ function get_pages_list() {
                 "lib",
                 "public",
                 v.basename,
-                "chunk-vendors",
-                "chunk-common"
+                "page_editor",
+                "page_editor_css"
             ]
         };
     });
@@ -56,10 +56,10 @@ function get_pages_list() {
 function create_pages_config() {
     return {
         index: {
-            entry: "src/main.ts",
+            entry: "src/app.ts",
             template: "public/index.html",
             filename: "index.html",
-            chunks: ["lib", "public", "index", "chunk-vendors", "chunk-common"]
+            chunks: ["lib", "public", "index"]
         },
         ...get_pages_list()
     };
@@ -67,6 +67,7 @@ function create_pages_config() {
 
 module.exports = {
     runtimeCompiler: true,
+    filenameHashing: false,
     pluginOptions: {
         webpackBundleAnalyzer: {
             openAnalyzer: false
@@ -110,6 +111,24 @@ module.exports = {
         optimization: {
             splitChunks: {
                 cacheGroups: {
+                    page_editor: {
+                        test: /[\\/]page_editor[\\/].+\.js$/,
+                        name: "page_editor",
+                        priority: 20,
+                        minChunks: 1,
+                        minSize: 1000,
+                        chunks: "all",
+                        enforce: true
+                    },
+                    page_editor_css: {
+                        test: /[\\/]page_editor[\\/].+\.(scss|css)$/,
+                        name: "page_editor_css",
+                        priority: 20,
+                        minChunks: 1,
+                        minSize: 1000,
+                        chunks: "all",
+                        enforce: true
+                    },
                     lib: {
                         test: /[\\/]node_modules[\\/].+\.js$/,
                         name: "lib",

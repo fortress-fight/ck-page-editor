@@ -13,6 +13,8 @@ import Parallax from "@/lib/plugins/parallax";
 import WOW from "wowjs";
 import "slick-carousel/slick/slick.css";
 import slick from "slick-carousel/slick/slick.js";
+import players from "plyr";
+import "plyr/dist/plyr.css";
 
 export default Vue.extend({
     data() {
@@ -85,6 +87,8 @@ export default Vue.extend({
                 });
                 $(e).data("_slick", e.slick);
             });
+            players.setup("#page_body_preview video");
+            players.setup("#page_body_preview audio");
         });
     }
 });

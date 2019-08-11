@@ -351,4 +351,5 @@ function page_editor(dom, config) {
     page_editor.editors = Page_editor.editors;
     return editor;
 }
+window.Page_editor = page_editor;
 export default page_editor;
