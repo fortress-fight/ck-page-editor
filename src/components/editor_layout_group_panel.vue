@@ -203,7 +203,7 @@ export default Vue.extend({
     computed: {
         layout_group_data: {
             get() {
-                return this.$store.state.editor_layout_group_dialog_module
+                return (this as any).$store.state.editor_layout_group_dialog_module
                     .editor_target_layout_group_data;
             },
             set(value) {
@@ -235,7 +235,7 @@ export default Vue.extend({
         },
         cancel_change_confirm() {
             this.cancel_dialog.show = false;
-            this.$el.style.visibility = "hidden";
+            (this as any).$el.style.visibility = "hidden";
 
             this.$nextTick(() => {
                 this.$store.dispatch(
@@ -254,7 +254,7 @@ export default Vue.extend({
     watch: {
         layout_editor_dialog_show() {
             this.$nextTick().then(() => {
-                this.dragger_option.dragger_dom = this.$refs.dialog.$refs.dialog;
+                this.dragger_option.dragger_dom = (this as any).$refs.dialog.$refs.dialog;
             });
         }
     },

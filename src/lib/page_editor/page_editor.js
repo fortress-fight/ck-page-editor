@@ -63,11 +63,19 @@ class Page_editor {
         return this.editor_iframe_win.get_data();
     }
 
-    confirm_editor() {
+    confirm_editor(callback) {
         let { data, store } = this.get_data();
-
-        this.initial_editor_frame_data.editor_data = _cloneDeep(store);
-        this.option.confirm_editor.call(this, data, store);
+        if (
+            this.editor_iframe_win.document.querySelector(
+                "#page_body_editor-wrapper.is_editing"
+            )
+        ) {
+            alert("请先关闭当前编辑");
+        } else {
+            this.initial_editor_frame_data.editor_data = _cloneDeep(store);
+            this.option.confirm_editor.call(this, data, store);
+            callback();
+        }
     }
 
     cancel_editor() {
@@ -279,8 +287,9 @@ class Page_editor {
                     editor_footer.on("click", ".page_editor_btn", ev => {
                         switch ($(ev.currentTarget).data("name")) {
                             case "save":
-                                this.confirm_editor();
-                                btn.trigger("close");
+                                this.confirm_editor(() => {
+                                    btn.trigger("close");
+                                });
                                 break;
                             case "cancel":
                                 btn.trigger("close");

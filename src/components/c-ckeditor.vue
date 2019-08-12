@@ -237,6 +237,7 @@ export default Vue.extend({
                     max_size: 2 * 1024 * 1024
                 },
                 mediaEmbed: {
+                    toolbar: ['fake_button'],
                     previewsInData: true,
                     extraProviders: [
                         {
