@@ -61,7 +61,7 @@ import draggable from "vuedraggable";
 export default Vue.extend({
     data() {
         return {
-            img_count: this.value.length,
+            img_count: (this as any).value.length,
             drag: false
         };
     },
@@ -71,14 +71,14 @@ export default Vue.extend({
     computed: {
         c_value: {
             get() {
-                return this.value;
+                return (this as any).value;
             },
             set(new_value) {
-                this.$emit("input", new_value);
+                (this as any).$emit("input", new_value);
             }
         },
         img_upload() {
-            return this.$root.img_upload;
+            return (this as any).$root.img_upload;
         },
         dragOptions() {
             return {
@@ -99,15 +99,17 @@ export default Vue.extend({
     },
     methods: {
         sort() {
-            this.c_value = this.c_value.sort((a, b) => a.order - b.order);
+            (this as any).c_value = (this as any).c_value.sort(
+                (a, b) => a.order - b.order
+            );
         },
         delete_item(index) {
-            this.c_value.splice(index, 1);
-            this.img_count -= 1;
+            (this as any).c_value.splice(index, 1);
+            (this as any).img_count -= 1;
         },
         before_upload(file) {
-            if (this.img_count + 1 > 12) {
-                this.$message({
+            if ((this as any).img_count + 1 > 12) {
+                (this as any).$message({
                     message: "幻灯片数量不能超出 12 个",
                     offset: -1,
                     duration: 2000,
@@ -116,7 +118,7 @@ export default Vue.extend({
                 return false;
             }
             if (file.size > 1 * 1024 * 1024) {
-                this.$message({
+                (this as any).$message({
                     message: "图片大小不能超出 1M",
                     offset: -1,
                     duration: 2000,
@@ -124,12 +126,14 @@ export default Vue.extend({
                 });
                 return false;
             }
-            this.img_count += 1;
+            (this as any).img_count += 1;
         },
         upload_suc(file) {
-            this.c_value.push({
-                order: this.c_value.length,
-                img: this.$root.resource_link + file.url.replace("\\", "/")
+            (this as any).c_value.push({
+                order: (this as any).c_value.length,
+                img:
+                    (this as any).$root.resource_link +
+                    file.url.replace("\\", "/")
             });
         }
     }

@@ -312,7 +312,7 @@ class Page_editor {
     get body_dom() {
         let result = $(`
             <div class="page_editor-body">
-                <iframe id="editor_iframe" src="./index.html"></iframe>
+                <iframe id="editor_iframe" data-path="${__webpack_public_path__}" src="${__webpack_public_path__  !== '/' ? __webpack_public_path__+'index.html' : '/index.html'}"></iframe>
             </div>
         `);
         this.editor_iframe = result.find("iframe");

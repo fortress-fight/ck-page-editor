@@ -37,7 +37,7 @@ import editor_layout_panel from "@/components/editor_layout_panel.vue";
 import page_layout_dom from "@/components/page_layout_dom.vue";
 
 import layout_editor from "@/components/layout_editor.vue";
-import ck_editor_picker from "@/components/ck_editor_picker.vue"
+import ck_editor_picker from "@/components/ck_editor_picker.vue";
 export default Vue.extend({
     data() {
         return {
@@ -51,20 +51,20 @@ export default Vue.extend({
         "page-layout-dom": page_layout_dom,
         "editor-layout-panel": editor_layout_panel,
         "layout-editor": layout_editor,
-        "ck-editor-picker": ck_editor_picker,
+        "ck-editor-picker": ck_editor_picker
     },
     computed: {
         is_load() {
-            return this.$root.is_load;
+            return (this as any).$root.is_load;
         },
         agent() {
-            return this.$root.agent;
+            return (this as any).$root.agent;
         },
         theme() {
-            return this.$root.theme;
+            return (this as any).$root.theme;
         },
         can_editor() {
-            return this.$root.can_editor;
+            return (this as any).$root.can_editor;
         }
     },
     methods: {

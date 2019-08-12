@@ -59,7 +59,7 @@ function create_pages_config() {
             entry: "src/app.ts",
             template: "public/index.html",
             filename: "index.html",
-            chunks: ["lib", "public", "index"]
+            chunks: ["lib", "public", "index", "chunk-vendors"]
         },
         ...get_pages_list()
     };
@@ -84,6 +84,7 @@ module.exports = {
             }
         }
     },
+    publicPath:  process.env.NODE_ENV === 'production' ? '/templates/templates/editor_page/' : '',
     chainWebpack: config => {},
     css: {
         loaderOptions: {

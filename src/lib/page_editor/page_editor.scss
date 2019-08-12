@@ -6,6 +6,7 @@
 
 .page_editor {
     font-size: 14px;
+    line-height: 1.15 !important;
 
     display: flex;
     overflow: hidden;
@@ -89,6 +90,7 @@
     &-fool_screen {
         @at-root (with: rule) {
             position: fixed;
+            z-index: 9999;
             top: 0;
             left: 0;
 
@@ -109,24 +111,22 @@
         box-shadow: 0 0 15px 0 rgba(152, 152, 152, 0.3);
 
         &-tool {
-            @at-root (with: rule) {
-                flex: 0 0 auto;
+            flex: 0 0 auto;
 
-                margin-right: 5px;
-                padding: 5px 7px;
+            margin-right: 5px;
+            padding: 5px 7px;
 
-                cursor: pointer;
-                transition: 0.36s ease;
+            cursor: pointer;
+            transition: 0.36s ease;
 
-                &.disable {
-                    cursor: normal;
+            &.disable {
+                cursor: auto;
 
-                    opacity: 0.5;
-                }
+                opacity: 0.5;
+            }
 
-                .fa + span {
-                    margin-left: 5px;
-                }
+            .fa + span {
+                margin-left: 5px;
             }
 
             &:hover {

@@ -25,16 +25,16 @@ export default Vue.extend({
     },
     computed: {
         is_load() {
-            return this.$root.is_load;
+            return (this as any).$root.is_load;
         },
         agent() {
-            return this.$root.agent;
+            return (this as any).$root.agent;
         },
         theme() {
-            return this.$root.theme;
+            return (this as any).$root.theme;
         },
         can_editor() {
-            return this.$root.can_editor;
+            return (this as any).$root.can_editor;
         }
     },
     watch: {
@@ -45,8 +45,8 @@ export default Vue.extend({
         },
         agent(new_value, old_value) {
             $("#page_body_preview .layout_slider").each(function(i, e) {
-                if (e.slick) {
-                    e.slick.resize();
+                if ((e as any).slick) {
+                    (e as any).slick.resize();
                 }
             });
         }
@@ -73,7 +73,7 @@ export default Vue.extend({
             });
             wow.init();
             $("#page_body_preview .layout_slider").each(function(i, e) {
-                $(e).slick({
+                ($(e) as any).slick({
                     slidesToShow: $(e).attr("data-num") || 1,
                     autoplay: $(e).attr("data-autoplay") || false,
                     vertical: $(e).attr("data-slider-vertical") || false,
@@ -85,7 +85,7 @@ export default Vue.extend({
                     prevArrow: `<div class="slick-prev"><i class="fa fa-angle-left"></i></div>`,
                     nextArrow: `<div class="slick-next"><i class="fa fa-angle-right"></i></div>`
                 });
-                $(e).data("_slick", e.slick);
+                $(e).data("_slick", (e as any).slick);
             });
             players.setup("#page_body_preview video");
             players.setup("#page_body_preview audio");

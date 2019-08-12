@@ -256,20 +256,21 @@ export default Vue.extend({
     },
     computed: {
         editor_type() {
-            return this.$store.state.layout_module.editor_type;
+            return (this as any).$store.state.layout_module.editor_type;
         },
 
         layout_groups() {
             return (
-                this.$store.state.layout_module.all_layouts_data ||
-                this.default_layout_groups
+                (this as any).$store.state.layout_module.all_layouts_data ||
+                (this as any).default_layout_groups
             );
         },
         oper_layout_groups_id() {
-            return this.$store.state.layout_module.oper_layout_groups_id;
+            return (this as any).$store.state.layout_module
+                .oper_layout_groups_id;
         },
         oper_layout_id() {
-            return this.$store.state.layout_module.oper_layout_id;
+            return (this as any).$store.state.layout_module.oper_layout_id;
         }
     },
     methods: {
@@ -311,7 +312,7 @@ export default Vue.extend({
             });
         },
         move_layout(layout_group_id, layout_id, dir) {
-            this.$store.dispatch("layout_module/move_layout", {
+            (this as any).$store.dispatch("layout_module/move_layout", {
                 layout_group_id,
                 layout_id,
                 dir
@@ -323,7 +324,7 @@ export default Vue.extend({
                 data: data
             });
             copy(encrypt(will_copy_code), () => {
-                this.$message({
+                (this as any).$message({
                     message: "代码复制成功",
                     offset: -1,
                     duration: 1000,
@@ -341,7 +342,7 @@ export default Vue.extend({
                 data: layout_group_data
             });
             copy(encrypt(will_copy_code), () => {
-                this.$message({
+                (this as any).$message({
                     message: "代码复制成功",
                     offset: -1,
                     duration: 1000,

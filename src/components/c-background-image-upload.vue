@@ -194,14 +194,14 @@ export default Vue.extend({
     },
     computed: {
         img_upload() {
-            return this.$root.img_upload;
+            return (this.$root as any).img_upload;
         },
         c_value: {
             get() {
-                return this.value;
+                return (this as any).value;
             },
             set(new_value) {
-                let result = Object.assign(this.value, new_value);
+                let result = Object.assign((this as any).value, new_value);
                 this.img_prev_link = result.path;
                 this.$emit("input", result);
             }
@@ -209,7 +209,7 @@ export default Vue.extend({
     },
     methods: {
         upload() {
-            this.$refs.upload_btn.$refs["upload-inner"].handleClick();
+            (this.$refs.upload_btn as any).$refs["upload-inner"].handleClick();
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -229,7 +229,9 @@ export default Vue.extend({
         },
         upload_suc(file) {
             this.c_value = {
-                path: this.$root.resource_link + file.url.replace("\\", "/")
+                path:
+                    (this.$root as any).resource_link +
+                    file.url.replace("\\", "/")
             };
         },
         before_upload(file) {
@@ -244,7 +246,7 @@ export default Vue.extend({
             }
         },
         setting() {
-            this.background_setting_dialog.dialog_pos = this.$refs.setting_btn;
+            (this as any).background_setting_dialog.dialog_pos = this.$refs.setting_btn;
             this.background_setting_dialog_show = true;
         },
         delete_image() {
@@ -361,7 +363,7 @@ export default Vue.extend({
 
             cursor: pointer;
             -webkit-transition: color 0.2s ease;
-            transition: color 0.2s ease;
+                    transition: color 0.2s ease;
 
             color: #a7a7a7;
             border-radius: 0;
