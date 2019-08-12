@@ -33,12 +33,25 @@ class Page_editor {
 
         this.set_editor_event();
         this.set_tool_bar();
-        this.container.html(this.editor_dom);
+
         window.editor_iframe_mounted = (win, vue) => {
             this.set_data(this.initial_editor_frame_data);
             this.set_tool_bar_event();
             this.init_done();
+            this.option.iframe_mounted.call(this);
         };
+
+        if (this.option.before_create.length >= 1) {
+            this.option.before_create.call(
+                this,
+                function() {
+                    this.container.html(this.editor_dom);
+                }.bind(this)
+            );
+        } else {
+            this.option.before_create.call(this);
+            this.container.html(this.editor_dom);
+        }
         return this;
     }
 
@@ -289,6 +302,12 @@ class Page_editor {
             },
             cancel_editor() {
                 console.log("editor canceled");
+            },
+            before_create() {
+                console.log("before_create");
+            },
+            iframe_mounted() {
+                console.log("iframe_mounted");
             }
         };
     }
