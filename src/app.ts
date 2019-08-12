@@ -44,26 +44,24 @@ const Component = new Vue({
         const _this = this;
         window.set_editor = turn_on => {
             if (turn_on) {
-                this.is_load = true;
-                clearTimeout(this.load_timer);
-                this.load_timer = setTimeout(() => {
-                    this.can_editor = turn_on;
+                (this as any).is_load = true;
+                clearTimeout((this as any).load_timer);
+                (this as any).load_timer = setTimeout(() => {
+                    (this as any).can_editor = turn_on;
                 }, 200);
             } else {
-                this.is_load = false;
-                this.can_editor = turn_on;
+                (this as any).is_load = false;
+                (this as any).can_editor = turn_on;
             }
         };
         window.set_data = data => {
-            this.$store.commit("layout_module/set_all_layouts_data", data);
+            (this as any).$store.commit("layout_module/set_all_layouts_data", data);
         };
         window.get_data = () => {
             return {
                 data: this.$store.getters["layout_module/layout_dom"].$el
                     .outerHTML,
-                store: JSON.stringify(
-                    this.$store.state.layout_module.all_layouts_data
-                )
+                store: this.$store.state.layout_module.all_layouts_data
             };
         };
         window.set_theme = value => {
@@ -80,7 +78,7 @@ const Component = new Vue({
             }
         };
         if (window.parent !== window) {
-            window.parent.editor_page_load(window, this);
+            window.parent.editor_iframe_mounted(window, this);
         } else {
             this.can_editor = true;
         }

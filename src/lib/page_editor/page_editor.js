@@ -1,4 +1,5 @@
 import "@/style/fonts.scss";
+import _cloneDeep from "lodash/cloneDeep";
 import dialog from "../dialog/dialog";
 import "./page_editor.scss";
 
@@ -24,25 +25,25 @@ class Page_editor {
         $(this.container).data("editor", this);
         this.constructor._editors(this);
         this.option = Object.assign(this.default_option, option);
-        this.editor_frame_data = {};
+        this.initial_editor_frame_data = {};
     }
 
     init() {
-        this.editor_frame_data.editor_data = this.option.editor_data;
+        this.initial_editor_frame_data.editor_data = this.option.editor_data;
 
         this.set_editor_event();
-        this.set_rel_dom();
+        this.set_tool_bar();
         this.container.html(this.editor_dom);
-        window.editor_page_load = (win, vue) => {
-            this.set_data();
-            this.set_view_oper();
+        window.editor_iframe_mounted = (win, vue) => {
+            this.set_data(this.initial_editor_frame_data);
+            this.set_tool_bar_event();
             this.init_done();
         };
         return this;
     }
 
-    set_data() {
-        this.editor_iframe_win.set_data(this.editor_frame_data.editor_data);
+    set_data(data) {
+        this.editor_iframe_win.set_data(_cloneDeep(data).editor_data);
     }
 
     get_data() {
@@ -51,7 +52,14 @@ class Page_editor {
 
     confirm_editor() {
         let { data, store } = this.get_data();
-        this.option.confirm_editor(data, store);
+
+        this.initial_editor_frame_data.editor_data = _cloneDeep(store);
+        this.option.confirm_editor.call(this, data, store);
+    }
+
+    cancel_editor() {
+        this.set_data(this.initial_editor_frame_data);
+        this.option.cancel_editor.call(this);
     }
 
     get editor_iframe_win() {
@@ -77,7 +85,7 @@ class Page_editor {
             };
         }
     }
-    set_view_oper() {
+    set_tool_bar_event() {
         let _this = this;
         this.$toolsbar.on("click", ".view_btn .theme .btn", function() {
             _this.theme = $(this).attr("data-value");
@@ -116,7 +124,7 @@ class Page_editor {
         });
     }
 
-    set_rel_dom() {
+    set_tool_bar() {
         this.tools = {};
         this.$toolsbar = $(".page_editor_toolsbar", this.editor_dom);
         this.tools_option.forEach(item => {
@@ -192,6 +200,7 @@ class Page_editor {
         };
     }
     get editor_dom_btn() {
+        let _this = this;
         return {
             name: "editor_dom",
             title: "编辑页面",
@@ -229,12 +238,10 @@ class Page_editor {
                         dialog_footer: "",
                         dialog_style: "width: 400px; height: auto;",
                         confirm_ev() {
-                            this.confirm_editor();
+                            _this.cancel_editor();
                             btn.trigger("close");
                         },
-                        cancel_ev() {
-                            btn.trigger("close");
-                        }
+                        cancel_ev() {}
                     }).init();
                     let close_editor_btn = $(
                         '<div class="close_editor_btn"  style="display: none"><i class="ic ifont ifont-close"></i></div>'
@@ -278,7 +285,10 @@ class Page_editor {
         return {
             tools: [this.fool_screen_btn, this.editor_dom_btn],
             confirm_editor(data, store) {
-                console.log(data, store);
+                console.log("editor confirmed");
+            },
+            cancel_editor() {
+                console.log("editor canceled");
             }
         };
     }
@@ -312,7 +322,11 @@ class Page_editor {
     get body_dom() {
         let result = $(`
             <div class="page_editor-body">
-                <iframe id="editor_iframe" data-path="${__webpack_public_path__}" src="${__webpack_public_path__  !== '/' ? __webpack_public_path__+'index.html' : '/index.html'}"></iframe>
+                <iframe id="editor_iframe" data-path="${__webpack_public_path__}" src="${
+            __webpack_public_path__ !== "/"
+                ? __webpack_public_path__ + "index.html"
+                : "/index.html"
+        }"></iframe>
             </div>
         `);
         this.editor_iframe = result.find("iframe");
