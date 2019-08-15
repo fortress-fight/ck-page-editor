@@ -97,7 +97,15 @@ body {
     user-select: none;
 
     background: #fff;
+    .ck-content {
+        
+        min-height: 40px;
+    }
     .editor {
+        overflow: hidden;
+
+        min-height: 40px;
+
         user-select: initial;
     }
     #app {
@@ -127,7 +135,7 @@ body {
         transition: 0.2s ease;
 
         color: #999;
-        border: 2px solid #eee;
+        border: 2px dotted #eee;
 
         justify-content: center;
         align-items: center;

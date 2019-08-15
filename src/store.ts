@@ -28,14 +28,17 @@ let unit_layout_module = {
                 dom: null,
                 attrs: {
                     header: {
-                        open: true,
+                        open: false,
                         id: stringRandom(16, { numbers: false }),
-                        container: "<p>头部</p>"
+                        container:
+                            `<p><span style="color: #999;">输入内容...</span></p>`
+                            
                     },
                     footer: {
-                        open: true,
+                        open: false,
                         id: stringRandom(16, { numbers: false }),
-                        container: "<p>底部</p>"
+                        container:
+                            `<p><span style="color: #999;">输入内容...</span></p>`
                     },
                     background_color: "rgba(255,255,255,0)",
                     window_width: false,
@@ -80,7 +83,6 @@ let unit_layout_module = {
                 width: {
                     value: "100",
                     unit: "%"
-
                 },
                 space: {
                     value: "0",
@@ -108,7 +110,8 @@ let unit_layout_module = {
                                 numbers: false
                             }),
                             background_color: "rgba(255,255,255,0)",
-                            container: "<p>编辑器</p>"
+                            container:
+                                `<p><span style="color: #999;">输入内容...</span></p>`
                         };
                     });
                 result.col_container = cols_dom;
@@ -141,8 +144,7 @@ let unit_layout_module = {
                                 container: "",
                                 id: stringRandom(16, {
                                     numbers: false
-                                })
-                                ,
+                                }),
                                 attrs: {
                                     size: "normal"
                                 }

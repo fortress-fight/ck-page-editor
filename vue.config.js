@@ -84,7 +84,10 @@ module.exports = {
             }
         }
     },
-    publicPath:  process.env.NODE_ENV === 'production' ? '/templates/templates/editor_page/' : '',
+    publicPath:
+        process.env.NODE_ENV === "production"
+            ? "/templates/templates/editor_page/"
+            : "",
     chainWebpack: config => {},
     css: {
         loaderOptions: {

@@ -2,6 +2,7 @@ import c_pop_tran from "@/components/c-pop_tran.vue";
 import { directive, filter } from "@/lib/plugins/vue-directive";
 import store from "@/store";
 import CKEditor from "@ckeditor/ckeditor5-vue";
+import _cloneDeep from "lodash/cloneDeep";
 import Vue from "vue";
 import App from "./App.vue";
 import "./plugins/element.js";
@@ -55,13 +56,18 @@ const Component = new Vue({
             }
         };
         window.set_data = data => {
-            (this as any).$store.commit("layout_module/set_all_layouts_data", data);
+            (this as any).$store.commit(
+                "layout_module/set_all_layouts_data",
+                data
+            );
         };
         window.get_data = () => {
             return {
                 data: this.$store.getters["layout_module/layout_dom"].$el
                     .outerHTML,
-                store: this.$store.state.layout_module.all_layouts_data
+                store: _cloneDeep(
+                    this.$store.state.layout_module.all_layouts_data
+                )
             };
         };
         window.set_theme = value => {

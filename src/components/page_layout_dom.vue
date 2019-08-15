@@ -16,14 +16,18 @@
             :data-window_height="item.attrs.window_height"
             :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
         >
-            <div class="layout_group-editor_bar" v-if="can_editor">
+            <div class="layout_group-editor_bar" v-if="can_editor" v-stick="42">
+                <div class="item layout_group_name" title="布局">
+                    <span class="text">布局</span>
+                    <!-- <i class="fa fa-plus"></i> -->
+                </div>
                 <div
                     class="item"
                     data-key="add"
                     title="添加"
                     @click="open_add_layout_group_dialog(item.id)"
                 >
-                    <span class="text">添加</span>
+                    <!-- <span class="text">添加</span> -->
                     <i class="fa fa-plus"></i>
                 </div>
                 <div
@@ -33,7 +37,7 @@
                     @click="open_editor_layout_group_dialog($event,item.id)"
                 >
                     <span class="text">编辑</span>
-                    <i class="fa fa-pencil"></i>
+                    <!-- <i class="fa fa-pencil"></i> -->
                 </div>
                 <div
                     class="item"
@@ -41,7 +45,7 @@
                     title="上移"
                     @click="move_layout_group(item.id, 'up')"
                 >
-                    <span class="text">上移</span>
+                    <!-- <span class="text">上移</span> -->
                     <i class="fa fa-arrow-up"></i>
                 </div>
                 <div
@@ -50,12 +54,12 @@
                     title="下移"
                     @click="move_layout_group(item.id, 'down')"
                 >
-                    <span class="text">下移</span>
+                    <!-- <span class="text">下移</span> -->
                     <i class="fa fa-arrow-down"></i>
                 </div>
                 <div class="item" data-key="copy" title="复制" @click="copy_layout_group(item.id)">
                     <span class="text">复制</span>
-                    <i class="fa fa-copy"></i>
+                    <!-- <i class="fa fa-copy"></i> -->
                 </div>
                 <div
                     class="item"
@@ -63,7 +67,7 @@
                     title="删除"
                     @click="open_delete_layout_group_dialog($event,item.id)"
                 >
-                    <span class="text">删除</span>
+                    <!-- <span class="text">删除</span> -->
                     <i class="fa fa-trash"></i>
                 </div>
             </div>
@@ -171,59 +175,67 @@
                                     ></span>
                                 </template>
                                 <div class="layout-editor_bar" v-if="can_editor">
-                                    <div
-                                        class="item"
-                                        data-key="editor"
-                                        title="编辑"
-                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
-                                    >
-                                        <span class="text">编辑</span>
-                                        <i class="fa fa-pencil"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="add"
-                                        title="添加"
-                                        @click="open_add_layout_dialog(item.id, layout_item.id)"
-                                    >
-                                        <span class="text">添加</span>
-                                        <i class="fa fa-plus"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="up"
-                                        title="上移"
-                                        @click="move_layout(item.id, layout_item.id, 'up')"
-                                    >
-                                        <span class="text">上移</span>
-                                        <i class="fa fa-arrow-up"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="down"
-                                        title="下移"
-                                        @click="move_layout(item.id, layout_item.id, 'down')"
-                                    >
-                                        <span class="text">下移</span>
-                                        <i class="fa fa-arrow-down"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="copy"
-                                        title="复制"
-                                        @click="copy_layout(layout_item)"
-                                    >
-                                        <span class="text">复制</span>
-                                        <i class="fa fa-copy"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="delete"
-                                        title="删除"
-                                        @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
-                                    >
-                                        <span class="text">删除</span>
-                                        <i class="fa fa-trash"></i>
+                                    <div class="layout-editor_bar-container" v-stick.right="2">
+                                        <div class="item layout_name" title="内容">
+                                            <span class="text">内容</span>
+                                            <!-- <i class="fa fa-plus"></i> -->
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="add"
+                                            title="添加"
+                                            @click="open_add_layout_dialog(item.id, layout_item.id)"
+                                        >
+                                            <!-- <span class="text">添加</span> -->
+                                            <i class="fa fa-plus"></i>
+                                        </div>
+
+                                        <div
+                                            class="item"
+                                            data-key="editor"
+                                            title="编辑"
+                                            @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
+                                        >
+                                            <span class="text">编辑</span>
+                                            <!-- <i class="fa fa-pencil"></i> -->
+                                        </div>
+
+                                        <div
+                                            class="item"
+                                            data-key="up"
+                                            title="上移"
+                                            @click="move_layout(item.id, layout_item.id, 'up')"
+                                        >
+                                            <!-- <span class="text">上移</span> -->
+                                            <i class="fa fa-arrow-up"></i>
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="down"
+                                            title="下移"
+                                            @click="move_layout(item.id, layout_item.id, 'down')"
+                                        >
+                                            <!-- <span class="text">下移</span> -->
+                                            <i class="fa fa-arrow-down"></i>
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="copy"
+                                            title="复制"
+                                            @click="copy_layout(layout_item)"
+                                        >
+                                            <span class="text">复制</span>
+                                            <!-- <i class="fa fa-copy"></i> -->
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="delete"
+                                            title="删除"
+                                            @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
+                                        >
+                                            <!-- <span class="text">删除</span> -->
+                                            <i class="fa fa-trash"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </section>

@@ -234,6 +234,43 @@ export function directive(Vue: any) {
             }
         }
     });
+
+    Vue.directive("stick", {
+        inserted: function(
+            el: HTMLElement,
+            param: { value: number; modifiers: { right: boolean } }
+        ) {
+            const distance = param.value;
+            const origin_pos = $(el).position();
+             const bounding_pos = el.getBoundingClientRect();
+            
+            
+            const amount_pos = () => {
+            
+                const pos = el.parentElement.getBoundingClientRect();
+                if (pos.top < distance) {
+                    $(el).css({
+                        position: "fixed",
+                        top: distance,
+                        left: el.getBoundingClientRect().left,
+                        right: "auto"
+                    });
+                } else {
+                    $(el).css({
+                        position: "absolute",
+                        top: origin_pos.top,
+                        left: origin_pos.left,
+                        right: "auto"
+                    });
+                }
+            };
+            amount_pos();
+            $(document).on("scroll.dom_stick", amount_pos);
+        },
+        unbind: function(el: HTMLElement, param: any) {
+            $(document).off("scroll.dom_stick");
+        }
+    });
 }
 
 export function filter(Vue: any) {

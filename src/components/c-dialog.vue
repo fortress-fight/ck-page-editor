@@ -5,6 +5,7 @@
         @enter="pop_in_enter"
         @leave="pop_leave"
         @after-leave="pop_after_leave"
+        @scroll.prevent
     >
         <div
             v-if="c_is_show"
@@ -12,7 +13,6 @@
             :class="c_class"
             :style="c_options.wrapper_option.style"
             @click.self="tab_show(!c_options.wrapper_option.click_cancel)"
-            @scroll.prevent
         >
             <div
                 class="dialog"
@@ -479,7 +479,7 @@ export default Vue.extend({
         display: flex;
         flex: 0 0 auto;
 
-        // background: #f5f5f5;
+// background: #f5f5f5;
 
         box-sizing: border-box;
         height: 30px;
@@ -543,7 +543,7 @@ export default Vue.extend({
 
             width: 100%;
 
-            // margin-right: -10px;
+// margin-right: -10px;
 
             align-items: center;
 
@@ -579,7 +579,7 @@ export default Vue.extend({
 
             box-sizing: border-box;
 
-            // margin-right: 10px;
+// margin-right: 10px;
             padding: 5px 13px;
 
             cursor: pointer;

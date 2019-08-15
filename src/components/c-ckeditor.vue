@@ -16,60 +16,60 @@
 import Vue from "vue";
 class MyUploadAdapter {
     constructor(loader, config) {
-        this.config = config;
+        (this as any).config = config;
         // The file loader instance to use during the upload.
-        this.loader = loader;
+        (this as any).loader = loader;
     }
 
     // Starts the upload process.
     upload() {
-        return this.loader.file.then(
+        return (this as any).loader.file.then(
             file =>
                 new Promise((resolve, reject) => {
-                    if (file.size >= this.config.max_size) {
+                    if (file.size >= (this as any).config.max_size) {
                         alert(
-                            `图片尺寸需要小于${this.config.max_size /
+                            `图片尺寸需要小于${(this as any).config.max_size /
                                 1024 /
                                 1024}M`
                         );
                         return reject(
-                            `图片尺寸需要小于${this.config.max_size /
+                            `图片尺寸需要小于${(this as any).config.max_size /
                                 1024 /
                                 1024}M`
                         );
                     }
 
-                    this._initRequest();
-                    this._initListeners(resolve, reject, file);
+                    (this as any)._initRequest();
+                    (this as any)._initListeners(resolve, reject, file);
 
-                    this._sendRequest(file);
+                    (this as any)._sendRequest(file);
                 })
         );
     }
 
     // Aborts the upload process.
     abort() {
-        if (this.xhr) {
-            this.xhr.abort();
+        if ((this as any).xhr) {
+            (this as any).xhr.abort();
         }
     }
 
     // Initializes the XMLHttpRequest object using the URL passed to the constructor.
     _initRequest() {
-        const xhr = (this.xhr = new XMLHttpRequest());
+        const xhr = ((this as any).xhr = new XMLHttpRequest());
 
         // Note that your request may look different. It is up to you and your editor
-        // integration to choose the right communication channel. This example uses
+        // integration to choose the right communication channel. (this as any) example uses
         // a POST request with JSON as a data structure but your configuration
         // could be different.
-        xhr.open("POST", this.config.url, true);
+        xhr.open("POST", (this as any).config.url, true);
         xhr.responseType = "json";
     }
 
     // Initializes XMLHttpRequest listeners.
     _initListeners(resolve, reject, file) {
-        const xhr = this.xhr;
-        const loader = this.loader;
+        const xhr = (this as any).xhr;
+        const loader = (this as any).loader;
         const genericErrorText = `Couldn't upload file: ${file.name}.`;
 
         xhr.addEventListener("error", () => reject(genericErrorText));
@@ -77,7 +77,7 @@ class MyUploadAdapter {
         xhr.addEventListener("load", () => {
             const response = xhr.response;
 
-            // This example assumes the XHR server's "response" object will come with
+            // (this as any) example assumes the XHR server's "response" object will come with
             // an "error" which has its own "message" that can be passed to reject()
             // in the upload promise.
             //
@@ -93,7 +93,7 @@ class MyUploadAdapter {
 
             // If the upload is successful, resolve the upload promise with an object containing
             // at least the "default" URL, pointing to the image on the server.
-            // This URL will be used to display the image in the content. Learn more in the
+            // (this as any) URL will be used to display the image in the content. Learn more in the
             // UploadAdapter#upload documentation.
             resolve({
                 default: response.url
@@ -127,7 +127,7 @@ class MyUploadAdapter {
         // the CSRF token generated earlier by your application.
 
         // Send the request.
-        this.xhr.send(data);
+        (this as any).xhr.send(data);
     }
 }
 
@@ -237,23 +237,19 @@ export default Vue.extend({
                     max_size: 2 * 1024 * 1024
                 },
                 mediaEmbed: {
-                    toolbar: ['fake_button'],
+                    toolbar: ["fake_button"],
                     previewsInData: true,
                     extraProviders: [
                         {
                             name: "video",
                             url: /^(http|https):\/\/(.*)\.mp4$/,
-                            html: match => {
+                            html: (match, poster) => {
                                 const url = match[0];
                                 return (
                                     '<section class="post_video">' +
-                                    `<video controls src="${
-                                        url.split("&&")[1]
-                                            ? url.split("&&")[1]
-                                            : url.split("&&")[0]
-                                    }" style="width:100%;" poster="${
-                                        url.split("&&")[0]
-                                    }">` +
+                                    `<video controls src="${url}" style="width:100%;" ${'poster="' +
+                                        poster +
+                                        '"'}>` +
                                     "</section>"
                                 );
                             }
@@ -352,19 +348,21 @@ export default Vue.extend({
                 window.getSelection().removeAllRanges();
             }
             if (
-                !value ||
-                $(value)
-                    .text()
-                    .trim().length == 0
+                !value
             ) {
-                editor.setData("<p>请输入内容</p>");
+                editor.setData(
+                    '<p><span style="color:#999;">输入内容...</span></p>'
+                );
             }
             this.$emit("input", value);
             this.$emit("onEditorBlur", value, ev, editor);
             // this.$store.commit("hideControlPanel", false);
         },
         onEditorFocus(ev: any, editor: any) {
-            if (editor.getData() == "<p>请输入内容</p>") {
+            if (
+                editor.getData() ==
+                '<p><span style="color:#999;">输入内容...</span></p>'
+            ) {
                 editor.setData("<p>&nbsp</p>");
             }
             this.$emit("onEditorFocus", ev, editor);

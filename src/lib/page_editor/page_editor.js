@@ -343,7 +343,7 @@ class Page_editor {
         this.tools_option.forEach(tool => {
             result += get_btn_dom(tool);
         });
-        result += `</div><div class="view_btn"> <div class="theme"> <span class="theme_white-btn btn active" data-value="white"></span> <span class="theme_black-btn btn" data-value="black"></span> </div> <div class="line"></div> <div class="agent"> <span class="agent_pc-btn btn active ifont ifont-MacBookPro" data-value="pc"> </span> <span class="agent_mo-btn btn ifont ifont-iphone" data-value="mo"> </span> </div><div class="line"></div> <div class="preview"> <span class="preview-btn btn ifont ifont-185037browserstreamlinewindow"> </span> </div> </div></div>`;
+        result += `</div><div class="view_btn"> <div class="theme"> <span class="theme_white-btn btn active" data-value="white"></span> <span class="theme_black-btn btn" data-value="black"></span> </div> <div class="line"></div> <div class="agent"> <span class="agent_pc-btn btn active ifont ifont-MacBookPro" data-value="pc"> </span> <span class="agent_mo-btn btn ifont ifont-iphone" data-value="mo"> </span> </div><div class="line"></div> <div class="preview"> <div class="preview-btn btn"> <span class="text view">预览</span>  <span class="text edit">编辑</span>  </div> </div> </div></div>`;
         return result;
     }
 
