@@ -162,6 +162,21 @@
                     </div>
                 </template>
                 <template #layout_attr>
+                  <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">布局标识</div>
+                            <div class="item_body flex_auto">
+                                <div class="value_input">
+                                    <c-input
+                                        class="input"
+                                        v-model="layout_data.key"
+                                        placeholder="请输入布局标识"
+                                        maxlength="20"
+                                    ></c-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="attr_set_group">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">分栏背景</div>

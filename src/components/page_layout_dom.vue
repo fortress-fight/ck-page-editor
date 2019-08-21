@@ -12,6 +12,7 @@
             v-for="(item) in layout_groups"
             :style="{backgroundColor: item.attrs.background_color}"
             :key="item.id"
+            :data-key="item.attrs.key"
             :data-window_width="item.attrs.window_width"
             :data-window_height="item.attrs.window_height"
             :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
@@ -116,6 +117,7 @@
                                 class="row"
                                 :style="{width: layout_item.width.value ?layout_item.width.value + layout_item.width.unit : ''}"
                                 :data-animate="layout_item.animate"
+                                :data-key="layout_item.key"
                                 :data-col="layout_item.col_container.map((v) => v.col).join('_')"
                             >
                                 <template

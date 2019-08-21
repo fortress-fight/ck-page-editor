@@ -266,9 +266,11 @@ export function directive(Vue: any) {
             };
             amount_pos();
             $(document).on("scroll.dom_stick", amount_pos);
+            $(window).on("resize.dom_stick", amount_pos)
         },
         unbind: function(el: HTMLElement, param: any) {
             $(document).off("scroll.dom_stick");
+            $(window).off("resize.dom_stick")
         }
     });
 }

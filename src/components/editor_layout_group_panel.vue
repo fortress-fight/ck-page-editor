@@ -71,6 +71,21 @@
                 <template #layout_attr>
                     <div class="attr_set_group">
                         <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">布局标识</div>
+                            <div class="item_body flex_auto">
+                                <div class="value_input">
+                                    <c-input
+                                        class="input"
+                                        v-model="layout_group_data.attrs.key"
+                                        placeholder="请输入布局标识"
+                                        maxlength="20"
+                                    ></c-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attr_set_group">
+                        <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">整体背景</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-6">
                                 <c-color-picker-btn
@@ -203,7 +218,8 @@ export default Vue.extend({
     computed: {
         layout_group_data: {
             get() {
-                return (this as any).$store.state.editor_layout_group_dialog_module
+                return (this as any).$store.state
+                    .editor_layout_group_dialog_module
                     .editor_target_layout_group_data;
             },
             set(value) {

@@ -31,19 +31,20 @@ let unit_layout_module = {
                         open: false,
                         id: stringRandom(16, { numbers: false }),
                         container:
-                            `<p><span style="color: #999;">输入内容...</span></p>`
+                            `<p>布局头部</p>`
                             
                     },
                     footer: {
                         open: false,
                         id: stringRandom(16, { numbers: false }),
                         container:
-                            `<p><span style="color: #999;">输入内容...</span></p>`
+                            `<p>布局底部</p>`
                     },
                     background_color: "rgba(255,255,255,0)",
                     window_width: false,
                     window_height: false,
                     limit_width: false,
+                    key: "",
                     bg: {
                         pc: {
                             path: "",
@@ -77,6 +78,7 @@ let unit_layout_module = {
                 id: stringRandom(16, { numbers: false }),
                 animate: 0,
                 type,
+                key: "",
                 type_detail: type == "custom" ? "custom" : value,
                 x_align: "left",
                 y_align: "top",
@@ -111,7 +113,7 @@ let unit_layout_module = {
                             }),
                             background_color: "rgba(255,255,255,0)",
                             container:
-                                `<p><span style="color: #999;">输入内容...</span></p>`
+                                `<p>内容</p>`
                         };
                     });
                 result.col_container = cols_dom;

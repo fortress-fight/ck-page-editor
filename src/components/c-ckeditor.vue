@@ -144,6 +144,7 @@ export default Vue.extend({
             editorObj: null,
             // editor: BalloonEditor,
             editorConfig: {
+                placeholder: "输入内容...",
                 fontFamily: {
                     options: [
                         "default",
@@ -347,28 +348,13 @@ export default Vue.extend({
                 // 清除选中
                 window.getSelection().removeAllRanges();
             }
-            if (
-                !value
-            ) {
-                editor.setData(
-                    '<p><span style="color:#999;">输入内容...</span></p>'
-                );
-            }
+
             this.$emit("input", value);
             this.$emit("onEditorBlur", value, ev, editor);
             // this.$store.commit("hideControlPanel", false);
         },
         onEditorFocus(ev: any, editor: any) {
-            if (
-                editor.getData() ==
-                '<p><span style="color:#999;">输入内容...</span></p>'
-            ) {
-                editor.setData("<p>&nbsp</p>");
-            }
             this.$emit("onEditorFocus", ev, editor);
-            if (editor === "BalloonEditor") {
-                // this.$store.commit("hideControlPanel", true);
-            }
         }
     }
 });
