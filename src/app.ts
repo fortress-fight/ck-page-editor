@@ -57,10 +57,18 @@ const Component = new Vue({
             }
         };
         window.set_data = data => {
-            (this as any).$store.commit(
-                "layout_module/set_all_layouts_data",
-                data
-            );
+            if (typeof data == "string") {
+                try {
+                    window.decrypt_page_data(data);
+                } catch (error) {
+                    console.error("decrypt_page_data", error);
+                }
+            } else {
+                (this as any).$store.commit(
+                    "layout_module/set_all_layouts_data",
+                    data
+                );
+            }
         };
         window.get_data = () => {
             return {
@@ -88,9 +96,12 @@ const Component = new Vue({
         };
         window.encrypt_page_data = () => {
             return encrypt(
-                JSON.stringify(
-                    (this as any).$store.state.layout_module.all_layouts_data
-                )
+                JSON.stringify({
+                    page_data: JSON.stringify(
+                        (this as any).$store.state.layout_module
+                            .all_layouts_data
+                    )
+                })
             );
         };
         window.download_page_data = () => {
@@ -108,12 +119,7 @@ const Component = new Vue({
                 var blob = new Blob([csv], { type: "text/txt,charset=UTF-8" });
                 openDownloadDialog(blob, saveName);
             }
-            saveTXT(
-                encrypt(
-                    JSON.stringify({ page_data: window.encrypt_page_data() })
-                ),
-                "PageText.txt"
-            );
+            saveTXT(window.encrypt_page_data(), "PageText.txt");
         };
         window.set_theme = value => {
             (this as any).theme = value;

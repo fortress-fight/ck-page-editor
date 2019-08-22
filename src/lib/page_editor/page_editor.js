@@ -56,7 +56,11 @@ class Page_editor {
     }
 
     set_data(data) {
-        this.editor_iframe_win.set_data(_cloneDeep(data).editor_data);
+        if (typeof data.editor_data === "string") {
+            this.editor_iframe_win.set_data(data.editor_data);
+        } else {
+            this.editor_iframe_win.set_data(_cloneDeep(data).editor_data);
+        }
     }
 
     get_data() {
@@ -64,7 +68,7 @@ class Page_editor {
     }
 
     confirm_editor(callback) {
-        let { data, store } = this.get_data();
+        let { data, store, encrypt_data } = this.get_data();
         if (
             this.editor_iframe_win.document.querySelector(
                 "#page_body_editor-wrapper.is_editing"
@@ -73,7 +77,7 @@ class Page_editor {
             alert("请先关闭当前编辑");
         } else {
             this.initial_editor_frame_data.editor_data = _cloneDeep(store);
-            this.option.confirm_editor.call(this, data, store);
+            this.option.confirm_editor.call(this, data, store, encrypt_data);
             callback();
         }
     }
@@ -131,7 +135,7 @@ class Page_editor {
             };
 
             reader.onload = function(event) {
-                let data = _this.editor_iframe_win.decrypt_page_data(
+                _this.editor_iframe_win.decrypt_page_data(
                     event.target.result
                 );
             };
@@ -328,7 +332,7 @@ class Page_editor {
     get default_option() {
         return {
             tools: [this.fool_screen_btn, this.editor_dom_btn],
-            confirm_editor(data, store) {
+            confirm_editor(data, store, encrypt_data) {
                 console.log("editor confirmed");
             },
             cancel_editor() {
