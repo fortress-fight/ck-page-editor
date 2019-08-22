@@ -307,3 +307,32 @@
         }
     }
 }
+
+.down_upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    display: flex;
+
+    width: 100px;
+    height: 100%;
+    padding: 0 10px;
+
+    justify-content: center;
+    align-items: center;
+    .btn {
+        line-height: 24px;
+
+        padding: 0 10px;
+
+        cursor: pointer;
+        transition: 0.36s ease;
+        &:hover {
+            background: #fff;
+        }
+    }
+}
+.page_editing .down_upload {
+    display: none;
+}

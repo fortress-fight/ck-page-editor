@@ -16,6 +16,7 @@
             :data-window_width="item.attrs.window_width"
             :data-window_height="item.attrs.window_height"
             :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
+            data-stick-parent
         >
             <div class="layout_group-editor_bar" v-if="can_editor" v-stick="42">
                 <div class="item layout_group_name" title="布局">
@@ -119,6 +120,7 @@
                                 :data-animate="layout_item.animate"
                                 :data-key="layout_item.key"
                                 :data-col="layout_item.col_container.map((v) => v.col).join('_')"
+                                data-stick-parent
                             >
                                 <template
                                     v-for="(col_item, col_index) in layout_item.col_container"

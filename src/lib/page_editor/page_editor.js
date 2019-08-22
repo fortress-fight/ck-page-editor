@@ -120,6 +120,25 @@ class Page_editor {
                 $(this).addClass("active");
             }
         });
+        this.$toolsbar.on("click", ".upload-btn", function() {
+            var reader = new FileReader();
+            let input = $("input[name='page_data_txt']")[0];
+            input.click();
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                reader.readAsText(file);
+                input.value = "";
+            };
+
+            reader.onload = function(event) {
+                let data = _this.editor_iframe_win.decrypt_page_data(
+                    event.target.result
+                );
+            };
+        });
+        this.$toolsbar.on("click", ".down-btn", function() {
+            _this.editor_iframe_win.download_page_data();
+        });
         this.$toolsbar.on("click", ".view_btn .agent .btn", function() {
             _this.agent = $(this).attr("data-value");
         });
@@ -237,6 +256,8 @@ class Page_editor {
 
                     this.$toolsbar.find(".close_editor_btn").hide();
                     this.$editor_dom.find(".page_editor-footer").hide();
+                    this.$editor_dom.removeClass("page_editing");
+
                     Object.values(this.tools).forEach(tool => {
                         tool.show();
                     });
@@ -250,6 +271,7 @@ class Page_editor {
                     this.fool_screen("open");
                     this.$toolsbar.find(".close_editor_btn").show();
                     this.$editor_dom.find(".page_editor-footer").show();
+                    this.$editor_dom.addClass("page_editing");
                 });
                 (function set_dialog() {
                     let confirm_dialog = dialog({
@@ -343,7 +365,35 @@ class Page_editor {
         this.tools_option.forEach(tool => {
             result += get_btn_dom(tool);
         });
-        result += `</div><div class="view_btn"> <div class="theme"> <span class="theme_white-btn btn active" data-value="white"></span> <span class="theme_black-btn btn" data-value="black"></span> </div> <div class="line"></div> <div class="agent"> <span class="agent_pc-btn btn active ifont ifont-MacBookPro" data-value="pc"> </span> <span class="agent_mo-btn btn ifont ifont-iphone" data-value="mo"> </span> </div><div class="line"></div> <div class="preview"> <div class="preview-btn btn"> <span class="text view">预览</span>  <span class="text edit">编辑</span>  </div> </div> </div></div>`;
+        result += `</div>
+            <div class="view_btn"> 
+                <div class="theme"> 
+                    <span class="theme_white-btn btn active" data-value="white"></span> 
+                    <span class="theme_black-btn btn" data-value="black"></span> 
+                </div>
+                <div class="line"></div>
+                <div class="agent">
+                    <span class="agent_pc-btn btn active ifont ifont-MacBookPro" data-value="pc"> </span>
+                    <span class="agent_mo-btn btn ifont ifont-iphone" data-value="mo"> </span>
+                </div>
+                <div class="line"></div> 
+                <div class="preview"> 
+                    <div class="preview-btn btn"> 
+                        <span class="text view">预览</span>  
+                        <span class="text edit">编辑</span>  
+                    </div>
+                </div> 
+            </div>
+            <div class="down_upload">
+                <div class="upload-btn btn"> 
+                    <span class="text">上传</span>
+                    <input type="file" style="display: none" name="page_data_txt" accept=".txt">
+                </div>
+                <div class="down-btn btn"> 
+                    <span class="text">下载</span>
+                </div>
+            </div>
+        </div>`;
         return result;
     }
 

@@ -1,4 +1,5 @@
 import c_pop_tran from "@/components/c-pop_tran.vue";
+import { decrypt, encrypt } from "@/lib/plugins/crypto";
 import { directive, filter } from "@/lib/plugins/vue-directive";
 import store from "@/store";
 import CKEditor from "@ckeditor/ckeditor5-vue";
@@ -63,22 +64,66 @@ const Component = new Vue({
         };
         window.get_data = () => {
             return {
-                data: this.$store.getters["layout_module/layout_dom"].$el
-                    .outerHTML,
+                data: (this as any).$store.getters["layout_module/layout_dom"]
+                    .$el.outerHTML,
                 store: _cloneDeep(
-                    this.$store.state.layout_module.all_layouts_data
-                )
+                    (this as any).$store.state.layout_module.all_layouts_data
+                ),
+                encrypt_data: window.encrypt_page_data()
             };
         };
+        window.decrypt_page_data = data_string => {
+            let result: any = false;
+            try {
+                result = JSON.parse(decrypt(data_string));
+                if (!result || !result.page_data) {
+                    throw Error("格式错误");
+                }
+                result = JSON.parse(result.page_data);
+            } catch (error) {
+                return false;
+            }
+
+            window.set_data(result);
+        };
+        window.encrypt_page_data = () => {
+            return encrypt(
+                JSON.stringify(
+                    (this as any).$store.state.layout_module.all_layouts_data
+                )
+            );
+        };
+        window.download_page_data = () => {
+            const openDownloadDialog = (url, saveName) => {
+                if (typeof url === "object" && url instanceof Blob) {
+                    url = URL.createObjectURL(url); // 创建blob地址
+                }
+                const aLink = document.createElement("a");
+                aLink.href = url;
+                aLink.download = saveName;
+                aLink.click();
+            };
+
+            function saveTXT(csv, saveName) {
+                var blob = new Blob([csv], { type: "text/txt,charset=UTF-8" });
+                openDownloadDialog(blob, saveName);
+            }
+            saveTXT(
+                encrypt(
+                    JSON.stringify({ page_data: window.encrypt_page_data() })
+                ),
+                "PageText.txt"
+            );
+        };
         window.set_theme = value => {
-            this.theme = value;
+            (this as any).theme = value;
         };
         window.set_agent = value => {
-            this.agent = value;
+            (this as any).agent = value;
         };
         window.preview_page = true_on => {
             if (true_on) {
-                this.$router.push({ name: "preview" });
+                (this as any).$router.push({ name: "preview" });
             } else {
                 this.$router.back();
             }
