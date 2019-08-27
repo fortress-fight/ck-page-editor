@@ -78,7 +78,7 @@ class Page_editor {
         } else {
             this.initial_editor_frame_data.editor_data = _cloneDeep(store);
             this.option.confirm_editor.call(this, data, store, encrypt_data);
-            callback();
+            callback && callback();
         }
     }
 
@@ -135,8 +135,19 @@ class Page_editor {
             };
 
             reader.onload = function(event) {
-                _this.editor_iframe_win.decrypt_page_data(
-                    event.target.result
+                _this.editor_iframe_win.set_data(
+                    _this.editor_iframe_win.decrypt_page_data(
+                        event.target.result
+                    )
+                );
+
+                let { data, store, encrypt_data } = _this.get_data();
+
+                _this.option.file_upload_suc.call(
+                    this,
+                    data,
+                    store,
+                    encrypt_data
                 );
             };
         });
@@ -340,6 +351,9 @@ class Page_editor {
             },
             before_create() {
                 console.log("before_create");
+            },
+            file_upload_suc() {
+                console.log("data_upload");
             },
             iframe_mounted() {
                 console.log("iframe_mounted");

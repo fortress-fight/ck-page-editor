@@ -59,7 +59,7 @@ const Component = new Vue({
         window.set_data = data => {
             if (typeof data == "string") {
                 try {
-                    window.decrypt_page_data(data);
+                    window.set_data(window.decrypt_page_data(data));
                 } catch (error) {
                     console.error("decrypt_page_data", error);
                 }
@@ -84,6 +84,7 @@ const Component = new Vue({
             let result: any = false;
             try {
                 result = JSON.parse(decrypt(data_string));
+                console.log(result, 'result');
                 if (!result || !result.page_data) {
                     throw Error("格式错误");
                 }
@@ -91,8 +92,7 @@ const Component = new Vue({
             } catch (error) {
                 return false;
             }
-
-            window.set_data(result);
+            return result;
         };
         window.encrypt_page_data = () => {
             return encrypt(
@@ -112,7 +112,9 @@ const Component = new Vue({
                 const aLink = document.createElement("a");
                 aLink.href = url;
                 aLink.download = saveName;
+                document.body.appendChild(aLink);
                 aLink.click();
+                document.body.removeChild(aLink);
             };
 
             function saveTXT(csv, saveName) {

@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
-
+const TerserPlugin = require("terser-webpack-plugin");
 // web: {
 //     entry: "src/pages/web/main.ts",
 //     template: "public/pages/web/web.html",
@@ -152,7 +152,22 @@ module.exports = {
                         enforce: true
                     }
                 }
-            }
+            },
+            minimizer: [
+                new TerserPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: false, // Must be set to true if using source-maps in production
+                    parallel: false,
+                    terserOptions: {
+                        compress: {
+                            drop_console: true,
+                            drop_debugger: true
+                        }
+                        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+                    }
+                })
+            ]
         },
         watchOptions: {
             // 不监听的 node_modules 目录下的文件
