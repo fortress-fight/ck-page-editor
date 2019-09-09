@@ -16,6 +16,7 @@
             :data-window_width="item.attrs.window_width"
             :data-window_height="item.attrs.window_height"
             :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
+            :data-module_center="item.attrs.module_center"
             data-stick-parent
         >
             <div class="layout_group-editor_bar" v-if="can_editor" v-stick="42">
@@ -35,10 +36,10 @@
                 <div
                     class="item"
                     data-key="editor"
-                    title="编辑"
+                    title="设置"
                     @click="open_editor_layout_group_dialog($event,item.id)"
                 >
-                    <span class="text">编辑</span>
+                    <span class="text">设置</span>
                     <!-- <i class="fa fa-pencil"></i> -->
                 </div>
                 <div

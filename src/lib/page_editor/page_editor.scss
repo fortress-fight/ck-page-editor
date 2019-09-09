@@ -107,13 +107,17 @@
         position: relative;
         z-index: 999;
 
-        box-sizing: border-box;
-        min-height: 36px;
-        padding: 5px 10px;
+        overflow: hidden;
 
         background: #f6f6f6;
         box-shadow: 0 0 15px 0 rgba(152, 152, 152, 0.3);
+        &-inner {
+            position: relative;
 
+            box-sizing: border-box;
+            min-height: 37px;
+            padding: 5px 10px;
+        }
         &-tool {
             flex: 0 0 auto;
 
@@ -195,11 +199,13 @@
     .view_btn {
         position: absolute;
         top: 0;
-        left: 50%;
+        right: 0;
+        left: 0;
 
         display: none;
 
-        transform: translate3d(-50%, 0, 0);
+        width: 240px;
+        margin: auto;
 
         align-items: center;
         justify-content: center;
@@ -335,4 +341,68 @@
 }
 .page_editing .down_upload {
     display: none;
+}
+
+.page_oper_btns {
+    position: absolute;
+    top: 0;
+    right: 20px;
+
+    display: flex;
+
+    height: 100%;
+
+    color: #fff;
+
+    align-items: center;
+}
+
+.page_oper_btn {
+    line-height: 28px;
+
+    box-sizing: border-box;
+    height: 28px;
+    margin-right: 10px;
+    padding: 0 24px;
+
+    cursor: pointer;
+
+    color: #fff;
+    border-radius: 2px;
+    &-confirm {
+        background: #46be8a;
+
+        &:hover {
+            background-color: #6ccba2;
+        }
+    }
+
+    &-cancel {
+        background: #a7a7a7;
+
+        &:hover {
+            background: #bfbfbf;
+        }
+    }
+}
+.page_editor_toolsbar {
+    position: relative;
+
+    height: 37px;
+
+    transition: 0.36s ease;
+
+    border-bottom: 0 solid #666;
+}
+.state-page_preview {
+    .page_editor_toolsbar {
+        height: 0;
+
+        border-bottom-width: 6px;
+        &:hover {
+            height: 37px;
+
+            border-bottom-width: 0;
+        }
+    }
 }

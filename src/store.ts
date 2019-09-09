@@ -44,6 +44,7 @@ let unit_layout_module = {
                     window_width: false,
                     window_height: false,
                     limit_width: false,
+                    module_center: false,
                     key: "",
                     bg: {
                         pc: {
@@ -185,6 +186,7 @@ const layout_module = {
             store.forEach(s => {
                 s = _defaultsDeep(s, {
                     attrs: {
+                        module_center: false,
                         bg: {
                             pc: {
                                 mask: "rgba(255,255,255,0)",

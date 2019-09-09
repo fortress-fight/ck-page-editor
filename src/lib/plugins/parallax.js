@@ -1,4 +1,4 @@
-class Parallax {
+ class Parallax {
     constructor(option) {
         this._img = null;
         this._scrollBox = null;
@@ -29,8 +29,8 @@ class Parallax {
         if (percentage === 0 || percentage === 1) return false;
         $(this.parallaxDom).css(
             "transform",
-            `translate3d(0, ${this.initYPos -
-                percentage * this.initYPos * this.setting.rotate}px, 0)`
+            `translate3d(0, ${this.initYPos * this.setting.rotate -
+            percentage * this.initYPos * this.setting.rotate}px, 0)`
         );
     }
     setWindowSize() {
@@ -43,7 +43,9 @@ class Parallax {
                 height: window.innerHeight,
                 width: window.innerWidth
             };
-            this.initYPos = this.initYPosPer * $(this.parallaxDom).width();
+            this.initYPos =
+                this.initYPosPer *
+                $(this.parallaxDom).width();
         });
     }
     get initYPos() {
@@ -119,4 +121,4 @@ class Parallax {
     }
 }
 
-export default Parallax;
+export default Parallax

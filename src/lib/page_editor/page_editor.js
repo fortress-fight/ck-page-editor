@@ -118,9 +118,11 @@ class Page_editor {
         this.$toolsbar.on("click", ".preview-btn.btn", function() {
             if ($(this).hasClass("active")) {
                 _this.editor_iframe_win.preview_page(false);
+                $("body").removeClass("state-page_preview");
                 $(this).removeClass("active");
             } else {
                 _this.editor_iframe_win.preview_page(true);
+                $("body").addClass("state-page_preview");
                 $(this).addClass("active");
             }
         });
@@ -181,7 +183,7 @@ class Page_editor {
 
     set_tool_bar() {
         this.tools = {};
-        this.$toolsbar = $(".page_editor_toolsbar", this.editor_dom);
+        this.$toolsbar = $(".page_editor_toolsbar-inner", this.editor_dom);
         this.tools_option.forEach(item => {
             this.tools[item.name] = $(
                 `.page_editor_toolsbar-tool[data-name=${item.name}]`,
@@ -269,7 +271,7 @@ class Page_editor {
                     btn.trigger("enable", true);
                     this.fool_screen("close");
 
-                    this.$toolsbar.find(".close_editor_btn").hide();
+                    this.$toolsbar.find(".page_oper_btns").hide();
                     this.$editor_dom.find(".page_editor-footer").hide();
                     this.$editor_dom.removeClass("page_editing");
 
@@ -284,7 +286,7 @@ class Page_editor {
                         tool[0] !== btn[0] && tool.hide();
                     });
                     this.fool_screen("open");
-                    this.$toolsbar.find(".close_editor_btn").show();
+                    this.$toolsbar.find(".page_oper_btns").show();
                     this.$editor_dom.find(".page_editor-footer").show();
                     this.$editor_dom.addClass("page_editing");
                 });
@@ -292,7 +294,7 @@ class Page_editor {
                     let confirm_dialog = dialog({
                         dialog_header: "关闭编辑器",
                         dialog_body:
-                            "<p style='text-align: center'>当前编辑的页面未保存，是否确认退出</p>",
+                            "<p style='text-align: center; padding: 30px 0;'>当前编辑的页面未保存，是否确认退出</p>",
                         dialog_footer: "",
                         dialog_style: "width: 400px; height: auto;",
                         confirm_ev() {
@@ -301,42 +303,51 @@ class Page_editor {
                         },
                         cancel_ev() {}
                     }).init();
-                    let close_editor_btn = $(
-                        '<div class="close_editor_btn"  style="display: none"><i class="ic ifont ifont-close"></i></div>'
+                    let page_oper_btns = $(
+                        `<div class="page_oper_btns"  style="display: none">
+                            <div class="page_oper_btn page_oper_btn-confirm">保存</div>
+                            <div class="page_oper_btn page_oper_btn-cancel">取消</div>
+                        </div>`
                     ).appendTo(this.$toolsbar);
 
-                    close_editor_btn.on("click", ev => {
+                    page_oper_btns.on("click", ".page_oper_btn-cancel", ev => {
                         confirm_dialog.show();
+                    });
+
+                    page_oper_btns.on("click", ".page_oper_btn-confirm", ev => {
+                        this.confirm_editor(() => {
+                            btn.trigger("close");
+                        });
                     });
 
                     return confirm_dialog;
                 }.call(this));
-                (function set_editor_footer() {
-                    // <div class="page_editor_btn page_editor_btn-cancel" data-name="cancel">取消</div>
-                    let editor_footer = $(`
-                            <div class="page_editor-footer" style="display: none">
-                                <div class="page_editor-footer_btns">
-                                    <div class="page_editor_btn page_editor_btn-confirm" data-name="save">保存</div>
-                                </div>            
-                            </div>
-                        `).appendTo(this.editor_dom);
+                // (function set_editor_footer() {
+                //     // <div class="page_editor_btn page_editor_btn-cancel" data-name="cancel">取消</div>
+                //     let editor_footer = $(`
+                //             <div class="page_editor-footer" style="display: none">
+                //                 <div class="page_editor-footer_btns">
+                //                     <div class="page_editor_btn page_editor_btn-confirm" data-name="save">保存</div>
+                //                 </div>
+                //             </div>
+                //         `).appendTo(this.editor_dom);
 
-                    editor_footer.on("click", ".page_editor_btn", ev => {
-                        switch ($(ev.currentTarget).data("name")) {
-                            case "save":
-                                this.confirm_editor(() => {
-                                    btn.trigger("close");
-                                });
-                                break;
-                            case "cancel":
-                                btn.trigger("close");
-                                break;
+                //     editor_footer.on("click", ".page_editor_btn", ev => {
+                //         switch ($(ev.currentTarget).data("name")) {
+                //             case "save":
+                //                 this.confirm_editor(() => {
+                //                     btn.trigger("close");
+                //                 });
+                //                 break;
+                //             case "cancel":
+                //                 btn.trigger("close");
+                //                 break;
 
-                            default:
-                                break;
-                        }
-                    });
-                }.call(this));
+                //             default:
+                //                 break;
+                //         }
+                //     });
+                // }.call(this));
             }
         };
     }
@@ -363,7 +374,7 @@ class Page_editor {
 
     get tools_dom() {
         let result =
-            '<div class="page_editor_toolsbar"><div class="page_editor_toolsbar-wrapper">';
+            '<div class="page_editor_toolsbar"><div class="page_editor_toolsbar-inner"><div class="page_editor_toolsbar-wrapper">';
         function get_class_name(tool_name) {
             return `page_editor_toolsbar-tool page_editor_toolsbar-${tool_name}`;
         }
@@ -411,7 +422,7 @@ class Page_editor {
                     <span class="text">下载</span>
                 </div>
             </div>
-        </div>`;
+        </div></div>`;
         return result;
     }
 

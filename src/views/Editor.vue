@@ -172,8 +172,8 @@ body {
         &-add_layout_btn {
             border-color: rgba(211, 211, 211, 0.4);
             &:hover {
-                color: #fff;
-                border-color: #fff;
+                color: #c3c3c3;
+                border-color: #c3c3c3;
             }
         }
     }

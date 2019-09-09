@@ -64,6 +64,12 @@
                                     class="space_normal"
                                     v-model="layout_group_data.attrs.window_height"
                                 ></c-switch>
+                                <c-switch
+                                    active-text="内容居中"
+                                    class="space_normal"
+                                    v-inout.clipX.reverse="layout_group_data.attrs.window_height"
+                                    v-model="layout_group_data.attrs.module_center"
+                                ></c-switch>
                             </div>
                         </div>
                     </div>
