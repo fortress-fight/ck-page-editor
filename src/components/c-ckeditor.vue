@@ -144,7 +144,7 @@ export default Vue.extend({
             editorObj: null,
             // editor: BalloonEditor,
             editorConfig: {
-                placeholder: "输入内容...",
+                placeholder: "点击编辑后，可以输入内容...",
                 fontFamily: {
                     options: [
                         "default",
@@ -182,7 +182,9 @@ export default Vue.extend({
                         "36px",
                         "40px",
                         "60px",
-                        "72px"
+                        "72px",
+                        "94px",
+                        "128px"
                     ]
                 },
                 lineHeight: {
@@ -367,6 +369,11 @@ body {
     }
     .ck.ck-media-form {
         padding: var(--ck-spacing-standard);
+    }
+    .ck-rounded-corners .ck.ck-dropdown .ck-dropdown__panel .ck-list {
+        overflow: auto;
+
+        max-height: 50vh;
     }
 }
 </style>

@@ -83,6 +83,7 @@
                 :data-pos="item.attrs.bg.pc.position"
             >
                 <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
+                <div class="layout_bg-mask" :style="{backgroundColor: item.attrs.bg.pc.mask}"></div>
             </section>
             <section
                 class="layout_bg layout_bg_mo"
@@ -93,6 +94,7 @@
                 :data-pos="item.attrs.bg.mo.position"
             >
                 <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
+                <div class="layout_bg-mask" :style="{backgroundColor: item.attrs.bg.mo.mask}"></div>
             </section>
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
@@ -101,7 +103,12 @@
                         v-show="item.attrs.header.open"
                         class="layout_header editor_wrapper"
                     >
-                        <section class="editor ck-content" v-html="item.attrs.header.container"></section>
+                        <section
+                            class="editor ck-content"
+                            :class="{placehold: item.attrs.header.container.length === 0}"
+                            :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
+                            v-html="item.attrs.header.container"
+                        ></section>
                     </section>
                     <section class="layout_body">
                         <section
@@ -136,6 +143,8 @@
                                         <template v-if="layout_item.type_detail==`custom`">
                                             <section
                                                 class="editor ck-content"
+                                                :class="{placehold: col_item.container.length === 0}"
+                                                data-placeholder="点击编辑后，可以输入内容..."
                                                 v-html="col_item.container"
                                             ></section>
                                         </template>
@@ -178,11 +187,23 @@
                                         :key="col_item.col_index"
                                     ></span>
                                 </template>
-                                <div class="layout-editor_bar" v-if="can_editor">
-                                    <div class="layout-editor_bar-container" v-stick.right="2">
+                                <div
+                                    class="layout-editor_bar"
+                                    v-if="can_editor"
+                                    @click.self="show_layout_oper_btn"
+                                >
+                                    <div class="layout-editor_bar-container">
                                         <div class="item layout_name" title="内容">
                                             <span class="text">内容</span>
                                             <!-- <i class="fa fa-plus"></i> -->
+                                        </div>
+                                        <div
+                                            class="item"
+                                            title="隐藏面板"
+                                            @click="hide_layout_oper_btn"
+                                        >
+                                            <!-- <span class="text">删除</span> -->
+                                            <i class="fa fa-eye"></i>
                                         </div>
                                         <div
                                             class="item"
@@ -251,7 +272,12 @@
                         v-show="item.attrs.footer.open"
                         :id="item.attrs.footer.id"
                     >
-                        <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
+                        <section
+                            class="editor ck-content"
+                            :class="{placehold: item.attrs.footer.container.length === 0}"
+                            data-placeholder="点击编辑后，可以输入内容..."
+                            v-html="item.attrs.footer.container"
+                        ></section>
                     </section>
                 </section>
             </section>
@@ -406,6 +432,31 @@ export default Vue.extend({
                 }
             });
         },
+        hide_layout_oper_btn(ev: any) {
+            $(".layout-editor_bar-container", this.$el).removeClass("show");
+        },
+        show_layout_oper_btn(ev: any) {
+            $(".layout-editor_bar-container", this.$el).removeClass("show");
+            let current_target = ev.currentTarget;
+            let oper_bar = $(current_target).find(
+                ".layout-editor_bar-container"
+            )[0];
+            let pos = current_target.getBoundingClientRect();
+            let oper_bar_pos = oper_bar.getBoundingClientRect();
+
+            let x = ev.clientX - pos.left - oper_bar_pos.width / 2;
+            let y = ev.clientY - pos.top - oper_bar_pos.height / 2;
+            $(oper_bar)
+                .css({
+                    top: Math.max(0, y),
+                    left: Math.max(
+                        0,
+                        Math.min(x, pos.width - oper_bar_pos.width)
+                    ),
+                    right: "auto"
+                })
+                .addClass("show");
+        },
         col_animationend(ev: Event) {
             $(ev.currentTarget).removeClass("animated");
         }
@@ -469,6 +520,15 @@ export default Vue.extend({
                 }
             }
         }
+    }
+}
+.ck-content {
+    &.placehold:before {
+        content: attr(data-placeholder);
+        cursor: text;
+        pointer-events: none;
+
+        color: #707070;
     }
 }
 #page_body_editor-wrapper {

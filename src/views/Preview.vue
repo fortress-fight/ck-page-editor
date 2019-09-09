@@ -1,5 +1,10 @@
 <template>
-    <div class="body_container" :data-agent="agent" :data-theme="theme">
+    <div
+        class="body_container"
+        :class="agent == 'pc' ? 'agent-pc' : 'agent-mobile'"
+        :data-agent="agent"
+        :data-theme="theme"
+    >
         <div id="page_body_preview" class="page_body_preview">
             <page-layout-dom :can_editor="false"></page-layout-dom>
         </div>

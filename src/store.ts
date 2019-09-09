@@ -1,4 +1,5 @@
 import layout_components from "@/components/page_layout_dom.vue";
+import _defaultsDeep from "lodash/defaultsDeep";
 import _set from "lodash/set";
 import stringRandom from "string-random";
 import Vue from "vue";
@@ -9,7 +10,7 @@ Vue.use(Vuex);
 let unit_layout_module = {
     get_layout_group_data(type: string, value: any) {
         let result: any;
-        if (type == "code") {
+        if (type == "code" || type == "template") {
             result = value;
             result.id = stringRandom(16, { numbers: false });
             result.attrs.header.id = stringRandom(16, { numbers: false });
@@ -30,15 +31,14 @@ let unit_layout_module = {
                     header: {
                         open: false,
                         id: stringRandom(16, { numbers: false }),
-                        container:
-                            `<p>布局头部</p>`
+                        container:``
                             
                     },
                     footer: {
                         open: false,
                         id: stringRandom(16, { numbers: false }),
                         container:
-                            `<p>布局底部</p>`
+                            ``
                     },
                     background_color: "rgba(255,255,255,0)",
                     window_width: false,
@@ -50,12 +50,14 @@ let unit_layout_module = {
                             path: "",
                             effect: "normal",
                             size: "normal",
+                            mask: "rgba(255,255,255,0)",
                             position: "tl"
                         },
                         mo: {
                             path: "",
                             effect: "normal",
                             size: "normal",
+                            mask: "rgba(255,255,255,0)",
                             position: "tl"
                         }
                     }
@@ -67,7 +69,7 @@ let unit_layout_module = {
     },
     get_layout_data(type, value) {
         let result: any;
-        if (type == "code") {
+        if (type == "code" || type == "template") {
             result = value;
             result.id = stringRandom(16, { numbers: false });
             result.col_container.forEach(col => {
@@ -113,7 +115,7 @@ let unit_layout_module = {
                             }),
                             background_color: "rgba(255,255,255,0)",
                             container:
-                                `<p>内容</p>`
+                                ``
                         };
                     });
                 result.col_container = cols_dom;
@@ -180,6 +182,20 @@ const layout_module = {
             state.editor_type = type;
         },
         set_all_layouts_data(state, store) {
+            store.forEach(s => {
+                s = _defaultsDeep(s, {
+                    attrs: {
+                        bg: {
+                            pc: {
+                                mask: "rgba(255,255,255,0)",
+                            },
+                            mo: {
+                                mask: "rgba(255,255,255,0)",
+                            }
+                        }
+                    }
+                })
+            });
             state.all_layouts_data = store;
         }
     },

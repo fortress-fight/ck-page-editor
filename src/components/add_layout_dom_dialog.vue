@@ -57,6 +57,42 @@
                         </div>
                     </div>
                 </template>
+                <template #template_layout>
+                    <div class="page_editor-layout" data-pop="body">
+                        <div
+                            class="page_editor-layout_options layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                            v-if="whitch_dialog == 'add_layout_group'"
+                        >
+                            <div
+                                v-for="(layout_group, key) in initial_layouts.layout_group"
+                                :key="key"
+                                class="item layout_grid layout_grid-col-1"
+                                :class="{'active': type=='template' && initial_layouts.select == key}"
+                                @click="template_layout_select(layout_group, key)"
+                            >
+                                <div class="item_son">
+                                    <div class="des">{{layout_group.name}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="page_editor-layout_options layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                            v-else
+                        >
+                            <div
+                                v-for="(layout, key) in initial_layouts.layout"
+                                :key="key"
+                                class="item layout_grid layout_grid-col-1"
+                                :class="{'active': type=='template' && initial_layouts.select == key}"
+                                @click="template_layout_select(layout, key)"
+                            >
+                                <div class="item_son">
+                                    <div class="des">{{layout.name}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
                 <template #fix_layout>
                     <div class="page_editor-layout" data-pop="body">
                         <div class="page_editor-layout_options layout_grid layout_grid-col-1">
@@ -151,6 +187,11 @@ export default Vue.extend({
             ],
             page_editor_dialog: {
                 box_size: "big"
+            },
+            initial_layouts: {
+                select: NaN,
+                layout_group: window.LAYOUT_GROUPS,
+                layout: window.LAYOUTS
             }
         };
     },
@@ -166,7 +207,11 @@ export default Vue.extend({
                     card_slot_name: "fun_layout"
                 },
                 {
-                    nav: "固定布局",
+                    nav: "布局模板",
+                    card_slot_name: "template_layout"
+                },
+                {
+                    nav: "布局代码",
                     card_slot_name: "fix_layout"
                 }
             ];
@@ -203,6 +248,7 @@ export default Vue.extend({
             let result;
             try {
                 let transform_result = JSON.parse(decrypt(code));
+                console.log("transform_result:", transform_result);
                 if (!transform_result && !transform_result.type) {
                     throw new Error("格式错误，请输入正确格式");
                 } else {
@@ -236,7 +282,7 @@ export default Vue.extend({
         confirm_layout() {
             let result: any = this.value;
 
-            if (this.type == "code") {
+            if (this.type == "code" || this.type == "template") {
                 let transform_code = this.deal_clipborder_code(result);
                 if (!transform_code) {
                     return false;
@@ -263,6 +309,7 @@ export default Vue.extend({
                 });
             }
             this.code = "";
+            this.initial_layouts.select = NaN;
         },
         dialog_before_enter() {
             (this.$refs.tab_card as any).reset_ui(true);
@@ -271,6 +318,11 @@ export default Vue.extend({
             this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
                 turn_on: false
             });
+        },
+        template_layout_select(item, key) {
+            this.type = "template";
+            this.initial_layouts.select = key;
+            this.value = item.layout_data.data;
         }
     }
 });

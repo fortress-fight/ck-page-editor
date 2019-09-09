@@ -255,7 +255,7 @@ body {
     height: 100%;
 
     transition: opacity 0.36s ease, visibility 0.36s ease;
-    pointer-events: none;
+    // pointer-events: none;
 
     opacity: 0;
     // border: 2px solid #ee
@@ -270,6 +270,14 @@ body {
         right: 0;
 
         display: flex;
+        visibility: hidden;
+            opacity: 0;
+            transition: 0.36s ease;
+            &.show {
+                visibility: visible;
+            opacity: 1;
+            }
+    
     }
 
     .item {
@@ -576,6 +584,9 @@ div.body_container {
 
 // * 默认样式
 
+body #page_body_editor-wrapper { 
+    word-break: break-all;
+}
 body #page_body_editor-wrapper .layout_group {
     tbody {
         vertical-align: top;
@@ -738,7 +749,7 @@ body #page_body_editor-wrapper .layout_group {
     .table table td,
     .table table th {
         min-width: 2em;
-        padding: 0.4em;
+        padding: 0.8em;
 
         border-color: rgba(211, 211, 211, 0.4);
     }
@@ -823,6 +834,7 @@ body #page_body_editor-wrapper .layout_group {
         position: relative;
 
         overflow: hidden;
+        margin: 0;
     }
 
     .image .ck-progress-bar {
@@ -1335,10 +1347,6 @@ body #page_body_editor-wrapper .layout_group {
         background: none;
     }
 
-    .slick-arrow {
-        display: none !important;
-    }
-
 }
 #page_body_editor-wrapper {
     .layout_group {
@@ -1489,15 +1497,21 @@ body #page_body_editor-wrapper .layout_group {
             left: 0;
 
             width: 100%;
-            height: 100vh;
+            height: 200vh;
 
             background-repeat: no-repeat;
-
+            .layout_bg-mask {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
             &[data-effect="fixed"] {
                 background-attachment: fixed;
             }
             &[data-size="contain"] {
-                background-size: cover;
+                background-size: 100% auto;
             }
             &[data-size="repeat"] {
                 background-repeat: repeat;
@@ -1730,7 +1744,9 @@ body #page_body_editor-wrapper .layout_group {
         }
         .layout_group {
             &[data-limit_width="true"] > .layout_limit_wrapper {
-                max-width: 98%;
+                max-width: none;
+                padding: 0 20px;
+                box-sizing: border-box;
             }
         }
         .layout {
@@ -1767,7 +1783,9 @@ body #page_body_editor-wrapper .layout_group {
                             max-width: 32%;
                         }
 
-                        &:nth-of-type(2n) + .col_space {
+                    }
+                    .col {
+                         &:first-child + .col_space {
                             display: none;
                         }
                     }
@@ -1891,3 +1909,21 @@ body #page_body_editor-wrapper .layout_group {
     overflow: hidden
 }
 
+
+
+ #page_body_editor-wrapper .layout_group .text-26 {line-height: 36px; }
+ #page_body_editor-wrapper .layout_group .text-30 {line-height: 40px; }
+ #page_body_editor-wrapper .layout_group .text-36 {line-height: 48px; }
+ #page_body_editor-wrapper .layout_group .text-40 {line-height: 50px; }
+ #page_body_editor-wrapper .layout_group .text-60 {line-height: 70px; }
+ #page_body_editor-wrapper .layout_group .text-72 {line-height: 80px; }
+ #page_body_editor-wrapper .layout_group .text-94 {line-height: 108px; }
+ #page_body_editor-wrapper .layout_group .text-128 {line-height: 138px; }
+
+ .agent-mobile #page_body_editor-wrapper .text-30{font-size: 28px !important; line-height: 32px;}
+ .agent-mobile #page_body_editor-wrapper .text-36{font-size: 30px !important; line-height: 36px;}
+ .agent-mobile #page_body_editor-wrapper .text-40{font-size: 34px !important; line-height: 40px;}
+ .agent-mobile #page_body_editor-wrapper .text-60{font-size: 40px !important; line-height: 46px;}
+ .agent-mobile #page_body_editor-wrapper .text-72 {font-size: 46px !important; line-height: 52px;}
+ .agent-mobile #page_body_editor-wrapper .text-94 {font-size: 52px !important; line-height: 60px;}
+ .agent-mobile #page_body_editor-wrapper .text-128 {font-size: 60px !important; line-height: 66px;}

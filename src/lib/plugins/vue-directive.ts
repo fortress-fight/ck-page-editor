@@ -269,7 +269,6 @@ export function directive(Vue: any) {
             amount_pos();
             $(document).on("scroll.dom_stick", amount_pos);
             $(rel_dom).on("mouseenter.dom_stick", function() {
-                
                 amount_pos();
             });
         },

@@ -98,7 +98,6 @@ body {
 
     background: #fff;
     .ck-content {
-        
         min-height: 40px;
     }
     .editor {
@@ -119,6 +118,9 @@ body {
     margin: 0 auto;
     padding-top: 50px;
     padding-bottom: 50px;
+    #page_body_editor-wrapper .layout_group .layout_bg {
+        height: 100%;
+    }
 }
 .page {
     &-add_layout_btn {

@@ -17,6 +17,7 @@
                 class="c_image_upload-image_preview_box flex_center flex_auto"
                 :style="{'background': (c_value.path ? '' : '#fff')}"
             >
+                <c-color-picker-btn v-model="c_value.mask"></c-color-picker-btn>
                 <el-upload
                     :name="img_upload.name"
                     :action="img_upload.action"
@@ -128,6 +129,7 @@
 <script lang="ts">
 import Vue from "vue";
 import dialog from "@/components/c-dialog.vue";
+import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
 export default Vue.extend({
     data() {
         return {
@@ -267,7 +269,8 @@ export default Vue.extend({
         }
     },
     components: {
-        "c-dialog": dialog
+        "c-dialog": dialog,
+        "c-color-picker-btn": c_color_picker_btn
     }
 });
 </script>
@@ -457,6 +460,12 @@ export default Vue.extend({
 
         width: 100%;
         height: 100%;
+    }
+    .color_picker-btn {
+        position: absolute;
+        z-index: 100;
+        top: 5px;
+        right: 5px;
     }
 }
 </style>
