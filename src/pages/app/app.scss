@@ -1201,6 +1201,7 @@ body #page_body_editor-wrapper .layout_group {
         font-size: 24px;
 
         margin: 10px 20px;
+        padding: 0;
     }
 
     .slick-prev {
@@ -1219,7 +1220,7 @@ body #page_body_editor-wrapper .layout_group {
 
     .slick-dots {
         position: absolute;
-        bottom: 20px;
+        bottom: -40px;
 
         display: block;
 
@@ -1483,7 +1484,7 @@ body #page_body_editor-wrapper .layout_group {
 
     /* Dots */
     .slick-dotted.slick-slider {
-        margin-bottom: 30px;
+        margin-bottom: 60px;
     }
 
     .slick-dots {

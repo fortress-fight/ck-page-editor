@@ -138,7 +138,7 @@
                                         class="col editor_wrapper"
                                         :class="`col-${col_item.col}`"
                                         :key="col_item.id"
-                                        :style="{backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
+                                        :style="{borderRadius: col_item.radius.value + col_item.radius.unit, backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
                                         @animationend="col_animationend"
                                     >
                                         <template v-if="layout_item.type_detail==`custom`">

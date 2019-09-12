@@ -189,6 +189,30 @@
                             </div>
                         </div>
                     </div>
+                     <div class="attr_set_group">
+                            <div class="attr_set_item flex_center" v-for="(item, key) in layout_data.col_container"
+                                    :key="key">
+                                <div class="item_header flex_fix">分栏圆角</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input
+                                            class="input"
+                                            v-model="layout_data.col_container[key].radius.value"
+                                            placeholder="请输入圆角"
+                                        ></c-input>
+                                        <span class="unit">{{layout_data.col_container[key].radius.unit}}</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch
+                                            active-value="%"
+                                            inactive-value="px"
+                                            v-model="layout_data.col_container[key].radius.unit"
+                                            active-text="百分比"
+                                        ></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 </template>
                 <template #layout_animate>
                     <div class="attr_set_group">

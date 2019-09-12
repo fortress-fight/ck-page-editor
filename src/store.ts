@@ -115,6 +115,10 @@ let unit_layout_module = {
                                 numbers: false
                             }),
                             background_color: "rgba(255,255,255,0)",
+                            radius: {
+                                value: "0",
+                                unit: "px"
+                            },
                             container:
                                 ``
                         };
@@ -197,6 +201,14 @@ const layout_module = {
                         }
                     }
                 })
+                s.body.col_container.forEach(col => {
+                    col = _defaultsDeep(col, {
+                        radius: {
+                            value: "0",
+                            unit: "px"
+                        }
+                    })
+                }); 
             });
             state.all_layouts_data = store;
         }
