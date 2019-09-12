@@ -376,7 +376,12 @@ export default Vue.extend({
                 { name: "从上到下", value: 1 },
                 { name: "从右到左", value: 2 },
                 { name: "放大展示", value: 3 },
-                { name: "渐隐渐现", value: 4 }
+                { name: "渐隐渐现", value: 4 },
+                { name: "右旋入场", value: 5 },
+                { name: "左旋入场", value: 6 },
+                { name: "旋转入场", value: 7 },
+                { name: "放大入场(下)", value: 8 },
+                { name: "放大入场(上)", value: 9 },
             ],
             block_layout_options: [
                 { name: "大", value: "big" },

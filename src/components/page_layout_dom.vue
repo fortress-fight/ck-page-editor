@@ -145,7 +145,7 @@
                                             <section
                                                 class="editor ck-content"
                                                 :class="{placehold: col_item.container.length === 0}"
-                                                data-placeholder="点击编辑后，可以输入内容..."
+                                                :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
                                                 v-html="col_item.container"
                                             ></section>
                                         </template>
@@ -276,7 +276,7 @@
                         <section
                             class="editor ck-content"
                             :class="{placehold: item.attrs.footer.container.length === 0}"
-                            data-placeholder="点击编辑后，可以输入内容..."
+                            :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
                             v-html="item.attrs.footer.container"
                         ></section>
                     </section>

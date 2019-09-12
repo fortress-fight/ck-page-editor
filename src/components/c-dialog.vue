@@ -32,7 +32,7 @@
                             class="dialog_close_btn"
                             @click="header_close_click(false)"
                         >
-                            <i class="fa ifont-close"></i>
+                            <i class="fa ifont ifont-close"></i>
                         </div>
                     </div>
                     <div v-if="c_options.dialog_body" class="dialog_body">

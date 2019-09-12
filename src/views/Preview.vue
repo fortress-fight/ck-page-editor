@@ -21,6 +21,8 @@ import slick from "slick-carousel/slick/slick.js";
 import players from "plyr";
 import "plyr/dist/plyr.css";
 
+console.log(slick, 'slick');
+
 export default Vue.extend({
     data() {
         return {};
@@ -57,7 +59,6 @@ export default Vue.extend({
         }
     },
     mounted() {
-        console.log("_slick:", slick);
         $(function() {
             $('#page_body_preview .layout_bg[data-effect="parallax"]').each(
                 function(i, e) {
@@ -68,7 +69,30 @@ export default Vue.extend({
                     }).init();
                 }
             );
+            function deal_a_with_img () {
 
+                $('a').on('click', function () {
+                    let link = $(this).attr('href');
+                    if (!$(this).attr('download') && /https?:\/\/.+\.(jpg|png|gif)$/.test(link.trim())) {
+                        var new_img_preview_dom  = $('<div class="new_img_preview_dom" style="display: none"> <img src="'+ link +'"> </div>');
+                        new_img_preview_dom.appendTo('body').on('click', function (ev) {
+                            if (ev.target == this) {
+                                $(this).fadeOut(function () {
+                                    $(this).remove();
+                                })
+                            }
+                        });
+
+                        setTimeout(() => {
+                            new_img_preview_dom.fadeIn()   
+                        });
+                        
+                        return false;
+                    }
+                    
+                })
+            }
+            deal_a_with_img();
             var wow = new WOW.WOW({
                 boxClass: "page_body_preview .col", // default
                 animateClass: "animated", // default

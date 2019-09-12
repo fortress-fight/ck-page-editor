@@ -120,10 +120,13 @@ class Page_editor {
                 _this.editor_iframe_win.preview_page(false);
                 $("body").removeClass("state-page_preview");
                 $(this).removeClass("active");
+               
             } else {
-                _this.editor_iframe_win.preview_page(true);
-                $("body").addClass("state-page_preview");
-                $(this).addClass("active");
+                if(_this.editor_iframe_win.preview_page(true)){
+
+                    $("body").addClass("state-page_preview");
+                    $(this).addClass("active");
+                };
             }
         });
         this.$toolsbar.on("click", ".upload-btn", function() {

@@ -84,7 +84,7 @@ const Component = new Vue({
             let result: any = false;
             try {
                 result = JSON.parse(decrypt(data_string));
-                console.log(result, 'result');
+                
                 if (!result || !result.page_data) {
                     throw Error("格式错误");
                 }
@@ -130,8 +130,20 @@ const Component = new Vue({
             (this as any).agent = value;
         };
         window.preview_page = true_on => {
+            
             if (true_on) {
-                (this as any).$router.push({ name: "preview" });
+                if (this.$store.state.editor_layout_dialog_module.show || this.$store.state.editor_layout_group_dialog_module.show){
+                    (this as any).$message({
+                        message: '请先保存当前编辑后再进行预览',
+                        offset: -1,
+                        duration: 2000,
+                        type: "warning"
+                    });
+                    return false;
+                } else {
+                    (this as any).$router.push({ name: "preview" });
+                    return true;
+                }
             } else {
                 this.$router.back();
             }

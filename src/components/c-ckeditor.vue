@@ -217,27 +217,27 @@ export default Vue.extend({
                 image: {
                     // You need to configure the image toolbar, too, so it uses the new style buttons.
                     toolbar: [
-						"imageTextAlternative",
-						"|",
-						"imageStyle:full",
-						"|",
-						"imageStyle:alignLeft",
-						"imageStyle:alignCenter",
-						"imageStyle:alignRight",
-						"ImageBorderRadius",
-					],
-					styles: [
-						// This option is equal to a situation where no style is applied.
-						"full",
-						"side",
-						// This represents an image aligned to the left.
-						"alignLeft",
-						"alignCenter",
-						"borderRadius",
+                        "imageTextAlternative",
+                        "|",
+                        "imageStyle:full",
+                        "|",
+                        "imageStyle:alignLeft",
+                        "imageStyle:alignCenter",
+                        "imageStyle:alignRight",
+                        "ImageBorderRadius"
+                    ],
+                    styles: [
+                        // This option is equal to a situation where no style is applied.
+                        "full",
+                        "side",
+                        // This represents an image aligned to the left.
+                        "alignLeft",
+                        "alignCenter",
+                        "borderRadius",
 
-						// This represents an image aligned to the right.
-						"alignRight"
-					]
+                        // This represents an image aligned to the right.
+                        "alignRight"
+                    ]
                 },
                 img_upload: {
                     url:
@@ -260,6 +260,96 @@ export default Vue.extend({
                                         '"'}>` +
                                     "</section>"
                                 );
+                            }
+                        },
+                        {
+                            name: "share",
+                            url: /^(http):\/\/ue\?.+/,
+                            html: (match, poster) => {
+                                const url = match[0];
+                                const queryData = getQueryData(url);
+                                let data = {};
+                                try {
+                                    data = JSON.parse(
+                                        decodeURIComponent(
+                                            (queryData as any).data
+                                        )
+                                    );
+                                } catch (error) {
+                                    data = {};
+                                }
+                                let result =
+                                    '<section class="ck-share-container">';
+
+                                function getQueryData(url) {
+                                    let result = {};
+                                    if (!url || url.indexOf("?") == -1)
+                                        return result;
+                                    let queryString = url.slice(
+                                        url.indexOf("?") + 1
+                                    );
+                                    if (!queryString) return result;
+
+                                    let queryData = queryString.split("&");
+                                    queryData.forEach(data => {
+                                        if (!data.length) return false;
+
+                                        let [key, value] = data.split("=");
+
+                                        result[key] = value || true;
+                                    });
+                                    return result;
+                                }
+                                for (const [key, item] of Object.entries(
+                                    data
+                                )) {
+                                    let href = (item as any).link;
+                                    let download_name = "file";
+                                    if (key === "call") {
+                                        href = "tel:" + href;
+                                    }
+                                    if (key === "qq") {
+                                        href = `tencent://message/?uin=${href}&Site=400301.com&Menu=yes`;
+                                    }
+                                    if (key === "download") {
+                                        let reg_result = /.+\/((.*?)\?|(.*)$)/.exec(
+                                            href
+                                        );
+                                        if (reg_result && reg_result.length) {
+
+                                            download_name =
+                                                reg_result[2] ||
+                                                reg_result[3] ||
+                                                "file";
+                                        }
+                                            
+                                    }
+                                    result += `<a 
+                                        href="${href}" 
+                                        ${
+                                            key === "download"
+                                                ? "download=" + download_name
+                                                : ""
+                                        } 
+                                        target="_blank" 
+                                        class='ck-share-item ck-share-type-${key}'
+                                        >
+                                            <i class="ifont ${
+                                                (item as any).icon
+                                            }"></i>
+                                            <span class="ck-editor-name">${
+                                                (item as any).title
+                                            }</span>
+                                    </a>`;
+                                    
+                                }
+
+                                if (Object.entries( data ).length) {
+
+                                    return (result += "</result>");
+                                } else {
+                                    return '未添加任何分享';
+                                }
                             }
                         },
                         {
@@ -379,6 +469,11 @@ body {
         overflow: auto;
 
         max-height: 50vh;
+    }
+    figure.ck-placeholder {
+        &:before {
+            display: none;
+        }
     }
 }
 </style>
