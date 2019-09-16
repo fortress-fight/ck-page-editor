@@ -189,8 +189,9 @@
                             </div>
                         </div>
                     </div>
-                     <div class="attr_set_group">
-                            <div class="attr_set_item flex_center" v-for="(item, key) in layout_data.col_container"
+                     <div class="attr_set_group" v-if="layout_data.type_detail=='custom'">
+                        <template v-for="(item, key) in layout_data.col_container" >
+                            <div class="attr_set_item flex_center" v-if="layout_data.col_container[key].radius"
                                     :key="key">
                                 <div class="item_header flex_fix">分栏圆角</div>
                                 <div class="item_body flex_center flex_auto">
@@ -212,7 +213,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </template>
+                    </div>
                 </template>
                 <template #layout_animate>
                     <div class="attr_set_group">
@@ -242,6 +244,21 @@
                             <div class="item_header flex_fix">自动播放</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-3">
                                 <c-switch v-model="layout_data.col_container[0].attrs.autoplay"></c-switch>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">按钮颜色</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.theme"
+                                    label="dark"
+                                >深色</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.theme"
+                                    label="white"
+                                >浅色</c-radio>
                             </div>
                         </div>
                         <div class="attr_set_item flex_center">

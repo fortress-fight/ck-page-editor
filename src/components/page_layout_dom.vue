@@ -138,7 +138,7 @@
                                         class="col editor_wrapper"
                                         :class="`col-${col_item.col}`"
                                         :key="col_item.id"
-                                        :style="{borderRadius: col_item.radius.value + col_item.radius.unit, backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
+                                        :style="{borderRadius: layout_item.type_detail==`custom` ? col_item.radius.value + col_item.radius.unit:false, backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
                                         @animationend="col_animationend"
                                     >
                                         <template v-if="layout_item.type_detail==`custom`">
@@ -153,6 +153,7 @@
                                             <div
                                                 class="layout_slider"
                                                 :data-num="col_item.attrs.num"
+                                                :data-theme="col_item.attrs.theme"
                                                 :data-autoplay="col_item.attrs.autoplay"
                                                 :data-margin-size="col_item.attrs.margin_size"
                                             >

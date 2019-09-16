@@ -139,7 +139,8 @@ let unit_layout_module = {
                                 attrs: {
                                     num: "1",
                                     margin_size: "middle",
-                                    autoplay: false
+                                    autoplay: false,
+                                    theme: "dark"
                                 },
                                 container: []
                             }
@@ -201,14 +202,24 @@ const layout_module = {
                         }
                     }
                 })
-                s.body.col_container.forEach(col => {
-                    col = _defaultsDeep(col, {
-                        radius: {
-                            value: "0",
-                            unit: "px"
-                        }
-                    })
-                }); 
+                if (s.body.type_detail == 'custom') {
+                    s.body.col_container.forEach(col => {
+                        col = _defaultsDeep(col, {
+                            radius: {
+                                value: "0",
+                                unit: "px"
+                            }
+                        })
+                    }); 
+                }
+
+                if (s.body.type_detail == 'slider') {
+                    s.body.col_container.forEach(col => {
+                        col = _defaultsDeep(col, {
+                            attrs: {theme: "dark"}
+                        })
+                    }); 
+                }
             });
             state.all_layouts_data = store;
         }
