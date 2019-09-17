@@ -8,6 +8,74 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 let unit_layout_module = {
+    repair_data(data) {
+        if (!data) return;
+        function _repair_data(s, type = "layout_group") {
+            if (type == "layout") {
+                if (s.type_detail == "custom") {
+                    s.col_container.forEach(col => {
+                        col = _defaultsDeep(col, {
+                            radius: {
+                                value: "0",
+                                unit: "px"
+                            }
+                        });
+                    });
+                }
+
+                if (s.type_detail == "slider") {
+                    s.col_container.forEach(col => {
+                        col = _defaultsDeep(col, {
+                            attrs: { theme: "dark" }
+                        });
+                    });
+                }
+            } else {
+                s = _defaultsDeep(s, {
+                    attrs: {
+                        module_center: false,
+                        bg: {
+                            pc: {
+                                mask: "rgba(255,255,255,0)"
+                            },
+                            mo: {
+                                mask: "rgba(255,255,255,0)"
+                            }
+                        }
+                    }
+                });
+                s.body.forEach(v => {
+                    if (v.type_detail == "custom") {
+                        v.col_container.forEach(col => {
+                            col = _defaultsDeep(col, {
+                                radius: {
+                                    value: "0",
+                                    unit: "px"
+                                }
+                            });
+                        });
+                    }
+
+                    if (v.type_detail == "slider") {
+                        v.col_container.forEach(col => {
+                            col = _defaultsDeep(col, {
+                                attrs: { theme: "dark" }
+                            });
+                        });
+                    }
+                });
+            }
+        }
+        if (Array.isArray(data)) {
+            data.forEach(s => {
+                _repair_data(s);
+            });
+        } else if (typeof data == "object" && data.type_detail) {
+            _repair_data(data, "layout");
+        } else {
+            _repair_data(data);
+        }
+    },
     get_layout_group_data(type: string, value: any) {
         let result: any;
         if (type == "code" || type == "template") {
@@ -31,14 +99,12 @@ let unit_layout_module = {
                     header: {
                         open: false,
                         id: stringRandom(16, { numbers: false }),
-                        container:``
-                            
+                        container: ``
                     },
                     footer: {
                         open: false,
                         id: stringRandom(16, { numbers: false }),
-                        container:
-                            ``
+                        container: ``
                     },
                     background_color: "rgba(255,255,255,0)",
                     window_width: false,
@@ -66,6 +132,7 @@ let unit_layout_module = {
                 body: [this.get_layout_data(type, value)]
             };
         }
+        unit_layout_module.repair_data(result);
         return result;
     },
     get_layout_data(type, value) {
@@ -119,8 +186,7 @@ let unit_layout_module = {
                                 value: "0",
                                 unit: "px"
                             },
-                            container:
-                                ``
+                            container: ``
                         };
                     });
                 result.col_container = cols_dom;
@@ -168,6 +234,8 @@ let unit_layout_module = {
                 }
             }
         }
+
+        unit_layout_module.repair_data(result);
         return result;
     }
 };
@@ -188,39 +256,8 @@ const layout_module = {
             state.editor_type = type;
         },
         set_all_layouts_data(state, store) {
-            store.forEach(s => {
-                s = _defaultsDeep(s, {
-                    attrs: {
-                        module_center: false,
-                        bg: {
-                            pc: {
-                                mask: "rgba(255,255,255,0)",
-                            },
-                            mo: {
-                                mask: "rgba(255,255,255,0)",
-                            }
-                        }
-                    }
-                })
-                if (s.body.type_detail == 'custom') {
-                    s.body.col_container.forEach(col => {
-                        col = _defaultsDeep(col, {
-                            radius: {
-                                value: "0",
-                                unit: "px"
-                            }
-                        })
-                    }); 
-                }
-
-                if (s.body.type_detail == 'slider') {
-                    s.body.col_container.forEach(col => {
-                        col = _defaultsDeep(col, {
-                            attrs: {theme: "dark"}
-                        })
-                    }); 
-                }
-            });
+            console.log("state:", store);
+            unit_layout_module.repair_data(store);
             state.all_layouts_data = store;
         }
     },
