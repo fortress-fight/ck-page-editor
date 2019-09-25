@@ -10,7 +10,7 @@
         </template>
         <template #body>
             <div class="ck_control_panel_body">
-                <c-tab-card :tab_cards="tab_cards" ref="tab_card">
+                <c-tab-card :tab_cards="tab_cards" ref="tab_card" @change="tab_card_change">
                     <template #share>
                         <div class="attr_set_group">
                             <div class="attr_set_item flex">
@@ -87,10 +87,61 @@
                             </div>
                         </div>
                     </template>
-                    <template #other>
+                    <template #video>
                         <div class="ck_other">
-                            更多功能正在研发
-                            <br />敬请期待
+                            <div class="attr_set_group">
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">视频地址</div>
+                                    <div class="item_body flex_auto">
+                                        <div class="value_input">
+                                            <c-input
+                                                class="input"
+                                                v-model="video_data.media"
+                                                placeholder="请输入视频地址"
+                                            ></c-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_group">
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">封面地址</div>
+                                    <div class="item_body flex_auto">
+                                        <div class="value_input">
+                                            <c-input
+                                                class="input"
+                                                v-model="video_data.poster"
+                                                placeholder="请输入封面地址"
+                                            ></c-input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="attr_set_item">
+                                    <div class="upload-placeholder flex_center" @click="upload">
+                                        <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
+                                        <span class="text">添加视频封面</span>
+                                        <div
+                                            class="placeholder-image"
+                                            :style="{backgroundImage: `url('${video_data.poster}')`}"
+                                        ></div>
+                                    </div>
+                                    <c-upload
+                                        class="slider_item-add_btn"
+                                        :name="img_upload.name"
+                                        :action="img_upload.action"
+                                        ref="upload_btn"
+                                        accept="image/*"
+                                        :with-credentials="true"
+                                        :before-upload="before_upload"
+                                        :on-success="upload_suc"
+                                    >
+                                        <div>
+                                            <i class="ic fa fa-plus"></i>
+                                            <span class="text">添加视频封面</span>
+                                        </div>
+                                    </c-upload>
+                                </div>
+                            </div>
                         </div>
                     </template>
                 </c-tab-card>
@@ -119,10 +170,11 @@ export default Vue.extend({
                     card_slot_name: "share"
                 },
                 {
-                    nav: "其他",
-                    card_slot_name: "other"
+                    nav: "视频",
+                    card_slot_name: "video"
                 }
             ],
+            active_tab_cards: "share",
             editor_share: "weibo",
             share_icon: {
                 weibo: {
@@ -195,35 +247,91 @@ export default Vue.extend({
                     title: "",
                     placeholder: "请输入下载链接"
                 }
+            },
+            video_data: {
+                poster: "",
+                media: ""
             }
         };
     },
     methods: {
+        upload() {
+            (this.$refs.upload_btn as any).$refs["el-upload"].$refs[
+                "upload-inner"
+            ].handleClick();
+        },
+        tab_card_change(target_card) {
+            this.active_tab_cards = this.tab_cards[target_card].card_slot_name;
+        },
         ck_media_confirm() {
-            for (const [key, item] of Object.entries(this.share_icon)) {
-                if (item.link) {
-                    this.result[key] = {};
-                    this.result[key].link = item.link;
-                    this.result[key].title = item.title;
-                    this.result[key].icon = item.icon;
+            if (this.active_tab_cards == "share") {
+                for (const [key, item] of Object.entries(this.share_icon)) {
+                    if (item.link.trim()) {
+                        this.result[key] = {};
+                        this.result[key].link = item.link;
+                        this.result[key].title = item.title;
+                        this.result[key].icon = item.icon;
+                    } else {
+                        delete this.result[key];
+                    }
                 }
-            }
-            if (
-                typeof this.ckInsertMedia == "function" &&
-                Object.keys(this.share_icon).length > 0
-            ) {
-                this.ckInsertMedia(
-                    `http://ue?class=ck_share ck_share_style_${
-                        this.style
-                    } ck_share_theme_${this.theme} ck_share_pos_${
-                        this.pos
-                    }&data=${encodeURIComponent(JSON.stringify(this.result))}`
-                );
+                if (
+                    typeof this.ckInsertMedia == "function" &&
+                    Object.keys(this.share_icon).length > 0
+                ) {
+                    this.ckInsertMedia(
+                        `http://resources.jsmo.xin?class=ck_share ck_share_style_${
+                            this.style
+                        } ck_share_theme_${this.theme} ck_share_pos_${
+                            this.pos
+                        }&data=${encodeURIComponent(
+                            JSON.stringify(this.result)
+                        )}`
+                    );
+                }
+            } else if (this.active_tab_cards == "video") {
+                if (
+                    !this.video_data.media ||
+                    !/^(http|https):\/\/(.*)\.mp4$/.test(this.video_data.media)
+                ) {
+                    (this as any).$message({
+                        message: "请输入 MP4 格式的视频地址",
+                        offset: -1,
+                        duration: 2000,
+                        type: "warning"
+                    });
+                    return false;
+                }
+                if (typeof this.ckInsertMedia == "function") {
+                    this.ckInsertMedia(
+                        `${this.video_data.media}&mp4&${this.video_data.poster}`
+                    );
+                }
             }
             this.ck_media_show = false;
         },
         ck_media_cancel() {
             this.ck_media_show = false;
+        },
+        before_upload(file) {
+            if (file.size > 1 * 1024 * 1024) {
+                (this as any).$message({
+                    message: "图片大小不能超出 1M",
+                    offset: -1,
+                    duration: 2000,
+                    type: "warning"
+                });
+                return false;
+            }
+        },
+        upload_suc(file) {
+            this.video_data.poster =
+                (this as any).$root.resource_link + file.url.replace("\\", "/");
+        }
+    },
+    computed: {
+        img_upload() {
+            return (this as any).$root.img_upload;
         }
     },
     components: {
@@ -235,6 +343,7 @@ export default Vue.extend({
         (window as any).ckInsertMedia = function(callback) {
             $this.ck_media_show = true;
             $this.ckInsertMedia = callback;
+            $this.active_tab_cards = $this.tab_cards[0].card_slot_name;
         };
     }
 });
@@ -249,6 +358,8 @@ export default Vue.extend({
         height: 50px;
     }
     .share_icons {
+        position: relative;
+
         display: flex;
         flex-direction: column;
 
@@ -262,24 +373,27 @@ export default Vue.extend({
         border-radius: 4px;
 
         align-items: center;
-        position: relative;
         justify-content: center;
         .share_ifont {
             font-size: 34px;
             line-height: 40px;
         }
         .select_ifont {
-            width: 16px;
-            height: 16px;
-            background: #46be8a;
-            color: #fff;
-            position: absolute;
+            font-size: 13px;
 
+            position: absolute;
             top: 4px;
             right: 4px;
-            font-size: 13px;
-            border-radius: 50%;
+
             display: flex;
+
+            width: 16px;
+            height: 16px;
+
+            color: #fff;
+            border-radius: 50%;
+            background: #46be8a;
+
             align-items: center;
             justify-content: center;
         }
@@ -292,13 +406,43 @@ export default Vue.extend({
         }
     }
     .ck_other {
-        height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
         background: #fff;
-        text-align: center;
+    }
+    .attr_set_item {
+        position: relative;
+        margin-right: -10px;
+    }
+    .c_upload {
+        margin-right: 10px;
+        width: auto;
+    }
+    .upload-placeholder {
+        font-size: 15px;
+        cursor: pointer;
+        margin-right: 10px;
+        top: 0;
+        left: 0;
+        height: 214px;
+        position: relative;
+
+        box-sizing: border-box;
+        border: 1px dashed #ccd5db;
+        color: #ccd5db;
+        .ic {
+            font-size: 19px;
+
+            margin-right: 6px;
+        }
+    }
+    .placeholder-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
     }
 }
 </style>

@@ -84,7 +84,7 @@ const Component = new Vue({
             let result: any = false;
             try {
                 result = JSON.parse(decrypt(data_string));
-                
+
                 if (!result || !result.page_data) {
                     throw Error("格式错误");
                 }
@@ -130,11 +130,15 @@ const Component = new Vue({
             (this as any).agent = value;
         };
         window.preview_page = true_on => {
-            
             if (true_on) {
-                if (this.$store.state.editor_layout_dialog_module.show || this.$store.state.editor_layout_group_dialog_module.show){
+                if (
+                    (this as any).$store.state.editor_layout_dialog_module
+                        .show ||
+                    (this as any).$store.state.editor_layout_group_dialog_module
+                        .show
+                ) {
                     (this as any).$message({
-                        message: '请先保存当前编辑后再进行预览',
+                        message: "请先保存当前编辑后再进行预览",
                         offset: -1,
                         duration: 2000,
                         type: "warning"
@@ -145,7 +149,7 @@ const Component = new Vue({
                     return true;
                 }
             } else {
-                this.$router.back();
+                (this as any).$router.back();
             }
         };
         if (window.parent !== window) {

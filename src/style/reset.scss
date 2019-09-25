@@ -75,7 +75,14 @@ body .el-message--success {
     border-color: #46be8a;
     background-color: #46be8a;
 }
+body .el-message--error {
+    color: #eee;
+    border-color: #f2a654;
+    background-color: #f2a654;
+}
 
+body .el-message .el-icon-error,
+body .el-message--error .el-message__content,
 body .el-message .el-icon-warning,
 body .el-message--warning .el-message__content,
 body .el-message__closeBtn,

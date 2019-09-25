@@ -47,6 +47,7 @@
                                 <c-switch
                                     active-text="屏幕宽度"
                                     class="space_normal"
+                                    v-if="false"
                                     v-model="layout_group_data.attrs.window_width"
                                 ></c-switch>
                                 <c-switch

@@ -107,9 +107,9 @@ let unit_layout_module = {
                         container: ``
                     },
                     background_color: "rgba(255,255,255,0)",
-                    window_width: false,
+                    window_width: true,
                     window_height: false,
-                    limit_width: false,
+                    limit_width: true,
                     module_center: false,
                     key: "",
                     bg: {

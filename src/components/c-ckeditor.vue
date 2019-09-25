@@ -264,7 +264,7 @@ export default Vue.extend({
                         },
                         {
                             name: "share",
-                            url: /^(http):\/\/ue\?.+/,
+                            url: /^(http):\/\/resources\.jsmo\.xin\?.+/,
                             html: (match, poster) => {
                                 const url = match[0];
                                 const queryData = getQueryData(url);
@@ -316,13 +316,11 @@ export default Vue.extend({
                                             href
                                         );
                                         if (reg_result && reg_result.length) {
-
                                             download_name =
                                                 reg_result[2] ||
                                                 reg_result[3] ||
                                                 "file";
                                         }
-                                            
                                     }
                                     result += `<a 
                                         href="${href}" 
@@ -341,14 +339,12 @@ export default Vue.extend({
                                                 (item as any).title
                                             }</span>
                                     </a>`;
-                                    
                                 }
 
-                                if (Object.entries( data ).length) {
-
+                                if (Object.entries(data).length) {
                                     return (result += "</result>");
                                 } else {
-                                    return '未添加任何分享';
+                                    return "未添加任何分享";
                                 }
                             }
                         },

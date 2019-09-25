@@ -1,6 +1,6 @@
 <template>
     <div class="c_upload">
-        <el-upload v-bind="$attrs" v-on="$listeners">
+        <el-upload ref="el-upload" v-bind="$attrs" v-on="$listeners">
             <slot></slot>
         </el-upload>
     </div>

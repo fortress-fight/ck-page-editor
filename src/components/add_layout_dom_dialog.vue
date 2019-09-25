@@ -199,16 +199,16 @@ export default Vue.extend({
         tab_cards() {
             let result = [
                 {
+                    nav: "布局模板",
+                    card_slot_name: "template_layout"
+                },
+                {
                     nav: "自定义布局",
                     card_slot_name: "custom_layout"
                 },
                 {
                     nav: "功能布局",
                     card_slot_name: "fun_layout"
-                },
-                {
-                    nav: "布局模板",
-                    card_slot_name: "template_layout"
                 },
                 {
                     nav: "布局代码",

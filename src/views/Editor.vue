@@ -54,7 +54,7 @@ export default Vue.extend({
         "editor-layout-panel": editor_layout_panel,
         "layout-editor": layout_editor,
         "ck-editor-picker": ck_editor_picker,
-        "ck-media-inser-panel":ck_media_inser_panel
+        "ck-media-inser-panel": ck_media_inser_panel
     },
     computed: {
         is_load() {
@@ -68,10 +68,28 @@ export default Vue.extend({
         },
         can_editor() {
             return (this as any).$root.can_editor;
+        },
+
+        oper_layout_groups_id() {
+            return (this as any).$store.state.layout_module
+                .oper_layout_groups_id;
+        },
+        oper_layout_id() {
+            return (this as any).$store.state.layout_module.oper_layout_id;
         }
     },
+
     methods: {
         add_layout() {
+            if (!!this.oper_layout_groups_id || !!this.oper_layout_id) {
+                (this as any).$message({
+                    message: "请先保存当前编辑后再添加新版块",
+                    offset: -1,
+                    duration: 2000,
+                    type: "error"
+                });
+                return;
+            }
             this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
                 type: "add_layout_group",
                 turn_on: true

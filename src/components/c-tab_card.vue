@@ -65,7 +65,8 @@ export default Vue.extend({
             this.tab_active_index = new_value;
         },
         tab_active_index: {
-            handler() {
+            handler(new_value) {
+                this.$emit('change', new_value);
                 this.reset_ui();
             }
         }

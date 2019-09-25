@@ -192,7 +192,7 @@
                                 <div
                                     class="layout-editor_bar"
                                     v-if="can_editor"
-                                    @click.self="show_layout_oper_btn"
+                                    @click.self="show_layout_oper_btn($event,oper_layout_id)"
                                 >
                                     <div class="layout-editor_bar-container">
                                         <div class="item layout_name" title="内容">
@@ -437,7 +437,16 @@ export default Vue.extend({
         hide_layout_oper_btn(ev: any) {
             $(".layout-editor_bar-container", this.$el).removeClass("show");
         },
-        show_layout_oper_btn(ev: any) {
+        show_layout_oper_btn(ev: any, oper_layout_id) {
+            if (typeof oper_layout_id == "string") {
+                (this as any).$message({
+                    message: "请先保存当前编辑后再编辑其它版块",
+                    offset: -1,
+                    duration: 2000,
+                    type: "error"
+                });
+                return false;
+            }
             $(".layout-editor_bar-container", this.$el).removeClass("show");
             let current_target = ev.currentTarget;
             let oper_bar = $(current_target).find(
