@@ -57,6 +57,9 @@
                                 <div class="item_header flex_fix">选择样式</div>
                                 <div class="item_body flex_auto layout_grid layout_grid-col-5">
                                     <c-radio class="space_normal" v-model="style" label="one">样式一</c-radio>
+                                    <c-radio class="space_normal" v-model="style" label="two">样式二</c-radio>
+                                    <c-radio class="space_normal" v-model="style" label="three">样式三</c-radio>
+                                    <c-radio class="space_normal" v-model="style" label="four">样式四</c-radio>
                                 </div>
                             </div>
                         </div>
@@ -340,7 +343,135 @@ export default Vue.extend({
     },
     mounted() {
         const $this = this;
-        (window as any).ckInsertMedia = function(callback) {
+
+        function getQueryData(url) {
+            let result = {};
+            if (!url || url.indexOf("?") == -1) return result;
+            let queryString = url.slice(url.indexOf("?") + 1);
+            if (!queryString) return result;
+
+            let queryData = queryString.split("&");
+            queryData.forEach(data => {
+                if (!data.length) return false;
+
+                let [key, value] = data.split("=");
+
+                result[key] = value || true;
+            });
+            return result;
+        }
+        (window as any).ckInsertMedia = function(callback, data) {
+            let url_data: any = getQueryData(data.url);
+            let init_share_icon = {
+                weibo: {
+                    name: "微博",
+                    icon: "ifont-weibo",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入微博分享链接"
+                },
+                weixin: {
+                    name: "微信",
+                    icon: "ifont-weixin",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入微信二维码图片链接"
+                },
+                qq: {
+                    name: "QQ",
+                    icon: "ifont-qq",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入QQ号"
+                },
+                call: {
+                    name: "电话",
+                    icon: "ifont-call",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入联系电话"
+                },
+                zcool: {
+                    name: "站酷",
+                    icon: "ifont-zcool-fill",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入站酷分享链接"
+                },
+                instagram: {
+                    name: "instagram",
+                    icon: "ifont-instagram",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入instagram分享链接"
+                },
+                twitter2: {
+                    name: "推特",
+                    icon: "ifont-twitter_icon2",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入twitter分享链接"
+                },
+                behance: {
+                    name: "behance",
+                    icon: "ifont-behance",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入behance分享链接"
+                },
+                twitter: {
+                    name: "推特",
+                    icon: "ifont-twitter_icon",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入twitter分享链接"
+                },
+                download: {
+                    name: "下载",
+                    icon: "ifont-download",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入下载链接"
+                }
+            };
+            $this.video_data = {
+                poster: "",
+                media: ""
+            };
+            $this.share_icon = init_share_icon;
+            $this.style = "one";
+            $this.pos = "left";
+            $this.theme = "black";
+
+            if (data.url) {
+                if (data.poster) {
+                    $this.video_data = {
+                        poster: data.poster,
+                        media: data.url
+                    };
+                } else if(url_data.class) {
+                    $this.style = /ck_share_style_([^\s"]+)/g.exec(
+                        url_data.class
+                    )[1];
+                    $this.pos = /ck_share_pos_([^\s"]+)/g.exec(
+                        url_data.class
+                    )[1];
+                    $this.theme = /ck_share_theme_([^\s"]+)/g.exec(
+                        url_data.class
+                    )[1];
+                    for (const [index, item] of Object.entries(
+                        JSON.parse(decodeURIComponent(url_data.data))
+                    )) {
+                        for (const [i, v] of Object.entries($this.share_icon)) {
+                            if (v.icon == item.icon) {
+                                v.title = item.title;
+                                v.link = item.link;
+                            }
+                        }
+                    }
+                }
+            }
+
             $this.ck_media_show = true;
             $this.ckInsertMedia = callback;
             $this.active_tab_cards = $this.tab_cards[0].card_slot_name;
@@ -410,24 +541,28 @@ export default Vue.extend({
     }
     .attr_set_item {
         position: relative;
+
         margin-right: -10px;
     }
     .c_upload {
-        margin-right: 10px;
         width: auto;
+        margin-right: 10px;
     }
     .upload-placeholder {
         font-size: 15px;
-        cursor: pointer;
-        margin-right: 10px;
+
+        position: relative;
         top: 0;
         left: 0;
-        height: 214px;
-        position: relative;
 
         box-sizing: border-box;
-        border: 1px dashed #ccd5db;
+        height: 214px;
+        margin-right: 10px;
+
+        cursor: pointer;
+
         color: #ccd5db;
+        border: 1px dashed #ccd5db;
         .ic {
             font-size: 19px;
 
@@ -437,12 +572,13 @@ export default Vue.extend({
     .placeholder-image {
         position: absolute;
         top: 0;
-        left: 0;
         right: 0;
         bottom: 0;
-        background-size: contain;
+        left: 0;
+
         background-repeat: no-repeat;
         background-position: center;
+        background-size: contain;
     }
 }
 </style>

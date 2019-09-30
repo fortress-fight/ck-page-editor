@@ -255,8 +255,8 @@ export default Vue.extend({
                                 const url = match[0];
                                 return (
                                     '<section class="post_video">' +
-                                    `<video controls src="${url}" style="width:100%;" ${'poster="' +
-                                        poster +
+                                    `<video controls preload src="${url}" style="width:100%;" ${'poster="' +
+                                        (poster || '') +
                                         '"'}>` +
                                     "</section>"
                                 );
