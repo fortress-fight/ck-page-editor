@@ -161,4 +161,6 @@ const Component = new Vue({
     render: h => h(App)
 }).$mount();
 
+window.VueComponentEditorPage = Component;
+
 $("#app").append(Component.$el);

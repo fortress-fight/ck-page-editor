@@ -120,13 +120,11 @@ class Page_editor {
                 _this.editor_iframe_win.preview_page(false);
                 $("body").removeClass("state-page_preview");
                 $(this).removeClass("active");
-               
             } else {
-                if(_this.editor_iframe_win.preview_page(true)){
-
+                if (_this.editor_iframe_win.preview_page(true)) {
                     $("body").addClass("state-page_preview");
                     $(this).addClass("active");
-                };
+                }
             }
         });
         this.$toolsbar.on("click", ".upload-btn", function() {
@@ -432,11 +430,14 @@ class Page_editor {
     get body_dom() {
         let result = $(`
             <div class="page_editor-body">
-                <iframe id="editor_iframe" data-path="${__webpack_public_path__}" src="${
+                <div id="page_editor-control_panel"></div>
+                <div id="wrapper-editor_iframe">
+                    <iframe id="editor_iframe" data-path="${__webpack_public_path__}" src="${
             __webpack_public_path__ !== "/"
                 ? __webpack_public_path__ + "index.html"
                 : "/index.html"
         }"></iframe>
+                </div>
             </div>
         `);
         this.editor_iframe = result.find("iframe");

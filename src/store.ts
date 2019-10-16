@@ -1,4 +1,5 @@
 import layout_components from "@/components/page_layout_dom.vue";
+import { decrypt } from "@/lib/plugins/crypto";
 import _defaultsDeep from "lodash/defaultsDeep";
 import _set from "lodash/set";
 import stringRandom from "string-random";
@@ -237,6 +238,24 @@ let unit_layout_module = {
 
         unit_layout_module.repair_data(result);
         return result;
+    },
+    decrypt_code(code) {
+        let result;
+        try {
+            result = JSON.parse(decrypt(code));
+            if (!result && !result.type) {
+                throw new Error("格式错误，请输入正确格式");
+            }
+        } catch (error) {
+            (Vue as any).prototype.$message({
+                message: error,
+                offset: -1,
+                duration: 2000,
+                type: "warning"
+            });
+            result = false;
+        }
+        return result;
     }
 };
 const layout_module = {
@@ -452,6 +471,9 @@ const layout_module = {
                     });
                 }
             });
+        },
+        add_new_layout_module({ state }, { data }) {
+            console.log(unit_layout_module.decrypt_code(data));
         }
     },
     getters: {
