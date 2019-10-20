@@ -1,1 +1,1 @@
-import "velocity-animate";
+declare module "Velocity";

@@ -312,6 +312,22 @@ let unit_layout_module = {
             result = false;
         }
         return result;
+    },
+    // 将块模块转换成为组模块
+    layout_to_layout_group(module_data: {type: 'layout_group' | 'layout', data: Object}) {
+        let result;
+        if (module_data.type === 'layout') {
+            result = unit_layout_module.get_layout_group_data(
+                "custom",
+                "100"
+            );
+            result.body = [module_data.data];
+        } else {
+            result = module_data.data;
+
+        }
+        
+        return result;
     }
 };
 const layout_module = {
@@ -528,19 +544,24 @@ const layout_module = {
             });
         },
         add_new_layout_module(
-            { state, getters },
+            { state, getters, actions },
             { data, relate_data, callback = (vue, data) => {} }
         ) {
             if (!data) throw new Error("缺少数据");
-            let result = {
-                domID: "",
-                data: ""
-            };
-            let module_data = unit_layout_module.decrypt_code(data);
-            unit_layout_module.repair_data(module_data.data);
-            if (relate_data.layout_id) {
-                result.data = module_data.data;
-                result.domID = module_data.data.id;
+            let module_data:{data:any, type:'layout' | "layout_group"} = {type: 'layout_group',data};
+            if (typeof data == "object") {
+                module_data.type = relate_data.layout_id ? 'layout' : "layout_group";
+                module_data.data = unit_layout_module.get_layout_group_data(
+                    "custom",
+                    data.value
+                );
+            } else if (typeof data === "string") {
+
+                module_data = unit_layout_module.decrypt_code(data);
+                unit_layout_module.repair_data(module_data.data);
+            }
+
+            if (relate_data.layout_id && module_data.type == "layout") {
                 let oper_layout_group = getters.search_layout_group(
                     relate_data.layout_group_id
                 );
@@ -551,41 +572,51 @@ const layout_module = {
                         relate_data.layout_id
                     ).index + 1,
                     0,
-                    result.data
+                    module_data.data
                 );
-                relate_data.layout_id = (result as any).data.id;
                 Vue.nextTick(() => {
                     callback(this, {
-                        data: result.data,
-                        dom: $("#" + result.domID),
+                        data: module_data.data,
+                        dom: $("#" + module_data.data.id),
                         relate_data: {
                             layout_group_id: relate_data.layout_group_id,
-                            layout_id: (result as any).data.id
+                            layout_id: module_data.data.id
                         }
                     });
                 });
-            } else {
-                if (module_data.type == "layout_group") {
-                    result.data = module_data.data;
-                    result.domID = module_data.data.id;
-                } else {
-                    let new_module_data = unit_layout_module.get_layout_group_data(
-                        "custom",
-                        "100"
-                    );
-                    new_module_data.body = [module_data.data];
-                    result.data = new_module_data;
-                    result.domID = new_module_data.id;
-                }
-                state.all_layouts_data.push(result.data);
+                return;
+            }
+            if (relate_data.layout_group_id) {
+                let new_module_data = unit_layout_module.layout_to_layout_group(module_data);
+                state.all_layouts_data.splice(
+                    getters.search_layout_group(
+                        relate_data.layout_group_id
+                    ).index + 1,
+                    0,
+                    new_module_data
+                );
 
                 Vue.nextTick(() => {
                     callback(this, {
-                        data: result.data,
-                        dom: $("#" + result.domID)
+                        data: new_module_data,
+                        dom: $("#" + new_module_data.id),
+                        relate_data: {
+                            layout_group_id: new_module_data.id,
+                        }
                     });
                 });
+
+                return;
             }
+            state.all_layouts_data.push(unit_layout_module.layout_to_layout_group(module_data));
+            Vue.nextTick(() => {
+                callback(this, {
+                    data: module_data.data,
+                    dom: $("#" + module_data.data.id),
+                    relate_data: {}
+                });
+            });
+
         }
     },
     getters: {

@@ -9,6 +9,8 @@ interface JQuery {
 
 declare global {
     interface Window {
+        jQuery: any;
+        $: any;
         set_editor(turn_on: Boolean): void;
         set_data(data: Object): void;
         get_data(): { data: any; store: any };
@@ -19,6 +21,7 @@ declare global {
         set_theme(string): void;
         set_agent(string): void;
         download_page_data(string): void;
+        Velocity: any;
         VueComponentMainPage: Vue;
         VueComponentEditorPage: Vue;
     }

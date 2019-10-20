@@ -66,7 +66,7 @@ export default Vue.extend({
         },
         tab_active_index: {
             handler(new_value) {
-                this.$emit('change', new_value);
+                this.$emit("change", new_value);
                 this.reset_ui();
             }
         }
@@ -87,28 +87,27 @@ export default Vue.extend({
             $(this.$refs.cards_container).css({
                 "margin-left": `-${this.tab_active_index}00%`
             });
-            $(this.$refs.cards_container)
-                .parent()
-                .velocity(
-                    {
-                        height: $(
-                            this.$refs.tab_card[this.tab_active_index]
-                        ).height(),
-                        tween: $(
-                            this.$refs.tab_card[this.tab_active_index]
-                        ).height()
+            Velocity(
+                $(this.$refs.cards_container).parent(),
+                {
+                    height: $(
+                        this.$refs.tab_card[this.tab_active_index]
+                    ).height(),
+                    tween: $(
+                        this.$refs.tab_card[this.tab_active_index]
+                    ).height()
+                },
+                {
+                    easing: "ease",
+                    duration: immediately ? 0 : 360,
+                    progress: el => {
+                        this.$emit("tab_changeing", el);
                     },
-                    {
-                        easing: "ease",
-                        duration: immediately ? 0 : 360,
-                        progress: el => {
-                            this.$emit("tab_changeing", el);
-                        },
-                        complete: el => {
-                            this.$emit("tab_changed", el);
-                        }
+                    complete: el => {
+                        this.$emit("tab_changed", el);
                     }
-                );
+                }
+            );
         }
     },
     mounted() {

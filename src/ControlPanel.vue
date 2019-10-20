@@ -1,5 +1,9 @@
 <template>
-    <div id="page_editor-control_panel" :data-open="open_control_panel">
+    <div
+        id="page_editor-control_panel"
+        :data-open="open_control_panel"
+        :data-open-detail="open_panel_detail"
+    >
         <div class="wrapper-control_panel">
             <div class="sidebar-control_panel">
                 <div
@@ -19,21 +23,62 @@
                                 :class="{select: select_module_group.index === index}"
                                 v-for="(item, index) in module_type"
                                 :key="index"
-                                @mouseover="item_hover(index)"
+                                @click="item_click(index);"
                             >{{item.name}}</div>
                         </div>
                         <div class="row">
-                            <div class="item-module_type" @mouseover="item_hover('auto')">自定义</div>
-                            <div class="item-module_type" @mouseover="item_hover('handle')">功能布局</div>
-                            <div class="item-module_type" @mouseover="item_hover('code')">布局代码</div>
+                            <div
+                                class="item-module_type"
+                                :class="{select: select_module_group.index === 'auto'}"
+                                @click="item_click('auto', 'auto')"
+                            >自定义</div>
+                            <div
+                                class="item-module_type"
+                                :class="{select: select_module_group.index === 'handle'}"
+                                @click="item_click('handle','handle')"
+                            >功能布局</div>
+                            <div
+                                class="item-module_type"
+                                :class="{select: select_module_group.index === 'code'}"
+                                @click="item_click('code','code')"
+                            >布局代码</div>
                         </div>
                     </div>
                     <div class="container-modules">
                         <div class="wrapper-module_item">
-                            <template v-if="select_module_group.index == 'auto'">auto</template>
+                            <template v-if="select_module_group.index == 'auto'">
+                                <c-tab-card :tab_cards="tab_cards" ref="tab_card">
+                                    <template #fixed_layout>
+                                        <div class="page_editor-layout" data-pop="body">
+                                            <div
+                                                class="page_editor-layout_options layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
+                                            >
+                                                <div
+                                                    v-for="(item, key) in custom_options"
+                                                    :key="key"
+                                                    class="item layout_grid"
+                                                    :class="[`layout_grid-col-${item.grid_col}`, {'layout_grid-colspac-3': item.grid_col > 1}, {'active': type=='fixed' && value == item.value}]"
+                                                    :data-value="item.value"
+                                                    @click="add_fixed_col_module('fixed', item.value)"
+                                                >
+                                                    <div
+                                                        v-for="(son_item, son_key) in item.value.split('_')"
+                                                        class="item_son"
+                                                        :class="item.item_col[son_key] ? `layout_grid-item_clo-${item.item_col[son_key]}` : ''"
+                                                        :key="son_key"
+                                                    >
+                                                        <div class="des">{{son_item}}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template #custom_layout>custom_layout</template>
+                                </c-tab-card>
+                            </template>
                             <template v-else-if="select_module_group.index == 'handle'">handle</template>
                             <template v-else-if="select_module_group.index == 'code'">code</template>
-                            <template v-else="select_module_group.index == 'code'">
+                            <template v-else>
                                 <div
                                     class="list-module_item"
                                     v-for="(item, index) in select_module_group.data.list"
@@ -53,9 +98,12 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+
+import tab_card from "@/components/c-tab_card.vue";
 export default Vue.extend({
     data() {
         return {
+            open_panel_detail: "default",
             select_module_group: {
                 index: 0,
                 data: {}
@@ -174,6 +222,61 @@ export default Vue.extend({
                         }
                     ]
                 }
+            ],
+
+            type: "fixed",
+            value: "100",
+            custom_options: [
+                {
+                    grid_col: 1,
+                    item_col: [],
+                    value: "100"
+                },
+                {
+                    grid_col: 2,
+                    item_col: [],
+                    value: "50_50"
+                },
+                {
+                    grid_col: 10,
+                    item_col: [3, 7],
+                    value: "30_70"
+                },
+                {
+                    grid_col: 10,
+                    item_col: [7, 3],
+                    value: "70_30"
+                },
+                {
+                    grid_col: 3,
+                    item_col: [],
+                    value: "33_33_33"
+                },
+                {
+                    grid_col: 4,
+                    item_col: [2, 0, 0],
+                    value: "50_25_25"
+                },
+                {
+                    grid_col: 4,
+                    item_col: [1, 1, 2],
+                    value: "25_25_50"
+                },
+                {
+                    grid_col: 4,
+                    item_col: [1, 2, 1],
+                    value: "25_50_25"
+                },
+                {
+                    grid_col: 4,
+                    item_col: [],
+                    value: "25_25_25_25"
+                },
+                {
+                    grid_col: 5,
+                    item_col: [],
+                    value: "20_20_20_20_20"
+                }
             ]
         };
     },
@@ -186,12 +289,43 @@ export default Vue.extend({
         },
         add_modules_relate_data() {
             return this.$store.state.modules_panel.relate_data;
+        },
+        tab_cards() {
+            let result = [
+                {
+                    nav: "固定分栏",
+                    card_slot_name: "fixed_layout"
+                },
+                {
+                    nav: "自定义分栏",
+                    card_slot_name: "custom_layout"
+                }
+            ];
+            if (this.whitch_dialog == "add_layout_group") {
+                // result.push();
+            }
+            return result;
         }
     },
+    watch: {
+        open_control_panel(newValue) {
+            if (newValue) {
+                this.open_panel_detail = "default";
+
+                this.select_module_group.index = 0;
+
+                this.select_module_group.data = this.module_type[0];
+            }
+        }
+    },
+    components: {
+        "c-tab-card": tab_card
+    },
     methods: {
-        item_hover(index) {
+        item_click(index, detail) {
             this.select_module_group.index = index;
             this.select_module_group.data = this.module_type[index];
+            this.open_panel_detail = detail || "default";
         },
         add_module(module_data) {
             if (!module_data && module_data.data) {
@@ -236,6 +370,34 @@ export default Vue.extend({
                     "layout_group"
                 ]);
             }
+        },
+        add_fixed_col_module(type, value) {
+            this.type = type;
+            this.value = value;
+            this.$root.editor_iframe_win.VueComponentEditorPage.$store.dispatch(
+                "layout_module/add_new_layout_module",
+                {
+                    data: {
+                        type: "custom",
+                        value: value
+                    },
+                    relate_data: this.add_modules_relate_data,
+                    callback: (vue, data) => {
+                        if (data.dom && data.dom.length) {
+                            this.$root.editor_iframe_win.scrollTo({
+                                top: data.dom.offset().top,
+                                behavior: "smooth"
+                            });
+                            if (data.relate_data) {
+                                this.$store.commit(
+                                    "modules_panel/set_relate_data",
+                                    data.relate_data
+                                );
+                            }
+                        }
+                    }
+                }
+            );
         }
     },
     mounted() {
@@ -269,12 +431,30 @@ export default Vue.extend({
 }
 #page_editor-control_panel {
     display: none;
+
+    .container-control_panel .panel-modules .wrapper-module_item,
+    .container-control_panel .panel-modules,
     .container-control_panel {
-        transition: 0.36s ease;
+        transition: width 0.36s ease;
     }
     &[data-open="panel-modules"] {
         .container-control_panel {
             width: 480px;
+        }
+    }
+    &[data-open="panel-modules"] {
+        &[data-open-detail="auto"] {
+            .wrapper-module_item {
+                background: #fff;
+                border-color: #e6e6e6;
+            }
+            .container-control_panel .panel-modules,
+            .container-control_panel {
+                width: 540px;
+            }
+            .container-control_panel .panel-modules .wrapper-module_item {
+                width: 426px;
+            }
         }
     }
 }
@@ -364,15 +544,62 @@ export default Vue.extend({
         }
         .wrapper-module_item {
             box-sizing: border-box;
-            width: 360px;
+            width: 366px;
             min-height: 100%;
             padding: 20px;
 
             background: #e6e6e6;
+            transition: 0.36s ease;
+            border-left: 1px solid transparent;
             .list-module_item {
                 margin-bottom: 20px;
 
                 cursor: pointer;
+            }
+        }
+    }
+}
+
+// 自定义布局
+
+.page {
+    &_editor {
+        &-layout {
+            box-sizing: border-box;
+            padding: 15px 0;
+            .item {
+                box-sizing: border-box;
+                height: 50px;
+                padding: 3px;
+
+                cursor: pointer;
+                transition: 0.2s ease;
+
+                color: #a8a8a8;
+                border: 1px solid #ebebeb;
+                &:hover {
+                    color: #333;
+                    border-color: #d2d2d2;
+                }
+                &.active {
+                    color: #fff;
+                    border-color: #46be8a;
+                    .item_son {
+                        background: #46be8a;
+                    }
+                }
+            }
+            .item_son {
+                display: flex;
+
+                height: 100%;
+
+                transition: background-color 0.2s ease;
+
+                background-color: #eaeaea;
+
+                align-items: center;
+                justify-content: center;
             }
         }
     }
