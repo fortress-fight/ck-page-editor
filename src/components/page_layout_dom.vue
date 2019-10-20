@@ -28,7 +28,7 @@
                     class="item"
                     data-key="add"
                     title="添加"
-                    @click="open_add_layout_group_dialog(item.id)"
+                    @click.stop="open_add_layout_group_dialog(item.id)"
                 >
                     <!-- <span class="text">添加</span> -->
                     <i class="fa fa-plus"></i>
@@ -99,7 +99,7 @@
             </section>
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
-                    <section
+                    <!-- <section
                         :id="item.attrs.header.id"
                         v-show="item.attrs.header.open"
                         class="layout_header editor_wrapper"
@@ -110,7 +110,7 @@
                             :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
                             v-html="item.attrs.header.container"
                         ></section>
-                    </section>
+                    </section>-->
                     <section class="layout_body">
                         <section
                             :id="layout_item.id"
@@ -199,19 +199,18 @@
                                             <span class="text">内容</span>
                                             <!-- <i class="fa fa-plus"></i> -->
                                         </div>
-                                        <div
+                                        <!-- <div
                                             class="item"
                                             title="隐藏面板"
                                             @click="hide_layout_oper_btn"
                                         >
-                                            <!-- <span class="text">删除</span> -->
                                             <i class="fa fa-eye"></i>
-                                        </div>
+                                        </div>-->
                                         <div
                                             class="item"
                                             data-key="add"
                                             title="添加"
-                                            @click="open_add_layout_dialog(item.id, layout_item.id)"
+                                            @click.stop="open_add_layout_dialog(item.id, layout_item.id)"
                                         >
                                             <!-- <span class="text">添加</span> -->
                                             <i class="fa fa-plus"></i>
@@ -269,7 +268,7 @@
                         </section>
                     </section>
 
-                    <section
+                    <!-- <section
                         class="layout_footer editor_wrapper"
                         v-show="item.attrs.footer.open"
                         :id="item.attrs.footer.id"
@@ -280,7 +279,7 @@
                             :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
                             v-html="item.attrs.footer.container"
                         ></section>
-                    </section>
+                    </section>-->
                 </section>
             </section>
         </div>
@@ -319,23 +318,63 @@ export default Vue.extend({
     },
     methods: {
         open_add_layout_group_dialog(layout_group_id) {
-            this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
-                turn_on: true,
-                type: "add_layout_group",
-                data: {
-                    layout_group_id
-                }
-            });
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout", "layout_group"],
+                        relate_data: {
+                            layout_group_id
+                        }
+                    }, 
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    turn_on: true,
+                    type: "add_layout_group",
+                    data: {
+                        layout_group_id
+                    }
+                });
+            }
         },
         open_add_layout_dialog(layout_group_id, layout_id) {
-            this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
-                turn_on: true,
-                type: "add_layout",
-                data: {
-                    layout_group_id,
-                    layout_id
-                }
-            });
+            
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout"],
+                        relate_data: {
+                            layout_group_id,
+                            layout_id
+                        }
+                    }, 
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    turn_on: true,
+                    type: "add_layout",
+                    data: {
+                        layout_group_id,
+                        layout_id
+                    }
+                });
+            }
         },
         move_layout_group(layout_group_id, dir) {
             this.$store.dispatch("layout_module/move_layout_group", {

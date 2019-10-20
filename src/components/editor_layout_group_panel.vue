@@ -23,7 +23,7 @@
             <c-tab-card :tab_cards="tab_cards" ref="tab_card">
                 <template #layout_dom>
                     <div class="attr_set_groups">
-                        <div class="attr_set_group">
+                        <div class="attr_set_group" v-if="layout_group_data.attrs.header">
                             <div
                                 class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                             >

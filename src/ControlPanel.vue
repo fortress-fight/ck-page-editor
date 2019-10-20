@@ -5,7 +5,7 @@
                 <div
                     class="item-control_panel_side"
                     :class="{select:'panel-modules' === open_control_panel}"
-                    @click="open_control_panel = 'panel-modules'"
+                    @click="open($event, 'panel-modules')"
                 >
                     <i class="ic fa fa-plus"></i>
                 </div>
@@ -23,21 +23,27 @@
                             >{{item.name}}</div>
                         </div>
                         <div class="row">
-                            <div class="item-module_type">自定义</div>
-                            <div class="item-module_type">功能布局</div>
-                            <div class="item-module_type">布局代码</div>
+                            <div class="item-module_type" @mouseover="item_hover('auto')">自定义</div>
+                            <div class="item-module_type" @mouseover="item_hover('handle')">功能布局</div>
+                            <div class="item-module_type" @mouseover="item_hover('code')">布局代码</div>
                         </div>
                     </div>
                     <div class="container-modules">
                         <div class="wrapper-module_item">
-                            <div
-                                class="list-module_item"
-                                v-for="(item, index) in select_module_group.data.list"
-                                :key="index"
-                                @click="add_module(item)"
-                            >
-                                <img :src="item.image" alt class />
-                            </div>
+                            <template v-if="select_module_group.index == 'auto'">auto</template>
+                            <template v-else-if="select_module_group.index == 'handle'">handle</template>
+                            <template v-else-if="select_module_group.index == 'code'">code</template>
+                            <template v-else="select_module_group.index == 'code'">
+                                <div
+                                    class="list-module_item"
+                                    v-for="(item, index) in select_module_group.data.list"
+                                    v-if="show_modules_type.includes(item.type)"
+                                    :key="index"
+                                    @click="add_module(item)"
+                                >
+                                    <img :src="item.image" alt class />
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -50,7 +56,6 @@ import Vue from "vue";
 export default Vue.extend({
     data() {
         return {
-            open_control_panel: "",
             select_module_group: {
                 index: 0,
                 data: {}
@@ -60,12 +65,14 @@ export default Vue.extend({
                     name: "头部",
                     list: [
                         {
+                            type: "layout",
                             image:
                                 "http://resources.jsmo.xin/templates/upload/16141/201910/1571140343729.jpg",
                             data:
                                 "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"
                         },
                         {
+                            type: "layout_group",
                             image:
                                 "http://resources.jsmo.xin/templates/upload/16141/201910/1571140343755.png",
                             data:
@@ -170,6 +177,17 @@ export default Vue.extend({
             ]
         };
     },
+    computed: {
+        open_control_panel() {
+            return this.$store.state.control_panel.open_panel;
+        },
+        show_modules_type() {
+            return this.$store.state.modules_panel.type;
+        },
+        add_modules_relate_data() {
+            return this.$store.state.modules_panel.relate_data;
+        }
+    },
     methods: {
         item_hover(index) {
             this.select_module_group.index = index;
@@ -187,22 +205,51 @@ export default Vue.extend({
             } else {
                 this.$root.editor_iframe_win.VueComponentEditorPage.$store.dispatch(
                     "layout_module/add_new_layout_module",
-                    { data: module_data.data }
+                    {
+                        data: module_data.data,
+                        relate_data: this.add_modules_relate_data,
+                        callback: (vue, data) => {
+                            if (data.dom && data.dom.length) {
+                                this.$root.editor_iframe_win.scrollTo({
+                                    top: data.dom.offset().top,
+                                    behavior: "smooth"
+                                });
+                                if (data.relate_data) {
+                                    this.$store.commit(
+                                        "modules_panel/set_relate_data",
+                                        data.relate_data
+                                    );
+                                }
+                            }
+                        }
+                    }
                 );
+            }
+        },
+        open(ev, type) {
+            if ($(ev.currentTarget).hasClass("select")) {
+                this.$store.commit("control_panel/reset_panel");
+            } else {
+                this.$store.commit("control_panel/open_panel", type);
+                this.$store.commit("modules_panel/show_type", [
+                    "layout",
+                    "layout_group"
+                ]);
             }
         }
     },
     mounted() {
         this.select_module_group.data = this.module_type[0];
         this.select_module_group.index = 0;
+        $(this.$root.editor_iframe_win).on("click", () => {
+            this.$store.commit("control_panel/reset_panel");
+        });
     }
 });
 </script>
 <style lang="scss">
 .page_editor-body {
     display: flex;
-
-    background: #e6e6e6;
 }
 
 #wrapper-editor_iframe {
@@ -212,7 +259,16 @@ export default Vue.extend({
 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
+.page_editor-fool_screen {
+    #page_editor-control_panel {
+        display: block;
+    }
+    .page_editor-body {
+        background: #e6e6e6;
+    }
+}
 #page_editor-control_panel {
+    display: none;
     .container-control_panel {
         transition: 0.36s ease;
     }

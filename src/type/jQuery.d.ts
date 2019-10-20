@@ -19,6 +19,7 @@ declare global {
         set_theme(string): void;
         set_agent(string): void;
         download_page_data(string): void;
+        VueComponentMainPage: Vue;
         VueComponentEditorPage: Vue;
     }
 }

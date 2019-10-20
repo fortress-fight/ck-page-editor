@@ -248,7 +248,6 @@ export default Vue.extend({
             let result;
             try {
                 let transform_result = JSON.parse(decrypt(code));
-                console.log("transform_result:", transform_result);
                 if (!transform_result && !transform_result.type) {
                     throw new Error("格式错误，请输入正确格式");
                 } else {

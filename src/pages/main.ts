@@ -1,7 +1,7 @@
 import ControlPanel from "@/ControlPanel.vue";
 import Page_editor from "@/lib/page_editor/page_editor";
+import store from "@/pages/main/store";
 import "@/public";
-import store from "@/store";
 import Vue from "vue";
 import "../plugins/element.js";
 import "./main/style.scss";
@@ -22,6 +22,7 @@ $(function() {
                     render: h => h(ControlPanel),
                     mounted() {}
                 }).$mount("#page_editor-control_panel");
+                window.VueComponentMainPage = vue_component;
             }
         }).init();
     });

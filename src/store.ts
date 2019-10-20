@@ -32,9 +32,42 @@ let unit_layout_module = {
                     });
                 }
             } else {
+                // 移除布局组中的header 和 footer, 将其转换成普通块
+                if (s.attrs.header) {
+                    if (s.attrs.header.open) {
+                        let repair_module = unit_layout_module.get_layout_data(
+                            "custom",
+                            "100"
+                        );
+                        repair_module.col_container[0].container =
+                            s.attrs.header.container;
+                        s.body.unshift(repair_module);
+                    }
+                    delete s.attrs.header;
+                }
+                if (s.attrs.footer) {
+                    if (s.attrs.footer.open) {
+                        let repair_module = unit_layout_module.get_layout_data(
+                            "custom",
+                            "100"
+                        );
+                        repair_module.col_container[0].container =
+                            s.attrs.footer.container;
+
+                        s.body.push(repair_module);
+                    }
+                    delete s.attrs.footer;
+                }
+
+                // 将默认执行屏幕宽度
+
+                s.attrs.window_width = true;
+
+                // 扩展之前的属性
                 s = _defaultsDeep(s, {
                     attrs: {
                         module_center: false,
+
                         bg: {
                             pc: {
                                 mask: "rgba(255,255,255,0)"
@@ -70,11 +103,34 @@ let unit_layout_module = {
         if (Array.isArray(data)) {
             data.forEach(s => {
                 _repair_data(s);
+                unit_layout_module.reset_module_id(s);
             });
         } else if (typeof data == "object" && data.type_detail) {
             _repair_data(data, "layout");
+            unit_layout_module.reset_module_id(data);
         } else {
             _repair_data(data);
+            unit_layout_module.reset_module_id(data);
+        }
+    },
+    reset_module_id(data) {
+        if (typeof data == "object" && data.type_detail) {
+            data.id = stringRandom(16, { numbers: false });
+            data.col_container.forEach(col => {
+                col.id = stringRandom(16, { numbers: false });
+            });
+        } else {
+            data.id = stringRandom(16, { numbers: false });
+            // result.attrs.header.id = stringRandom(16, { numbers: false });
+            // result.attrs.footer.id = stringRandom(16, { numbers: false });
+            data.body.forEach(layout_data => {
+                layout_data.id = stringRandom(16, { numbers: false });
+                layout_data.col_container.forEach(layout_col_data => {
+                    layout_col_data.id = stringRandom(16, {
+                        numbers: false
+                    });
+                });
+            });
         }
     },
     get_layout_group_data(type: string, value: any) {
@@ -82,8 +138,8 @@ let unit_layout_module = {
         if (type == "code" || type == "template") {
             result = value;
             result.id = stringRandom(16, { numbers: false });
-            result.attrs.header.id = stringRandom(16, { numbers: false });
-            result.attrs.footer.id = stringRandom(16, { numbers: false });
+            // result.attrs.header.id = stringRandom(16, { numbers: false });
+            // result.attrs.footer.id = stringRandom(16, { numbers: false });
             result.body.forEach(layout_data => {
                 layout_data.id = stringRandom(16, { numbers: false });
                 layout_data.col_container.forEach(layout_col_data => {
@@ -97,16 +153,16 @@ let unit_layout_module = {
                 id: stringRandom(16, { numbers: false }),
                 dom: null,
                 attrs: {
-                    header: {
-                        open: false,
-                        id: stringRandom(16, { numbers: false }),
-                        container: ``
-                    },
-                    footer: {
-                        open: false,
-                        id: stringRandom(16, { numbers: false }),
-                        container: ``
-                    },
+                    // header: {
+                    //     open: false,
+                    //     id: stringRandom(16, { numbers: false }),
+                    //     container: ``
+                    // },
+                    // footer: {
+                    //     open: false,
+                    //     id: stringRandom(16, { numbers: false }),
+                    //     container: ``
+                    // },
                     background_color: "rgba(255,255,255,0)",
                     window_width: true,
                     window_height: false,
@@ -275,7 +331,6 @@ const layout_module = {
             state.editor_type = type;
         },
         set_all_layouts_data(state, store) {
-            console.log("state:", store);
             unit_layout_module.repair_data(store);
             state.all_layouts_data = store;
         }
@@ -472,8 +527,65 @@ const layout_module = {
                 }
             });
         },
-        add_new_layout_module({ state }, { data }) {
-            console.log(unit_layout_module.decrypt_code(data));
+        add_new_layout_module(
+            { state, getters },
+            { data, relate_data, callback = (vue, data) => {} }
+        ) {
+            if (!data) throw new Error("缺少数据");
+            let result = {
+                domID: "",
+                data: ""
+            };
+            let module_data = unit_layout_module.decrypt_code(data);
+            unit_layout_module.repair_data(module_data.data);
+            if (relate_data.layout_id) {
+                result.data = module_data.data;
+                result.domID = module_data.data.id;
+                let oper_layout_group = getters.search_layout_group(
+                    relate_data.layout_group_id
+                );
+
+                oper_layout_group.data.body.splice(
+                    getters.search_layout(
+                        relate_data.layout_group_id,
+                        relate_data.layout_id
+                    ).index + 1,
+                    0,
+                    result.data
+                );
+                relate_data.layout_id = (result as any).data.id;
+                Vue.nextTick(() => {
+                    callback(this, {
+                        data: result.data,
+                        dom: $("#" + result.domID),
+                        relate_data: {
+                            layout_group_id: relate_data.layout_group_id,
+                            layout_id: (result as any).data.id
+                        }
+                    });
+                });
+            } else {
+                if (module_data.type == "layout_group") {
+                    result.data = module_data.data;
+                    result.domID = module_data.data.id;
+                } else {
+                    let new_module_data = unit_layout_module.get_layout_group_data(
+                        "custom",
+                        "100"
+                    );
+                    new_module_data.body = [module_data.data];
+                    result.data = new_module_data;
+                    result.domID = new_module_data.id;
+                }
+                state.all_layouts_data.push(result.data);
+
+                Vue.nextTick(() => {
+                    callback(this, {
+                        data: result.data,
+                        dom: $("#" + result.domID)
+                    });
+                });
+            }
         }
     },
     getters: {
@@ -833,12 +945,12 @@ const layout_editor_manage_module = {
         set_state({ state }, { data }) {
             if (data.body) {
                 state.type = "layout_group";
-                state.data[0].path = "attrs.header.container";
-                state.data[0].id = data.attrs.header.id;
-                state.data[0].container = data.attrs.header.container;
-                state.data[1].path = "attrs.footer.container";
-                state.data[1].id = data.attrs.footer.id;
-                state.data[1].container = data.attrs.footer.container;
+                // state.data[0].path = "attrs.header.container";
+                // state.data[0].id = data.attrs.header.id;
+                // state.data[0].container = data.attrs.header.container;
+                // state.data[1].path = "attrs.footer.container";
+                // state.data[1].id = data.attrs.footer.id;
+                // state.data[1].container = data.attrs.footer.container;
             } else {
                 state.type = "layout";
                 data.col_container.forEach((v, i) => {

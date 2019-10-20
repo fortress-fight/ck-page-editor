@@ -35,7 +35,8 @@ const Component = new Vue({
                     process.env.NODE_ENV === "development"
                         ? "/service"
                         : "/service/editorUpload.php?action=uploadimage&encode=utf-8"
-            }
+            },
+            main_page_win: window.parent
         };
     },
     store,
