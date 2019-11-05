@@ -28,20 +28,12 @@
                         </div>
                         <div class="row">
                             <div
+                                v-for="module_custom in module_custom_type"
+                                :key="module_custom.type"
                                 class="item-module_type"
-                                :class="{select: select_module_group.index === 'auto'}"
-                                @click="item_click('auto', 'auto')"
-                            >自定义</div>
-                            <div
-                                class="item-module_type"
-                                :class="{select: select_module_group.index === 'handle'}"
-                                @click="item_click('handle','handle')"
-                            >功能布局</div>
-                            <div
-                                class="item-module_type"
-                                :class="{select: select_module_group.index === 'code'}"
-                                @click="item_click('code','code')"
-                            >布局代码</div>
+                                :class="{select: select_module_group.index === module_custom.type}"
+                                @click="item_click(module_custom.type, module_custom.type)"
+                            >{{module_custom.name}}</div>
                         </div>
                     </div>
                     <div class="container-modules">
@@ -218,6 +210,7 @@
 import Vue from "vue";
 
 import tab_card from "@/components/c-tab_card.vue";
+
 export default Vue.extend({
     data() {
         return {
@@ -226,7 +219,6 @@ export default Vue.extend({
                 index: 0,
                 data: {}
             },
-            module_type: window.MODULES,
 
             type: "fixed",
             value: "100",
@@ -290,6 +282,12 @@ export default Vue.extend({
         };
     },
     computed: {
+        module_type() {
+            return window[this.$root.control_panel_show_modules];
+        },
+        module_custom_type() {
+            return window[this.$root.control_panel_show_modules + "_CUSTOM"];
+        },
         open_control_panel() {
             return this.$store.state.control_panel.open_panel;
         },
@@ -357,7 +355,6 @@ export default Vue.extend({
                 //     type: "warning"
                 // });
             } else {
-                
                 this.$root.editor_iframe_win.VueComponentEditorPage.$store.dispatch(
                     "layout_module/add_new_layout_module",
                     {

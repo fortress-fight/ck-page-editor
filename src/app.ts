@@ -154,7 +154,9 @@ const Component = new Vue({
             }
         };
         if (window.parent !== window) {
-            window.parent.editor_iframe_mounted(window, this);
+            this.$nextTick(() => {
+                window.parent.editor_iframe_mounted(window, this);
+            });
         } else {
             this.can_editor = true;
         }

@@ -3,7 +3,11 @@
         <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
             <page-layout-dom :can_editor="can_editor"></page-layout-dom>
             <keep-alive>
-                <div v-if="can_editor" class="page-add_layout_btn" @click.stop="add_layout">
+                <div
+                    v-if="can_editor && this.limit_modules != 1"
+                    class="page-add_layout_btn"
+                    @click.stop="add_layout"
+                >
                     <span class="text">添加编辑板块</span>
                     <i class="fa fa-plus"></i>
                 </div>
@@ -76,6 +80,9 @@ export default Vue.extend({
         },
         oper_layout_id() {
             return (this as any).$store.state.layout_module.oper_layout_id;
+        },
+        limit_modules() {
+            return (this as any).$store.state.limit_modules;
         }
     },
 

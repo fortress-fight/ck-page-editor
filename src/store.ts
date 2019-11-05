@@ -567,7 +567,7 @@ const layout_module = {
             });
         },
         add_new_layout_module(
-            { state, getters, actions },
+            { state, getters, actions, rootState },
             { data, relate_data, callback = (vue, data) => {} }
         ) {
             if (!data) throw new Error("缺少数据");
@@ -658,9 +658,16 @@ const layout_module = {
 
                 return;
             }
-            state.all_layouts_data.push(
-                unit_layout_module.layout_to_layout_group(module_data)
-            );
+
+            if (rootState.limit_modules == 1) {
+                state.all_layouts_data = [
+                    unit_layout_module.layout_to_layout_group(module_data)
+                ];
+            } else {
+                state.all_layouts_data.push(
+                    unit_layout_module.layout_to_layout_group(module_data)
+                );
+            }
             Vue.nextTick(() => {
                 callback(this, {
                     data: module_data.data,
@@ -1077,6 +1084,16 @@ const layout_editor_manage_module = {
 };
 
 const store = new Vuex.Store({
+    state() {
+        return {
+            limit_modules: 0
+        };
+    },
+    mutations: {
+        set_limit_modules(state: any, data: number) {
+            state.limit_modules = data;
+        }
+    },
     modules: {
         layout_module,
         add_layout_dom_dialog_module,

@@ -8,16 +8,22 @@ import "./main/style.scss";
 
 console.log(Page_editor);
 
-window.EDITOR_CONFIG_MOUNTED = (editor_component)=> {
-        let vue_component = new Vue({
-            data: () => {
-                return {
-                    editor_iframe_win: editor_component.editor_iframe_win
-                };
-            },
-            store,
-            render: h => h(ControlPanel),
-            mounted() {}
-        }).$mount("#page_editor-control_panel");
-        window.VueComponentMainPage = vue_component;
-    }
+window.EDITOR_CONFIG_MOUNTED = (editor_component, show_modules = "MODULES") => {
+    let vue_component = new Vue({
+        data: () => {
+            return {
+                editor_iframe_win: editor_component.editor_iframe_win,
+                control_panel_show_modules: show_modules
+            };
+        },
+        store,
+        render: h => h(ControlPanel),
+        mounted() {
+            editor_component.editor_iframe_win.VueComponentEditorPage.$store.commit(
+                "set_limit_modules",
+                1
+            );
+        }
+    }).$mount("#page_editor-control_panel");
+    window.VueComponentMainPage = vue_component;
+};

@@ -9,20 +9,21 @@
         <script src="<%= BASE_URL %>./resource/script/jquery.min.js"></script>
         <title>Document</title>
         <style>
-            body {
-                box-sizing: border-box;
-                padding-top: 100px;
+body {
+    box-sizing: border-box;
+    padding-top: 100px;
 
-                background: #fff;
-            }
+    background: #fff;
+}
 
-            .editor_box {
-                width: 800px;
-                min-height: 500px;
-                margin: 0 auto;
+.editor_box {
+    width: 800px;
+    min-height: 500px;
+    margin: 0 auto;
 
-                border: 1px solid rgb(245, 245, 245);
-            }
+    border: 1px solid rgb(245, 245, 245);
+}
+
         </style>
     </head>
 
@@ -37,7 +38,7 @@
                 let editor_component = Page_editor(dom, {
                     editor_data: [],
                     iframe_mounted() {
-                        window.EDITOR_CONFIG_MOUNTED(editor_component);
+                        window.EDITOR_CONFIG_MOUNTED(editor_component, "MODULES_FOOTER");
                     }
                 }).init();
             });

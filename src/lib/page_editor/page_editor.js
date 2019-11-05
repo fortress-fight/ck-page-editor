@@ -312,7 +312,7 @@ class Page_editor {
                     ).appendTo(this.$toolsbar);
 
                     page_oper_btns.on("click", ".page_oper_btn-cancel", ev => {
-                        console.log(confirm_dialog, 'confirm_dialog');
+                        console.log(confirm_dialog, "confirm_dialog");
                         confirm_dialog.show();
                     });
 

@@ -28,10 +28,20 @@
                     class="item"
                     data-key="add"
                     title="添加"
+                    v-if="limit_modules != 1"
                     @click.stop="open_add_layout_group_dialog(item.id)"
                 >
                     <!-- <span class="text">添加</span> -->
                     <i class="fa fa-plus"></i>
+                </div>
+                <div
+                    class="item"
+                    data-key="add"
+                    title="替换"
+                    v-if="limit_modules == 1"
+                    @click.stop="replace_layout_group_dialog(item.id)"
+                >
+                    <span class="text">替换</span>
                 </div>
                 <div
                     class="item"
@@ -242,6 +252,7 @@
                                             class="item"
                                             data-key="add"
                                             title="添加"
+                                            v-if="limit_modules != 1"
                                             @click.stop="open_add_layout_dialog(item.id, layout_item.id)"
                                         >
                                             <!-- <span class="text">添加</span> -->
@@ -350,6 +361,9 @@ export default Vue.extend({
         },
         oper_layout_id() {
             return (this as any).$store.state.layout_module.oper_layout_id;
+        },
+        limit_modules() {
+            return (this as any).$store.state.limit_modules;
         }
     },
     methods: {
@@ -364,6 +378,34 @@ export default Vue.extend({
             return false;
         },
         open_add_layout_group_dialog(layout_group_id) {
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout", "layout_group"],
+                        relate_data: {
+                            layout_group_id
+                        }
+                    }
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    turn_on: true,
+                    type: "add_layout_group",
+                    data: {
+                        layout_group_id
+                    }
+                });
+            }
+        },
+        replace_layout_group_dialog(layout_group_id) {
             if (
                 this.$root.main_page_win &&
                 this.$root.main_page_win.VueComponentMainPage
