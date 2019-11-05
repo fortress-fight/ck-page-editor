@@ -19,7 +19,7 @@
             :data-module_center="item.attrs.module_center"
             data-stick-parent
         >
-            <div class="layout_group-editor_bar" v-if="can_editor" v-stick="42">
+            <div class="layout_group-editor_bar" v-if="can_editor" v-stick="0">
                 <div class="item layout_group_name" title="布局">
                     <span class="text">布局</span>
                     <!-- <i class="fa fa-plus"></i> -->
@@ -122,6 +122,10 @@
                             :data-justify_center="layout_item.x_align"
                             :data-align_center="layout_item.y_align"
                         >
+                            <div
+                                class="layout-margin_placeholder_top"
+                                :style="{paddingTop: (layout_item.margin_yt.value || 0) + layout_item.margin_yt.unit}"
+                            ></div>
                             <section
                                 class="row"
                                 :style="{width: layout_item.width.value ?layout_item.width.value + layout_item.width.unit : ''}"
@@ -138,9 +142,29 @@
                                         class="col editor_wrapper"
                                         :class="`col-${col_item.col}`"
                                         :key="col_item.id"
-                                        :style="{borderRadius: layout_item.type_detail==`custom` ? col_item.radius.value + col_item.radius.unit:false, backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
+                                        :style="{
+                                            width: `calc(${calc_width(col_item.col)})`,
+                                            borderRadius: layout_item.type_detail==`custom` ? col_item.radius.value + col_item.radius.unit:false, backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
                                         @animationend="col_animationend"
                                     >
+                                        <template v-if="item.id == oper_layout_groups_id">
+                                            <div
+                                                class="edit_top_holder"
+                                                :style="calc_edit_style(col_item.id, 'top', 'height',(layout_item.padding_y.value || 0), layout_item.padding_y.unit, layout_item.width.value)"
+                                            ></div>
+                                            <div
+                                                class="edit_left_holder"
+                                                :style="calc_edit_style( col_item.id, 'left', 'width',(layout_item.padding_x.value || 0), layout_item.padding_x.unit, layout_item.width.value)"
+                                            ></div>
+                                            <div
+                                                class="edit_right_holder"
+                                                :style="calc_edit_style(col_item.id, 'right', 'width',(layout_item.padding_x.value || 0), layout_item.padding_x.unit, layout_item.width.value)"
+                                            ></div>
+                                            <div
+                                                class="edit_bottom_holder"
+                                                :style="calc_edit_style( col_item.id, 'bottom', 'height',(layout_item.padding_y.value || 0), layout_item.padding_y.unit, layout_item.width.value)"
+                                            ></div>
+                                        </template>
                                         <template v-if="layout_item.type_detail==`custom`">
                                             <section
                                                 class="editor ck-content"
@@ -178,8 +202,16 @@
                                         <template v-if="layout_item.type_detail=='block'">
                                             <div
                                                 class="layout_block"
-                                                :data-size="layout_item.col_container[0].attrs.size"
-                                            ></div>
+                                                :data-type="layout_item.col_container[0].attrs.type"
+                                                :style="{paddingTop: layout_item.col_container[0].attrs.height.value + layout_item.col_container[0].attrs.height.unit,backgroundColor: layout_item.col_container[0].attrs.type == 'blank' ? layout_item.col_container[0].attrs.bg : ''}"
+                                            >
+                                                <div
+                                                    class="layout_block_line"
+                                                    v-if="layout_item.col_container[0].attrs.type == 'line'"
+                                                    :data-line-type="layout_item.col_container[0].attrs.line_type"
+                                                    :style="{height: layout_item.col_container[0].attrs.height,borderColor: layout_item.col_container[0].attrs.line_color}"
+                                                ></div>
+                                            </div>
                                         </template>
                                     </section>
                                     <span
@@ -265,6 +297,10 @@
                                     </div>
                                 </div>
                             </section>
+                            <div
+                                class="layout-margin_placeholder_bottom"
+                                :style="{paddingTop: (layout_item.margin_yb.value || 0) + layout_item.margin_yb.unit}"
+                            ></div>
                         </section>
                     </section>
 
@@ -317,6 +353,16 @@ export default Vue.extend({
         }
     },
     methods: {
+        calc_width(col: any) {
+            if (col && col.split && col.split("--").length) {
+                return (
+                    ((col.split("--")[0] / col.split("--")[1]) * 100).toFixed(
+                        2
+                    ) + "%"
+                );
+            }
+            return false;
+        },
         open_add_layout_group_dialog(layout_group_id) {
             if (
                 this.$root.main_page_win &&
@@ -333,7 +379,7 @@ export default Vue.extend({
                         relate_data: {
                             layout_group_id
                         }
-                    }, 
+                    }
                 );
             } else {
                 this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
@@ -346,7 +392,6 @@ export default Vue.extend({
             }
         },
         open_add_layout_dialog(layout_group_id, layout_id) {
-            
             if (
                 this.$root.main_page_win &&
                 this.$root.main_page_win.VueComponentMainPage
@@ -363,7 +408,7 @@ export default Vue.extend({
                             layout_group_id,
                             layout_id
                         }
-                    }, 
+                    }
                 );
             } else {
                 this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
@@ -509,6 +554,26 @@ export default Vue.extend({
         },
         col_animationend(ev: Event) {
             $(ev.currentTarget).removeClass("animated");
+        },
+        calc_edit_style(domId, className, style_key, value, unit, row_width) {
+            let col_width = row_width;
+            $(`#${domId} .edit_${className}_holder`).css({
+                [style_key]: function() {
+                    let result: string | number;
+                    if (unit === "px") {
+                        result = value + "px";
+                    } else {
+                        result =
+                            ($(this)
+                                .closest(".row")
+                                .width() *
+                                value) /
+                                100 +
+                            "px";
+                    }
+                    return result;
+                }
+            });
         }
     },
     props: {
@@ -602,7 +667,7 @@ export default Vue.extend({
     .layout {
         &.is_oper {
             .layout_block {
-                min-height: 60px;
+                min-height: 40px;
             }
         }
         &[data-type-detail="block"] {
@@ -610,7 +675,7 @@ export default Vue.extend({
             .row {
                 &:hover {
                     .layout_block {
-                        min-height: 60px;
+                        min-height: 40px;
                     }
                 }
             }
@@ -620,5 +685,89 @@ export default Vue.extend({
 
 body {
     min-width: 1250px;
+}
+.is_oper.show_edit-layout_width .row {
+    &:before {
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        content: "";
+
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+
+.is_oper.show_edit-layout_space .col_space {
+    position: relative;
+    &:before {
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        content: "";
+
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+.is_oper.show_edit-layout_margin_yt {
+    .layout-margin_placeholder_top {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+.is_oper.show_edit-layout_margin_yb {
+    .layout-margin_placeholder_bottom {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+.is_oper.show_edit-layout_padding_y {
+    .edit_bottom_holder,
+    .edit_top_holder {
+        display: block;
+    }
+}
+.is_oper.show_edit-layout_padding_x {
+    .edit_left_holder,
+    .edit_right_holder {
+        display: block;
+    }
+}
+.edit_bottom_holder,
+.edit_top_holder,
+.edit_left_holder,
+.edit_right_holder {
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: none;
+
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+    repeat;
+}
+.edit_top_holder {
+    bottom: auto;
+}
+.edit_bottom_holder {
+    top: auto;
+}
+.edit_left_holder {
+    right: auto;
+}
+.edit_right_holder {
+    left: auto;
 }
 </style>

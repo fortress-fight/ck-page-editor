@@ -142,8 +142,6 @@ module.exports = {
         },
         plugins: [
             new webpack.ProvidePlugin({
-                $: "jquery",
-                jQuery: "jquery",
                 Velocity: "velocity-animate",
                 axios: "axios",
                 slick: "slick-carousel"

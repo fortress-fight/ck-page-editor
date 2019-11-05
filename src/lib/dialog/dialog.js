@@ -75,7 +75,7 @@ class Dialog {
         }
         if (!this.$wrapper) {
             this.$wrapper = $(
-                `<div class="dialog_wrapper ${
+                `<div class="index_dialog dialog_wrapper ${
                     typeof this.option.dialog_pos === "string"
                         ? "dialog_pos-" + this.option.dialog_pos
                         : ""

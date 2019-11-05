@@ -102,7 +102,7 @@ export default Vue.extend({
                     "modules_panel/show_type",
                     {
                         type: ["layout", "layout_group"]
-                    }, 
+                    }
                 );
             } else {
                 this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
@@ -153,8 +153,6 @@ body {
     width: 1200px;
     max-width: 100%;
     margin: 0 auto;
-    padding-top: 50px;
-    padding-bottom: 50px;
     #page_body_editor-wrapper .layout_group .layout_bg {
         height: 100%;
     }

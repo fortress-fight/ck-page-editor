@@ -181,7 +181,7 @@ export default Vue.extend({
                     value: "slider"
                 },
                 {
-                    name: "分割块",
+                    name: "线",
                     value: "block"
                 }
             ],

@@ -13,6 +13,16 @@ let unit_layout_module = {
         if (!data) return;
         function _repair_data(s, type = "layout_group") {
             if (type == "layout") {
+                s = _defaultsDeep(s, {
+                    margin_yt: {
+                        value: "0",
+                        unit: "px"
+                    },
+                    margin_yb: {
+                        value: "0",
+                        unit: "px"
+                    }
+                });
                 if (s.type_detail == "custom") {
                     s.col_container.forEach(col => {
                         col = _defaultsDeep(col, {
@@ -29,6 +39,22 @@ let unit_layout_module = {
                         col = _defaultsDeep(col, {
                             attrs: { theme: "dark" }
                         });
+                    });
+                }
+                if (s.type_detail == "block") {
+                    s.col_container.forEach((col, index) => {
+                        if (!col.attrs.type) {
+                            col.attrs = {
+                                type: "line",
+                                height: {
+                                    value: "40",
+                                    unit: "px"
+                                },
+                                bg: "rgba(255,255,255,0)",
+                                line_color: "rgba(153, 153, 153, 0.5)",
+                                line_type: "solid"
+                            };
+                        }
                     });
                 }
             } else {
@@ -79,24 +105,7 @@ let unit_layout_module = {
                     }
                 });
                 s.body.forEach(v => {
-                    if (v.type_detail == "custom") {
-                        v.col_container.forEach(col => {
-                            col = _defaultsDeep(col, {
-                                radius: {
-                                    value: "0",
-                                    unit: "px"
-                                }
-                            });
-                        });
-                    }
-
-                    if (v.type_detail == "slider") {
-                        v.col_container.forEach(col => {
-                            col = _defaultsDeep(col, {
-                                attrs: { theme: "dark" }
-                            });
-                        });
-                    }
+                    _repair_data(v, "layout");
                 });
             }
         }
@@ -218,6 +227,14 @@ let unit_layout_module = {
                     unit: "px"
                 },
                 body_dom: null,
+                margin_yt: {
+                    value: "0",
+                    unit: "px"
+                },
+                margin_yb: {
+                    value: "0",
+                    unit: "px"
+                },
                 padding_x: {
                     value: "0",
                     unit: "px"
@@ -279,7 +296,14 @@ let unit_layout_module = {
                                     numbers: false
                                 }),
                                 attrs: {
-                                    size: "normal"
+                                    type: "line",
+                                    height: {
+                                        value: "40",
+                                        unit: "px"
+                                    },
+                                    bg: "rgba(255,255,255,0)",
+                                    line_color: "rgba(153, 153, 153, 0.5)",
+                                    line_type: "solid"
                                 }
                             }
                         ];
@@ -314,19 +338,18 @@ let unit_layout_module = {
         return result;
     },
     // 将块模块转换成为组模块
-    layout_to_layout_group(module_data: {type: 'layout_group' | 'layout', data: Object}) {
+    layout_to_layout_group(module_data: {
+        type: "layout_group" | "layout";
+        data: Object;
+    }) {
         let result;
-        if (module_data.type === 'layout') {
-            result = unit_layout_module.get_layout_group_data(
-                "custom",
-                "100"
-            );
+        if (module_data.type === "layout") {
+            result = unit_layout_module.get_layout_group_data("custom", "100");
             result.body = [module_data.data];
         } else {
             result = module_data.data;
-
         }
-        
+
         return result;
     }
 };
@@ -548,19 +571,45 @@ const layout_module = {
             { data, relate_data, callback = (vue, data) => {} }
         ) {
             if (!data) throw new Error("缺少数据");
-            let module_data:{data:any, type:'layout' | "layout_group"} = {type: 'layout_group',data};
+            let module_data: { data: any; type: "layout" | "layout_group" } = {
+                type: "layout_group",
+                data
+            };
             if (typeof data == "object") {
-                module_data.type = relate_data.layout_id ? 'layout' : "layout_group";
-                module_data.data = unit_layout_module.get_layout_group_data(
-                    "custom",
-                    data.value
-                );
+                if (data.type == "fun") {
+                    if (relate_data.layout_id && data.value == "block") {
+                        module_data.type = "layout";
+                        module_data.data = unit_layout_module.get_layout_data(
+                            data.type,
+                            data.value
+                        );
+                    } else {
+                        module_data.type = "layout_group";
+                        module_data.data = unit_layout_module.get_layout_group_data(
+                            data.type,
+                            data.value
+                        );
+                    }
+                } else {
+                    if (relate_data.layout_id) {
+                        module_data.type = "layout";
+                        module_data.data = unit_layout_module.get_layout_group_data(
+                            data.type,
+                            data.value
+                        ).body[0];
+                    } else {
+                        module_data.type = "layout_group";
+                        module_data.data = unit_layout_module.get_layout_group_data(
+                            data.type,
+                            data.value
+                        );
+                    }
+                }
             } else if (typeof data === "string") {
-
                 module_data = unit_layout_module.decrypt_code(data);
+                if (!module_data) return false;
                 unit_layout_module.repair_data(module_data.data);
             }
-
             if (relate_data.layout_id && module_data.type == "layout") {
                 let oper_layout_group = getters.search_layout_group(
                     relate_data.layout_group_id
@@ -587,11 +636,12 @@ const layout_module = {
                 return;
             }
             if (relate_data.layout_group_id) {
-                let new_module_data = unit_layout_module.layout_to_layout_group(module_data);
+                let new_module_data = unit_layout_module.layout_to_layout_group(
+                    module_data
+                );
                 state.all_layouts_data.splice(
-                    getters.search_layout_group(
-                        relate_data.layout_group_id
-                    ).index + 1,
+                    getters.search_layout_group(relate_data.layout_group_id)
+                        .index + 1,
                     0,
                     new_module_data
                 );
@@ -601,14 +651,16 @@ const layout_module = {
                         data: new_module_data,
                         dom: $("#" + new_module_data.id),
                         relate_data: {
-                            layout_group_id: new_module_data.id,
+                            layout_group_id: new_module_data.id
                         }
                     });
                 });
 
                 return;
             }
-            state.all_layouts_data.push(unit_layout_module.layout_to_layout_group(module_data));
+            state.all_layouts_data.push(
+                unit_layout_module.layout_to_layout_group(module_data)
+            );
             Vue.nextTick(() => {
                 callback(this, {
                     data: module_data.data,
@@ -616,7 +668,6 @@ const layout_module = {
                     relate_data: {}
                 });
             });
-
         }
     },
     getters: {

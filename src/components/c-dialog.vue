@@ -366,6 +366,7 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
+.page-edit_page {
 .dialog_wrapper {
     position: fixed;
     z-index: 900;
@@ -607,5 +608,6 @@ export default Vue.extend({
     left: 0;
 
     width: 100%;
+}
 }
 </style>

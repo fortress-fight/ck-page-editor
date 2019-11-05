@@ -1,4 +1,4 @@
-.dialog_wrapper {
+.dialog_wrapper.index_dialog {
     position: fixed;
     z-index: 99999;
     top: 0;
@@ -6,8 +6,127 @@
 
     width: 100vw;
     height: 100vh;
+    &.dialog {
+        &_pos-center {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+        &_pos-fixed {
+            .dialog {
+                position: fixed;
+            }
+        }
+    }
 }
-.dialog {
+.index_dialog .dialog {
+    &_show {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &_header {
+        position: relative;
+
+        display: flex;
+        flex: 0 0 auto;
+
+        height: 30px;
+        padding: 5px 10px;
+
+        background: #f5f5f5;
+
+        align-items: center;
+    }
+
+    &_close_btn {
+        position: absolute;
+        right: 10px;
+
+        display: flex;
+
+        width: 20px;
+        height: 100%;
+
+        cursor: pointer;
+        transition: 0.2s ease;
+
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    &_body {
+        flex: 1 1 auto;
+
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
+    &_footer {
+        display: flex;
+        flex: 0 0 auto;
+
+        box-sizing: border-box;
+        min-height: 40px;
+        padding: 5px 10px;
+
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+
+        &_wrapper {
+            flex: 1 1 auto;
+        }
+
+        &_btns {
+            display: flex;
+            flex: 0 0 auto;
+
+            margin-right: -10px;
+
+            align-items: center;
+        }
+
+        .dialog_btn-confirm {
+            background: #46be8a;
+
+            &:hover {
+                background-color: #6ccba2;
+            }
+        }
+
+        .dialog_btn-cancel {
+            border-color: #ccd5db;
+            background-color: #ccd5db;
+
+            &:hover {
+                border-color: #e4eaec;
+                background-color: #e4eaec;
+            }
+        }
+
+        .dialog_btn {
+            font-size: 12px;
+
+            display: flex;
+
+            margin-right: 10px;
+            padding: 5px 13px;
+
+            cursor: pointer;
+            transition: 0.36s ease;
+
+            color: #fff;
+
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}
+.index_dialog .dialog {
     font-size: 14px;
 
     box-sizing: border-box;
@@ -16,18 +135,6 @@
     border-radius: 3px;
     background: #fff;
     box-shadow: 3px 5px 20px 0 rgba(0, 0, 0, 0.1);
-
-    &_pos-center {
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-    }
-    &_pos-fixed {
-        .dialog {
-            position: fixed;
-        }
-    }
 
     &[data-type="warn"] {
         .dialog_btn-confirm {
@@ -81,120 +188,5 @@
 
     &[data-size="normal"] {
         width: 500px;
-    }
-
-    &_show {
-        @at-root (with: rule) {
-            display: flex;
-            flex-direction: column;
-        }
-    }
-
-    &_header {
-        @at-root (with: rule) {
-            position: relative;
-
-            display: flex;
-            flex: 0 0 auto;
-
-            height: 30px;
-            padding: 5px 10px;
-
-            background: #f5f5f5;
-
-            align-items: center;
-        }
-    }
-
-    &_close_btn {
-        @at-root (with: rule) {
-            position: absolute;
-            right: 10px;
-
-            display: flex;
-
-            width: 20px;
-            height: 100%;
-
-            cursor: pointer;
-            transition: 0.2s ease;
-
-            align-items: center;
-            justify-content: center;
-
-            &:hover {
-                color: #000;
-            }
-        }
-    }
-
-    &_body {
-        @at-root (with: rule) {
-            flex: 1 1 auto;
-
-            box-sizing: border-box;
-            padding: 10px;
-        }
-    }
-
-    &_footer {
-        @at-root (with: rule) {
-            display: flex;
-            flex: 0 0 auto;
-
-            box-sizing: border-box;
-            min-height: 40px;
-            padding: 5px 10px;
-
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-
-            &_wrapper {
-                flex: 1 1 auto;
-            }
-
-            &_btns {
-                display: flex;
-                flex: 0 0 auto;
-
-                margin-right: -10px;
-
-                align-items: center;
-            }
-
-            .dialog_btn-confirm {
-                background: #46be8a;
-
-                &:hover {
-                    background-color: #6ccba2;
-                }
-            }
-
-            .dialog_btn-cancel {
-                border-color: #ccd5db;
-                background-color: #ccd5db;
-
-                &:hover {
-                    border-color: #e4eaec;
-                    background-color: #e4eaec;
-                }
-            }
-
-            .dialog_btn {
-                font-size: 12px;
-
-                display: flex;
-
-                margin-right: 10px;
-                padding: 5px 13px;
-
-                cursor: pointer;
-                transition: 0.36s ease;
-
-                color: #fff;
-
-                align-items: center;
-                justify-content: center;
-            }
-        }
     }
 }

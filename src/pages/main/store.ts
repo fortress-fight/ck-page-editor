@@ -39,7 +39,6 @@ const modules_panel = {
                 },
                 data
             );
-
         },
         reset_panel(state) {
             state.relate_data = {

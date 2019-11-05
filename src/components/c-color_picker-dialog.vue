@@ -117,7 +117,7 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
-.color_picker-close_btn {
+.page-edit_page .wrapper-editor_app .color_picker-close_btn {
     
     height: 50px;
     top: 0;

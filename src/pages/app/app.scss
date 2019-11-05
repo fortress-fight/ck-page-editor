@@ -179,8 +179,6 @@ body {
     display: flex;
     visibility: hidden;
 
-    height: 0;
-
     transition: opacity 0.36s ease, visibility 0.36s ease;
 
     opacity: 0;
@@ -1084,6 +1082,7 @@ body #page_body_editor-wrapper .layout_group {
     a,
     .normal_link {
         width: auto;
+        text-decoration: none;
         &[data-layout="1"] {
             line-height: 48px;
 
@@ -1965,7 +1964,25 @@ body #page_body_editor-wrapper .layout_group {
             min-height: 1px;
 
             transition: 0.36s ease;
-
+            position: relative;
+            box-sizing: border-box;
+            .layout_block_line {
+                position:absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                border: 1px solid #878787;
+                border-width: 1px 0 0;
+                &[data-line-type="solid"] {
+                    border-style: solid
+                }
+                &[data-line-type="dashed"] {
+                    border-style: dashed
+                }
+                &[data-line-type="dotted"] {
+                    border-style: dotted
+                }
+            }
             &[data-size="line"] {
                 height: 1px;
             }
@@ -2006,6 +2023,11 @@ body #page_body_editor-wrapper .layout_group {
                 align-items: flex-end;
             }
         }
+    }
+
+    .layout-margin_placeholder_bottom,
+    .layout-margin_placeholder_top {
+        clear: both;
     }
 }
 
@@ -2901,7 +2923,7 @@ body #page_body_editor-wrapper .layout_group {
         transform: scale(0.85);
     }
     .plyr--full-ui.plyr--video .plyr__control--overlaid {
-        transform: scale(4);    
+        transform: scale(4);
         margin-left: -23px;
     }
 
@@ -2927,4 +2949,25 @@ body #page_body_editor-wrapper .layout_group {
     .plyr--video .plyr__controls {
         background: none;
     }
+}
+
+// 适配
+
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="1--6_5--6"] .col,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="2--6_4--6"] .col,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="3--6_3--6"] .col,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="4--6_2--6"] .col,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="5--6_1--6"] .col{
+    flex: 0 0 100%;
+    width: 100%;
+}
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="1--6_5--6"] .col_space,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="2--6_4--6"] .col_space,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="3--6_3--6"] .col_space,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="4--6_2--6"] .col_space,
+.agent-mobile #page_body_editor-wrapper .layout .row[data-col="5--6_1--6"] .col_space{
+    
+    overflow: hidden;
+    max-height: 20px;
+    margin-right: 100%;
 }
