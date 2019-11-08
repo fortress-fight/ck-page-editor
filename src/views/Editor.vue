@@ -11,6 +11,14 @@
                     <span class="text">添加编辑板块</span>
                     <i class="fa fa-plus"></i>
                 </div>
+                <div
+                    v-else-if="this.limit_modules == 1 && layout_groups.length<1"
+                    class="page-add_layout_btn"
+                    @click.stop="add_layout"
+                >
+                    <span class="text">添加编辑板块</span>
+                    <i class="fa fa-plus"></i>
+                </div>
             </keep-alive>
 
             <add-layout-group-dialog></add-layout-group-dialog>
@@ -83,6 +91,9 @@ export default Vue.extend({
         },
         limit_modules() {
             return (this as any).$store.state.limit_modules;
+        },
+        layout_groups() {
+            return (this as any).$store.state.layout_module.all_layouts_data;
         }
     },
 

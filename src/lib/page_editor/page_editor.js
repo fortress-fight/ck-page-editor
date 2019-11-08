@@ -414,17 +414,19 @@ class Page_editor {
                         <span class="text edit">编辑</span>  
                     </div>
                 </div> 
-            </div>
-            <div class="down_upload">
-                <div class="upload-btn btn"> 
-                    <span class="text">上传</span>
-                    <input type="file" style="display: none" name="page_data_txt" accept=".txt">
-                </div>
-                <div class="down-btn btn"> 
-                    <span class="text">下载</span>
-                </div>
-            </div>
-        </div></div>`;
+            </div>`;
+        if (!this.option.remove_upload) {
+            result += `<div class="down_upload">
+                    <div class="upload-btn btn"> 
+                        <span class="text">上传</span>
+                        <input type="file" style="display: none" name="page_data_txt" accept=".txt">
+                    </div>
+                    <div class="down-btn btn"> 
+                        <span class="text">下载</span>
+                    </div>
+                </div>`;
+        }
+        result += `</div></div>`;
         return result;
     }
 

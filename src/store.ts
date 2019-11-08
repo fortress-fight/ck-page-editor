@@ -660,9 +660,26 @@ const layout_module = {
             }
 
             if (rootState.limit_modules == 1) {
-                state.all_layouts_data = [
-                    unit_layout_module.layout_to_layout_group(module_data)
-                ];
+                if (state.all_layouts_data.length >= 1) {
+                    (this as any)._vm
+                        .$confirm("此操作将替换当前模块, 是否继续?", "提示", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "warning"
+                        })
+                        .then(() => {
+                            state.all_layouts_data = [
+                                unit_layout_module.layout_to_layout_group(
+                                    module_data
+                                )
+                            ];
+                        })
+                        .catch(() => {});
+                } else {
+                    state.all_layouts_data = [
+                        unit_layout_module.layout_to_layout_group(module_data)
+                    ];
+                }
             } else {
                 state.all_layouts_data.push(
                     unit_layout_module.layout_to_layout_group(module_data)

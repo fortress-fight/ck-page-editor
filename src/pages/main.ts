@@ -8,7 +8,11 @@ import "./main/style.scss";
 
 console.log(Page_editor);
 
-window.EDITOR_CONFIG_MOUNTED = (editor_component, show_modules = "MODULES") => {
+window.EDITOR_CONFIG_MOUNTED = (
+    editor_component,
+    show_modules = "MODULES",
+    limit_modules = "0"
+) => {
     let vue_component = new Vue({
         data: () => {
             return {
@@ -21,7 +25,7 @@ window.EDITOR_CONFIG_MOUNTED = (editor_component, show_modules = "MODULES") => {
         mounted() {
             editor_component.editor_iframe_win.VueComponentEditorPage.$store.commit(
                 "set_limit_modules",
-                1
+                limit_modules
             );
         }
     }).$mount("#page_editor-control_panel");
