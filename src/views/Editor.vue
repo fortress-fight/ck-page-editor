@@ -27,6 +27,7 @@
             <editor-layout-panel></editor-layout-panel>
             <ck-editor-picker></ck-editor-picker>
             <ck-media-inser-panel></ck-media-inser-panel>
+            <ck-link-setting-panel></ck-link-setting-panel>
             <keep-alive>
                 <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
             </keep-alive>
@@ -52,6 +53,7 @@ import page_layout_dom from "@/components/page_layout_dom.vue";
 import layout_editor from "@/components/layout_editor.vue";
 import ck_editor_picker from "@/components/ck_editor_picker.vue";
 import ck_media_inser_panel from "@/components/ck_media_inser_panel.vue";
+import ck_link_setting_panel from "@/components/ck_link_setting_panel.vue";
 export default Vue.extend({
     data() {
         return {
@@ -66,7 +68,8 @@ export default Vue.extend({
         "editor-layout-panel": editor_layout_panel,
         "layout-editor": layout_editor,
         "ck-editor-picker": ck_editor_picker,
-        "ck-media-inser-panel": ck_media_inser_panel
+        "ck-media-inser-panel": ck_media_inser_panel,
+        "ck-link-setting-panel": ck_link_setting_panel
     },
     computed: {
         is_load() {

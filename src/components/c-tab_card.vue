@@ -111,6 +111,10 @@ export default Vue.extend({
         }
     },
     mounted() {
+        console.log(" this.begin_index:", this.begin_index);
+        if (this.begin_index) {
+            this.tab_active_index = this.begin_index;
+        }
         this.window_resize = () => {
             this.reset_ui(true);
         };

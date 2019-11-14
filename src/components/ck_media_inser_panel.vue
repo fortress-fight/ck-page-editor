@@ -10,7 +10,28 @@
         </template>
         <template #body>
             <div class="ck_control_panel_body">
-                <c-tab-card :tab_cards="tab_cards" ref="tab_card" @change="tab_card_change">
+                <c-tab-card
+                    :tab_cards="tab_cards"
+                    ref="tab_card"
+                    @change="tab_card_change"
+                    :begin_index="begin_index"
+                >
+                    <template #iframe>
+                        <div class="attr_set_group">
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">页面地址</div>
+                                <div class="item_body flex_auto">
+                                    <div class="value_input">
+                                        <c-input
+                                            class="input"
+                                            v-model="page_data.link"
+                                            placeholder="请输入页面地址"
+                                        ></c-input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                     <template #share>
                         <div class="attr_set_group">
                             <div class="attr_set_item flex">
@@ -73,6 +94,24 @@
                                             v-model="share_icon[editor_share].link"
                                             :placeholder="share_icon[editor_share].placeholder"
                                         ></c-input>
+
+                                        <c-upload
+                                            v-if="share_icon[editor_share].name == '微信'"
+                                            class="share_image-upload_btn"
+                                            :name="img_upload.name"
+                                            :action="img_upload.action"
+                                            ref="upload_btn"
+                                            accept="image/*"
+                                            :with-credentials="true"
+                                            :before-upload="before_upload"
+                                            :on-success="img_code_upload_suc"
+                                            style="position: absolute; top: 0; right: 0; line-height: 28px; padding: 0 20px; background: #fff; border-left: 1px solid #dcdfe6;"
+                                        >
+                                            <div>
+                                                <i class="ic fa fa-plus"></i>
+                                                <span class="text">上传图片</span>
+                                            </div>
+                                        </c-upload>
                                     </div>
                                 </div>
                             </div>
@@ -147,6 +186,180 @@
                             </div>
                         </div>
                     </template>
+                    <template #map>
+                        <div class="ck_other">
+                            <div class="attr_set_group">
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">地点名称</div>
+                                    <div class="item_body flex_auto">
+                                        <div class="value_input">
+                                            <c-input
+                                                class="input"
+                                                v-model="map_data.name"
+                                                placeholder="请输入地点名称"
+                                            ></c-input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">地点描述</div>
+                                    <div class="item_body flex_auto">
+                                        <div class="value_input">
+                                            <c-input
+                                                class="input"
+                                                v-model="map_data.desc"
+                                                placeholder="请输入地点描述"
+                                            ></c-input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="attr_set_item flex">
+                                    <div class="item_header flex_fix">地点坐标</div>
+                                    <div class="item_body flex_auto">
+                                        <div class="value_input">
+                                            <c-input
+                                                class="input"
+                                                v-model="map_data.pointer"
+                                                placeholder="请输入地点坐标"
+                                            ></c-input>
+                                        </div>
+                                        <span class="item_body-tip">
+                                            <a
+                                                class="red-tip"
+                                                target="_blank"
+                                                href="http://api.map.baidu.com/lbsapi/getpoint/index.html"
+                                            >点击此处</a>获取坐标，查看右上角的坐标，复制并粘贴到此处
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_group">
+                                <div class="attr_set_item flex_yc">
+                                    <div class="item_header flex_fix">地图宽度</div>
+                                    <div class="item_body flex_yc">
+                                        <div class="value_input flex_center">
+                                            <c-input
+                                                class="input"
+                                                v-model="map_data.width.value"
+                                                placeholder="请输入地图宽度"
+                                                style="width: 100px"
+                                            ></c-input>
+                                            <span class="unit">{{map_data.width.unit}}</span>
+                                        </div>
+                                        <div class="value_unit flex_fix">
+                                            <c-switch
+                                                active-value="%"
+                                                inactive-value="px"
+                                                v-model="map_data.width.unit"
+                                                active-text="百分比"
+                                            ></c-switch>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">地图位置</div>
+                                    <div class="item_body flex_auto layout_grid layout_grid-col-5">
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.pos"
+                                            label="left"
+                                        >居左</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.pos"
+                                            label="center"
+                                        >居中</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.pos"
+                                            label="right"
+                                        >局右</c-radio>
+                                    </div>
+                                </div>
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">尺寸比例</div>
+
+                                    <div class="item_body flex_auto layout_grid layout_grid-col-5">
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.ratio"
+                                            label="16-9"
+                                        >16:9</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.ratio"
+                                            label="9-16"
+                                        >9:16</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.ratio"
+                                            label="4-3"
+                                        >4:3</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.ratio"
+                                            label="3-4"
+                                        >3:4</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.ratio"
+                                            label="1-1"
+                                        >1:1</c-radio>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="attr_set_group">
+                                <div class="attr_set_item flex_center">
+                                    <div class="item_header flex_fix">禁止缩放</div>
+                                    <div class="item_body flex_auto">
+                                        <c-switch
+                                            active-value="off"
+                                            inactive-value="on"
+                                            v-model="map_data.drag"
+                                        ></c-switch>
+                                    </div>
+                                </div>
+                                <div class="attr_set_item flex">
+                                    <div class="item_header flex_fix">展示形式</div>
+                                    <div
+                                        class="item_body flex_auto layout_grid layout_grid-col-5 layout_grid-rowspac-5"
+                                        style="padding-top: 7px;"
+                                    >
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.theme"
+                                            label="normal"
+                                        >常规</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.theme"
+                                            label="light"
+                                        >清新蓝</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.theme"
+                                            label="dark"
+                                        >黑夜</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.theme"
+                                            label="googlelite"
+                                        >精简</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.theme"
+                                            label="bluish"
+                                        >清新蓝绿</c-radio>
+                                        <c-radio
+                                            class="space_normal"
+                                            v-model="map_data.theme"
+                                            label="grayscale"
+                                        >高端灰</c-radio>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </c-tab-card>
             </div>
         </template>
@@ -162,6 +375,7 @@ export default Vue.extend({
     data() {
         return {
             result: {},
+            begin_index: 0,
             ck_media_show: false,
             ckInsertMedia: null,
             style: "one",
@@ -169,12 +383,20 @@ export default Vue.extend({
             theme: "black",
             tab_cards: [
                 {
+                    nav: "页面",
+                    card_slot_name: "iframe"
+                },
+                {
                     nav: "分享",
                     card_slot_name: "share"
                 },
                 {
                     nav: "视频",
                     card_slot_name: "video"
+                },
+                {
+                    nav: "地图",
+                    card_slot_name: "map"
                 }
             ],
             active_tab_cards: "share",
@@ -254,6 +476,23 @@ export default Vue.extend({
             video_data: {
                 poster: "",
                 media: ""
+            },
+            map_data: {
+                name: "",
+                desc: "",
+                width: {
+                    value: "100",
+                    unit: "%"
+                },
+                height: "",
+                pos: "center",
+                drag: "off",
+                ratio: "16-9",
+                pointer: "",
+                theme: "normal"
+            },
+            page_data: {
+                link: ""
             }
         };
     },
@@ -310,6 +549,37 @@ export default Vue.extend({
                         `${this.video_data.media}&mp4&${this.video_data.poster}`
                     );
                 }
+            } else if (this.active_tab_cards == "map") {
+                if (!this.map_data.pointer) {
+                    (this as any).$message({
+                        message: "请输入坐标点",
+                        offset: -1,
+                        duration: 2000,
+                        type: "warning"
+                    });
+                    return false;
+                }
+                if (typeof this.ckInsertMedia == "function") {
+                    let map_info = {
+                        title: this.map_data.name,
+                        position: this.map_data.pointer,
+                        description: this.map_data.desc,
+                        theme: this.map_data.theme
+                    };
+                    let pos_info = {
+                        width: this.map_data.width,
+                        pos: this.map_data.pos,
+                        ratio: this.map_data.ratio,
+                        drag: this.map_data.drag
+                    };
+                    this.ckInsertMedia(
+                        `http://resources.jsmo.xin/plugin/map/#${encodeURIComponent(
+                            JSON.stringify(map_info)
+                        )}&mapconfig=${JSON.stringify(pos_info)}`
+                    );
+                }
+            } else {
+                this.ckInsertMedia(this.page_data.link);
             }
             this.ck_media_show = false;
         },
@@ -330,6 +600,10 @@ export default Vue.extend({
         upload_suc(file) {
             this.video_data.poster =
                 (this as any).$root.resource_link + file.url.replace("\\", "/");
+        },
+        img_code_upload_suc(file) {
+            this.share_icon[this.editor_share].link =
+                (this as any).$root.resource_link + file.url.replace("\\", "/");
         }
     },
     computed: {
@@ -343,6 +617,7 @@ export default Vue.extend({
     },
     mounted() {
         const $this = this;
+        $this.begin_index = 0;
 
         function getQueryData(url) {
             let result = {};
@@ -438,6 +713,23 @@ export default Vue.extend({
                 poster: "",
                 media: ""
             };
+            $this.map_data = {
+                name: "",
+                desc: "",
+                width: {
+                    value: "100",
+                    unit: "%"
+                },
+                height: "",
+                pos: "center",
+                drag: "off",
+                ratio: "16-9",
+                pointer: "",
+                theme: "normal"
+            };
+            $this.page_data = {
+                link: ""
+            };
             $this.share_icon = init_share_icon;
             $this.style = "one";
             $this.pos = "left";
@@ -445,11 +737,13 @@ export default Vue.extend({
 
             if (data.url) {
                 if (data.poster) {
+                    $this.begin_index = 2;
                     $this.video_data = {
                         poster: data.poster,
                         media: data.url
                     };
-                } else if(url_data.class) {
+                } else if (url_data.class) {
+                    $this.begin_index = 1;
                     $this.style = /ck_share_style_([^\s"]+)/g.exec(
                         url_data.class
                     )[1];
@@ -469,6 +763,34 @@ export default Vue.extend({
                             }
                         }
                     }
+                } else if (data.map_config) {
+                    $this.begin_index = 3;
+                    let url_data;
+                    try {
+                        url_data = JSON.parse(
+                            decodeURIComponent(data.url.split("#")[1])
+                        );
+                    } catch (error) {
+                        url_data = false;
+                    }
+
+                    if (url_data) {
+                        $this.map_data.name = url_data.title;
+                        $this.map_data.pointer = url_data.position;
+                        $this.map_data.desc = url_data.description;
+                        $this.map_data.theme = url_data.theme;
+                    }
+                    var map_config;
+                    try {
+                        map_config = JSON.parse(data.map_config);
+
+                        for (const [key, value] of Object.entries(map_config)) {
+                            $this.map_data[key as any] = value;
+                        }
+                    } catch (error) {}
+                } else {
+                    $this.begin_index = 0;
+                    $this.page_data.link = data.url;
                 }
             }
 
@@ -579,6 +901,11 @@ export default Vue.extend({
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
+    }
+}
+.share_image-upload_btn {
+    .el-upload-list--text {
+        display: none;
     }
 }
 </style>

@@ -124,4 +124,8 @@ export default Vue.extend({
     font-size: 15px;
     right: 0;
 }
+.color_picker-close_btn.dialog_close_btn {
+top: 0;
+    height: 52px;
+}
 </style>

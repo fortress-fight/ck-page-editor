@@ -256,10 +256,36 @@ export default Vue.extend({
                                 return (
                                     '<section class="post_video">' +
                                     `<video controls preload src="${url}" style="width:100%;" ${'poster="' +
-                                        (poster || '') +
+                                        (poster || "") +
                                         '"'}>` +
                                     "</section>"
                                 );
+                            }
+                        },
+                        {
+                            name: "map",
+                            url: /^http:\/\/resources\.jsmo\.xin\/plugin\/map\//,
+                            html: (match, mapConfig) => {
+                                const url = match.input;
+
+                                let attr: any = {
+                                    width: {}
+                                };
+                                if (mapConfig.mapConfig) {
+                                    attr = JSON.parse(mapConfig.mapConfig);
+                                }
+                                // mapConfig.mapConfig ? JSON.parse(mapConfig.mapConfig) : {};
+                                // JSON.parse(mapConfig.mapConfig);
+                                return `
+									<section class="iframe_map pos-${attr.pos || "center"}">
+										<section class="iframe_wrapper-map ratio-${attr.ratio || "auto"} can_drag-${
+                                    attr.drag
+                                }" style="width: ${attr.width.value +
+                                    attr.width.unit}">
+											<iframe height="100%" width="100%" src="${url}" frameborder="0" allowfullscreen=""></iframe>
+										</section>
+									</section>
+									`;
                             }
                         },
                         {
@@ -455,6 +481,8 @@ export default Vue.extend({
 
 <style lang="scss">
 body {
+    --ck-resizer-offset: 0px;
+    --ck-color-resizer-tooltip-background: #fff;
     .ck-rounded-corners .ck.ck-balloon-panel {
         position: absolute;
     }
@@ -471,5 +499,96 @@ body {
             display: none;
         }
     }
+    .ck .ck-widget_with-resizer {
+				position: relative
+			}
+
+			.ck .ck-widget__resizer {
+				display: none;
+				position: absolute;
+				pointer-events: none;
+				left: 0;
+				top: 0;
+				outline: 1px solid var(--ck-color-resizer)
+			}
+
+			.ck-focused .ck-widget_with-resizer.ck-widget_selected>.ck-widget__resizer {
+				display: block
+			}
+
+			.ck .ck-widget__resizer__handle {
+				position: absolute;
+				pointer-events: all;
+				width: var(--ck-resizer-size);
+				height: var(--ck-resizer-size);
+				background: var(--ck-color-focus-border);
+				border: var(--ck-resizer-border-width) solid #fff;
+				border-radius: var(--ck-resizer-border-radius)
+			}
+
+			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-left {
+				top: var(--ck-resizer-offset);
+				left: var(--ck-resizer-offset);
+				cursor: nwse-resize
+			}
+
+			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-right {
+				top: var(--ck-resizer-offset);
+				right: var(--ck-resizer-offset);
+				cursor: nesw-resize
+			}
+
+			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-right {
+				bottom: var(--ck-resizer-offset);
+				right: var(--ck-resizer-offset);
+				cursor: nwse-resize
+			}
+
+			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-left {
+				bottom: var(--ck-resizer-offset);
+				left: var(--ck-resizer-offset);
+				cursor: nesw-resize
+			}
+            /*
+			* Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+			* For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+			*/
+
+			:root {
+				--ck-insert-table-dropdown-padding: 10px;
+				--ck-insert-table-dropdown-box-height: 11px;
+				--ck-insert-table-dropdown-box-width: 12px;
+				--ck-insert-table-dropdown-box-margin: 1px;
+				--ck-insert-table-dropdown-box-border-color: hsl(0, 0%, 75%);
+				--ck-insert-table-dropdown-box-border-active-color: hsl(208, 73%, 61%);
+				--ck-insert-table-dropdown-box-active-background: hsl(208, 100%, 89%);
+			}
+
+			.ck .ck-insert-table-dropdown__grid {
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				/* The width of a container should match 10 items in a row so there will be a 10x10 grid. */
+				width: calc(var(--ck-insert-table-dropdown-box-width) * 10 + var(--ck-insert-table-dropdown-box-margin) * 20 + var(--ck-insert-table-dropdown-padding) * 2);
+				padding: var(--ck-insert-table-dropdown-padding) var(--ck-insert-table-dropdown-padding) 0;
+			}
+
+			.ck .ck-insert-table-dropdown__label {
+				text-align: center;
+			}
+
+			.ck .ck-insert-table-dropdown-grid-box {
+				width: var(--ck-insert-table-dropdown-box-width);
+				height: var(--ck-insert-table-dropdown-box-height);
+				margin: var(--ck-insert-table-dropdown-box-margin);
+				border: 1px solid var(--ck-insert-table-dropdown-box-border-color);
+				border-radius: 1px;
+
+			}
+
+			.ck .ck-insert-table-dropdown-grid-box.ck-on {
+				border-color: var(--ck-insert-table-dropdown-box-border-active-color);
+				background: var(--ck-insert-table-dropdown-box-active-background);
+			}
 }
 </style>

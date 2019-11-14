@@ -30,6 +30,11 @@ body {
 
     align-items: center;
 }
+.flex_yt {
+    display: flex;
+
+    align-items: flex-start;
+}
 
 .flex_center {
     display: flex;
@@ -241,4 +246,14 @@ body {
             color: rgb(165, 165, 165);
         }
     }
+}
+
+.red-tip {
+    color: red;
+}
+
+.item_body-tip {
+    display: inline-block;
+
+    margin-top: 10px;
 }

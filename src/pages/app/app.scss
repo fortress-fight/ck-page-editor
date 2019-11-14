@@ -1008,7 +1008,7 @@ body #page_body_editor-wrapper .layout_group {
         background: #6cb5f9;
     }
 
-    .image-style-align-center,
+    // .image-style-align-center,
     .image-style-align-left,
     .image-style-align-right,
     .image-style-side {
@@ -1059,6 +1059,9 @@ body #page_body_editor-wrapper .layout_group {
         overflow: hidden;
 
         margin: 0;
+        &.image-style-align-center {
+            margin: auto;
+        }
     }
 
     .image .ck-progress-bar {
@@ -2971,3 +2974,80 @@ body #page_body_editor-wrapper .layout_group {
     max-height: 20px;
     margin-right: 100%;
 }
+
+// 地图
+
+.iframe_map {
+
+    display: flex;
+    &.pos-left     {
+        justify-content:flex-start;
+    }
+    &.pos-right     {
+        justify-content:flex-end;
+    }
+    &.pos-center     {
+        justify-content:center;
+    }
+    .iframe_wrapper-map {
+        position: relative;
+        iframe {
+            position: absolute;        
+            top: 0;
+            left: 0;
+        }
+        
+        &.can_drag-off {
+            &:before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+            }
+        }
+        &.ratio-16-9 {
+            &:after {
+                content: "";
+                display: block;
+                width: 100%;
+                padding-top: 56.25%;
+            }
+        }
+        &.ratio-9-16     {
+            &:after {
+                content: "";
+                display: block;
+                width: 100%;
+                padding-top: 177.777777777778%;
+            }
+        }
+        &.ratio-4-3     {
+            &:after {
+                content: "";
+                display: block;
+                width: 100%;
+                padding-top: 75%;
+            }
+        }
+        &.ratio-3-4     {
+            &:after {
+                content: "";
+                display: block;
+                width: 100%;
+                padding-top: 133.333333333333%;
+            }
+        }
+        &.ratio-1-1     {
+            &:after {
+                content: "";
+                display: block;
+                width: 100%;
+                padding-top: 100%;
+            }
+        }
+    }
+}
+
