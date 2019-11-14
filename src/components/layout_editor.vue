@@ -97,7 +97,7 @@ export default Vue.extend({
             //     "layout_editor_manage_module/set_editor",
             //     editor
             // );
-            this.$emit('editor_ready', true);
+            this.$emit("editor_ready", true);
         },
         onEditorBlur(value) {
             // console.log("onEditorBlur", value);

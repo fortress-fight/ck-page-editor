@@ -1086,14 +1086,22 @@ body #page_body_editor-wrapper .layout_group {
     .normal_link {
         width: auto;
         text-decoration: none;
+        vertical-align: bottom;
+        transition: color 0.26s ease, background-color 0.26s ease,  border-color 0.26s ease;
+      
         &[data-layout="1"] {
-            line-height: 48px;
+            
 
             display: inline-block;
             overflow: hidden;
 
-            min-width: 70px;
-            height: 48px;
+            border-width: 2px; 
+            border-style: solid;
+            line-height: 44px;
+            border-color: transparent;
+            height: 48px;  box-sizing: border-box;
+        
+            min-width: 140px;
             padding: 0 35px;
 
             text-align: center;
@@ -1106,15 +1114,19 @@ body #page_body_editor-wrapper .layout_group {
             background: #f0f0f0;
         }
         &[data-layout="2"] {
-            line-height: 48px;
+            
 
             display: inline-block;
             overflow: hidden;
 
-            min-width: 70px;
-            height: 48px;
+            border-width: 2px; 
+            border-style: solid;
+            line-height: 44px;
+            height: 48px;border-color: transparent;
+  box-sizing: border-box;
+        
+            min-width: 140px;
             padding: 0 35px;
-
             text-align: center;
             vertical-align: center;
             white-space: nowrap;
@@ -1126,13 +1138,18 @@ body #page_body_editor-wrapper .layout_group {
             background: #f0f0f0;
         }
         &[data-layout="3"] {
-            line-height: 48px;
+            
 
             display: inline-block;
             overflow: hidden;
 
-            min-width: 70px;
-            height: 48px;
+            border-width: 2px; 
+            border-style: solid;
+            line-height: 44px;
+            height: 48px;  
+            box-sizing: border-box;
+        border-color: transparent;
+            min-width: 140px;
             padding: 0 35px;
 
             text-align: center;
@@ -1152,6 +1169,9 @@ body #page_body_editor-wrapper .layout_group {
         &[data-style="black"] {
             color: #fff;
             background: #333;
+        }
+        &[data-before-outline="1"] {
+            background-color: transparent;
         }
     }
 

@@ -1086,7 +1086,11 @@ const layout_editor_manage_module = {
                 }
                 v.path = "";
                 v.id = "";
-                v.container = "";
+                (v) => {
+                    setTimeout(() => {
+                        v.container = "";
+                    }, 300);
+                }
             });
             state.type = "";
         },
@@ -1094,7 +1098,11 @@ const layout_editor_manage_module = {
             state.data.forEach(v => {
                 v.path = "";
                 v.id = "";
-                v.container = "";
+                (v) => {
+                    setTimeout(() => {
+                        v.container = "";
+                    }, 300);
+                }
             });
         }
     }

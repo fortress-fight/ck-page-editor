@@ -11,6 +11,29 @@
         <template #body>
             <div class="ck_control_panel_body" ref="ck_control_panel_body">
                 <div class="attr_set_group">
+                    <div class="attr_set_item flex_center">
+                        <div class="item_header flex_fix">按钮主题</div>
+
+                        <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                            <c-radio class="space_normal" v-model="value.style" label="white">白色</c-radio>
+                            <c-radio class="space_normal" v-model="value.style" label="black">黑色</c-radio>
+                        </div>
+                    </div>
+                    <div class="attr_set_item flex_yt">
+                        <div class="item_header flex_fix">按钮样式</div>
+
+                        <div
+                            class="item_body flex_auto layout_grid layout_grid-col-3 layout_grid-rowspac-10"
+                            style=" padding-top: 7px;"
+                        >
+                            <c-radio class="space_normal" v-model="value.layout" label="0">默认</c-radio>
+                            <c-radio class="space_normal" v-model="value.layout" label="1">方形按钮</c-radio>
+                            <c-radio class="space_normal" v-model="value.layout" label="2">小圆角按钮</c-radio>
+                            <c-radio class="space_normal" v-model="value.layout" label="3">圆角按钮</c-radio>
+                        </div>
+                    </div>
+                </div>
+                <div class="attr_set_group">
                     <div class="attr_set_item flex flex_yc">
                         <div class="item_header flex_fix">背景颜色</div>
                         <div class="item_body flex_auto layout_grid layout_grid-col-2">
@@ -49,8 +72,30 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="attr_set_item flex flex_yc">
-                        <div class="item_header flex_fix">还原颜色</div>
+                        <div class="item_header flex_fix">使用线框</div>
+                        <div class="item_body flex_auto layout_grid layout_grid-col-2">
+                            <div class="flex flex_yc">
+                                <span>移入之前：</span>
+                                <c-switch
+                                    active-value="1"
+                                    inactive-value="0"
+                                    v-model="value.before.outline"
+                                ></c-switch>
+                            </div>
+                            <div class="flex flex_yc">
+                                <span>移入之后：</span>
+                                <c-switch
+                                    active-value="1"
+                                    inactive-value="0"
+                                    v-model="value.after.outline"
+                                ></c-switch>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attr_set_item flex flex_yc">
+                        <div class="item_header flex_fix">还原按钮</div>
                         <div class="item_body flex_auto layout_grid layout_grid-col-2">
                             <div>
                                 <div class="refresh_btn" @click="refresh_config(true)">
@@ -59,27 +104,32 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="attr_set_group">
                     <div class="attr_set_item flex flex_yt">
                         <div class="item_header flex_fix">预览按钮</div>
-                        <div class="item_body flex_sb flex" style=" width: 330px;">
+                        <div
+                            class="item_body flex_auto layout_grid layout_grid-col-2 layout_grid-rowspac-10"
+                        >
                             <div id="page_body_editor-wrapper">
                                 <div class="layout_group">
                                     <a
                                         class="normal_link"
                                         :data-style="value.style"
                                         :data-layout="value.layout"
-                                        :style="{color: value.before.color, backgroundColor: value.before.bg}"
+                                        :data-before-outline="value.before.outline"
+                                        :style="{color: ['#fff','#ffffff', '#333', '#333333'].includes(value.before.color) ? false : value.before.color, backgroundColor: ['#f0f0f0', '#333', '#333333'].includes(value.before.bg) ? false : value.before.bg,  borderColor: ['#f0f0f0', '#333', '#333333'].includes(value.before.bg) ? false : value.before.bg}"
                                     >按钮</a>
                                 </div>
                             </div>
-                            <div class="flex_auto"></div>
                             <div id="page_body_editor-wrapper">
                                 <div class="layout_group">
                                     <a
                                         class="normal_link"
                                         :data-style="value.style"
                                         :data-layout="value.layout"
-                                        :style="{color: value.after.color, backgroundColor: value.after.bg}"
+                                        :data-before-outline="value.after.outline"
+                                        :style="{color: ['#fff','#ffffff', '#333', '#333333'].includes(value.after.color) ? false : value.after.color, backgroundColor: ['#f0f0f0', '#333', '#333333'].includes(value.after.bg)? false : value.after.bg,  borderColor: ['#f0f0f0', '#333', '#333333'].includes(value.after.bg) ? false : value.after.bg}"
                                     >按钮</a>
                                 </div>
                             </div>
@@ -103,13 +153,29 @@ export default Vue.extend({
             value: {
                 before: {
                     bg: "#f0f0f0",
+                    outline: "0",
                     color: "#333"
                 },
                 after: {
                     bg: "#f0f0f0",
+                    outline: "0",
                     color: "#333"
                 },
-                layout: "1",
+                layout: "0",
+                style: "white"
+            },
+            old_value: {
+                before: {
+                    bg: "",
+                    outline: "0",
+                    color: ""
+                },
+                after: {
+                    bg: "",
+                    outline: "0",
+                    color: ""
+                },
+                layout: "0",
                 style: "white"
             },
             ck_media_show: false,
@@ -130,17 +196,7 @@ export default Vue.extend({
             console.log("this.ck_media_show:", this.ck_media_show);
         },
         reset_color() {
-            if (this.value.style == "black") {
-                this.value.before.bg = "#333";
-                this.value.before.color = "#fff";
-                this.value.after.bg = "#333";
-                this.value.after.color = "#fff";
-            } else {
-                this.value.before.bg = "#f0f0f0";
-                this.value.before.color = "#333";
-                this.value.after.bg = "#f0f0f0";
-                this.value.after.color = "#333";
-            }
+            $.extend(true, this.value, this.old_value);
         }
     },
     computed: {},
@@ -150,29 +206,51 @@ export default Vue.extend({
     },
     mounted() {
         const $this = this;
-        (window as any).ckLinkSetting = function(callback, data) {
+        (window as any).ckLinkSetting = function(
+            callback,
+            data = { value: "{}" }
+        ) {
             $this.ckLinkSettingCallback = callback;
             $this.ck_media_show = true;
-            if (data.value.length) {
-                let result = JSON.parse(data.value);
-                $this.value = $.extend(
-                    true,
-                    {
-                        before: {
-                            bg: "",
-                            color: ""
-                        },
-                        after: {
-                            bg: "",
-                            color: ""
-                        },
-                        layout: "1",
-                        style: "white"
+            let result = data.value || "{}";
+            let init_data = {
+                white: {
+                    before: {
+                        bg: "#f0f0f0",
+                        outline: "0",
+                        color: "#333"
                     },
-                    result
-                );
-                $this.reset_color();
-            }
+                    after: {
+                        bg: "#f0f0f0",
+                        outline: "0",
+                        color: "#333"
+                    },
+                    layout: "0",
+                    style: "white"
+                },
+                black: {
+                    before: {
+                        bg: "#333",
+                        outline: "0",
+                        color: "#fff"
+                    },
+                    after: {
+                        bg: "#333",
+                        outline: "0",
+                        color: "#fff"
+                    },
+                    layout: "0",
+                    style: "black"
+                }
+            };
+            result = JSON.parse(result);
+            $this.old_value = $.extend(
+                true,
+                init_data[result.style || "white"],
+                result
+            );
+
+            $this.reset_color();
         };
         $this.color_picker_option.dialog_pos = this.$refs.ck_control_panel_body;
     }

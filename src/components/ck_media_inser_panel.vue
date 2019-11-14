@@ -579,6 +579,18 @@ export default Vue.extend({
                     );
                 }
             } else {
+                if (
+                    !this.page_data.link ||
+                    !/^(http|https):\/\//.test(this.page_data.link)
+                ) {
+                    (this as any).$message({
+                        message: "请输入正确的地址",
+                        offset: -1,
+                        duration: 2000,
+                        type: "warning"
+                    });
+                    return false;
+                }
                 this.ckInsertMedia(this.page_data.link);
             }
             this.ck_media_show = false;

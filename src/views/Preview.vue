@@ -21,7 +21,7 @@ import slick from "slick-carousel/slick/slick.js";
 import players from "plyr";
 import "plyr/dist/plyr.css";
 
-console.log(slick, 'slick');
+console.log(slick, "slick");
 
 export default Vue.extend({
     data() {
@@ -69,28 +69,35 @@ export default Vue.extend({
                     }).init();
                 }
             );
-            function deal_a_with_img () {
-
-                $('a').on('click', function () {
-                    let link = $(this).attr('href');
-                    if (!$(this).attr('download') && /https?:\/\/.+\.(jpg|png|gif)$/.test(link.trim())) {
-                        var new_img_preview_dom  = $('<div class="new_img_preview_dom" style="display: none"> <img src="'+ link +'"> </div>');
-                        new_img_preview_dom.appendTo('body').on('click', function (ev) {
-                            if (ev.target == this) {
-                                $(this).fadeOut(function () {
-                                    $(this).remove();
-                                })
-                            }
-                        });
+            function deal_a_with_img() {
+                $("a").on("click", function() {
+                    let link = $(this).attr("href");
+                    if (
+                        !$(this).attr("download") &&
+                        /https?:\/\/.+\.(jpg|png|gif)$/.test(link.trim())
+                    ) {
+                        var new_img_preview_dom = $(
+                            '<div class="new_img_preview_dom" style="display: none"> <img src="' +
+                                link +
+                                '"> </div>'
+                        );
+                        new_img_preview_dom
+                            .appendTo("body")
+                            .on("click", function(ev) {
+                                if (ev.target == this) {
+                                    $(this).fadeOut(function() {
+                                        $(this).remove();
+                                    });
+                                }
+                            });
 
                         setTimeout(() => {
-                            new_img_preview_dom.fadeIn()   
+                            new_img_preview_dom.fadeIn();
                         });
-                        
+
                         return false;
                     }
-                    
-                })
+                });
             }
             deal_a_with_img();
             var wow = new WOW.WOW({
@@ -116,6 +123,34 @@ export default Vue.extend({
                 });
                 $(e).data("_slick", (e as any).slick);
             });
+            $("#page_body_preview").on(
+                "mouseenter",
+                "a[data-after-bg],a[data-after-color]",
+                function() {
+                    $(this).css({
+                        backgroundColor: $(this).attr("data-after-outline") == '1' ? "transparent" : $(this).attr("data-after-bg"),
+                        borderColor: $(this).attr("data-after-bg"),
+                        color: $(this).attr("data-after-color")
+                    });
+                }
+            );
+            $("#page_body_preview").on(
+                "mouseleave",
+                "a[data-after-bg],a[data-after-color]",
+                function() {
+                    $(this).css({
+                        backgroundColor:  $(this).attr("data-before-outline") == '1' ? "transparent" : $(this).attr("data-before-bg"),
+                        borderColor: $(this).attr("data-before-bg"),
+                        color: $(this).attr("data-before-color")
+                    });
+                }
+            );
+            $("#page_body_preview a").on(
+                "click",
+                function() {
+                    return false;
+                }
+            );
             players.setup("#page_body_preview video");
             players.setup("#page_body_preview audio");
         });
