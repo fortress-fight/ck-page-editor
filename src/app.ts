@@ -28,13 +28,13 @@ const Component = new Vue({
             resource_link:
                 process.env.NODE_ENV === "development"
                     ? "http://127.0.0.1:3003/"
-                    : "http://resources.jsmo.xin",
+                    : "",
             img_upload: {
                 name: "Filedata",
                 action:
                     process.env.NODE_ENV === "development"
                         ? "/service"
-                        : "/service/editorUpload.php?action=uploadimage&encode=utf-8"
+                        : "/manage/page/editor_upload.php?action=uploadimage&encode=utf-8"
             },
             main_page_win: window.parent
         };
