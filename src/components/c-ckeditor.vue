@@ -175,14 +175,21 @@ export default Vue.extend({
                         "12px",
                         "14px",
                         "16px",
+                        "18px",
                         "20px",
                         "22px",
+                        "24px",
                         "26px",
+                        "28px",
                         "30px",
+                        "32px",
+                        "34px",
                         "36px",
+                        "38px",
                         "40px",
                         "60px",
                         "72px",
+                        "84px",
                         "94px",
                         "128px"
                     ]
@@ -219,8 +226,13 @@ export default Vue.extend({
                     toolbar: [
                         "imageTextAlternative",
                         "|",
+                        "imageUpload",
+						"|",
+                        "imageAutoSize",                     
+                        "imageScaleSize",
+                        "removeImageSize",
+						"|",
                         "imageStyle:full",
-                        "|",
                         "imageStyle:alignLeft",
                         "imageStyle:alignCenter",
                         "imageStyle:alignRight",
@@ -590,5 +602,11 @@ body {
 				border-color: var(--ck-insert-table-dropdown-box-border-active-color);
 				background: var(--ck-insert-table-dropdown-box-active-background);
 			}
+             .ck-font-size-dropdown .ck.ck-list__item .ck-button .ck-button__label {
+                font-size: 14px !important;
+            }
+             .ck-font-size-dropdown .ck-list {
+                padding: 0;
+            }
 }
 </style>

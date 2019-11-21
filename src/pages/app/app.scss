@@ -1829,6 +1829,9 @@ body #page_body_editor-wrapper .layout_group {
             &[data-size="repeat"] {
                 background-repeat: repeat;
             }
+            &[data-size="cover"] {
+                background-repeat: cover;
+            }
 
             &[data-pos="tl"] {
                 background-position: top left;
