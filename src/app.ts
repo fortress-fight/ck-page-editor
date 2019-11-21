@@ -8,6 +8,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import "./plugins/element.js";
 import router from "./router";
+var minify = require("html-minifier-terser").minify;
 
 Vue.use(CKEditor);
 
@@ -73,8 +74,21 @@ const Component = new Vue({
         };
         window.get_data = () => {
             return {
-                data: (this as any).$store.getters["layout_module/layout_dom"]
-                    .$el.outerHTML,
+                data: minify(
+                    (this as any).$store.getters["layout_module/layout_dom"].$el
+                        .outerHTML,
+                    {
+                        removeAttributeQuotes: true,
+                        removeComments: true,
+                        minifyCSS: {
+                            level: {
+                                1: {
+                                    removeQuotes: true
+                                }
+                            }
+                        }
+                    }
+                ),
                 store: _cloneDeep(
                     (this as any).$store.state.layout_module.all_layouts_data
                 ),

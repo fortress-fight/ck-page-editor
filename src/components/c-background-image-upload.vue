@@ -80,7 +80,7 @@
                     <div class="attr_set_group" v-if="c_value.effect">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">展现方式</div>
-                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                            <div class="item_body flex_auto layout_grid layout_grid-col-4">
                                 <c-radio
                                     class="space_normal"
                                     v-model="c_value.effect"
@@ -102,7 +102,7 @@
                     <div class="attr_set_group" v-if="c_value.size">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">背景大小</div>
-                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                            <div class="item_body flex_auto layout_grid layout_grid-col-4">
                                 <c-radio
                                     class="space_normal"
                                     v-model="c_value.size"
@@ -113,6 +113,11 @@
                                     v-model="c_value.size"
                                     label="contain"
                                 >适应</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="c_value.size"
+                                    label="cover"
+                                >填充</c-radio>
                                 <c-radio
                                     class="space_normal"
                                     v-model="c_value.size"
