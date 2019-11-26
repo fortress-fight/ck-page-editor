@@ -124,25 +124,21 @@
                         </div>
                     </div>
                 </template>
-                <template #layout_animate>
+                <template #layout_handle>
                     <div class="attr_set_group">
-                        <div
-                            class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
-                        >
-                            <div class="animate_option">
-                                <div class="text">无</div>
-                            </div>
-                            <div class="animate_option">
-                                <div class="text">从上到下</div>
-                            </div>
-                            <div class="animate_option">
-                                <div class="text">从右到左</div>
-                            </div>
-                            <div class="animate_option">
-                                <div class="text">放大展示</div>
-                            </div>
-                            <div class="animate_option">
-                                <div class="text">渐隐渐现</div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">图片画廊</div>
+                            <div class="item_body flex_auto">
+                                <c-switch
+                                    active-value="1"
+                                    inactive-value="0"
+                                    desc
+                                    v-model="layout_group_data.attrs.img_gallery.open"
+                                >
+                                    <template #desc>
+                                            <p>可以使该区域下的图片，在点击后以画廊的方式展示</p>
+                                    </template>
+                                </c-switch>
                             </div>
                         </div>
                     </div>
@@ -184,11 +180,11 @@ export default Vue.extend({
                 {
                     nav: "属性",
                     card_slot_name: "layout_attr"
+                },
+                {
+                    nav: "功能",
+                    card_slot_name: "layout_handle"
                 }
-                // {
-                //     nav: "动效",
-                //     card_slot_name: "layout_animate"
-                // }
             ],
             background_upload_cards: [
                 {

@@ -153,6 +153,90 @@ export default Vue.extend({
             );
             players.setup("#page_body_preview video");
             players.setup("#page_body_preview audio");
+            
+            
+            function image_gallary_handle() {
+                let imgGallery = $('<div class="page_body_editor-imgGallery"><div class="page_body_editor-imgGallery_wrapper"> <div class="page_body_editor-imgGallery_prev page_body_editor-imgGallery_btn"> <i class="fa fa-angle-left"></i> </div> <img src=""> <div class="page_body_editor-imgGallery_next page_body_editor-imgGallery_btn"><i class="fa fa-angle-right"></i></div></div>');
+                imgGallery.appendTo('.agent-mobile ,.agent-pc');
+                let imgFace = imgGallery.find('img');
+
+                let imgs = $("#page_body_editor-wrapper .layout_group[data-img_gallery] img");
+                var wheelEvent = (document.implementation.hasFeature('Event.wheel', '3.0') ? 'wheel.' : 'mousewheel.') + 'scroll';
+                imgGallery.on(wheelEvent, function () {
+                    return false
+                });
+                imgs.on('click', function (ev) {
+                    let index = imgs.index(this);
+
+                    imgGallery.addClass('open');
+                    let pos = this.getBoundingClientRect();
+
+                    let roate = ev.currentTarget.clientWidth / ev.currentTarget.clientHeight;
+                    let type;
+                    if ((roate * $(window).height()) > $(window).width()) {
+                        type = 'w';
+                    }
+                    if (($(window).width() / roate) > $(window).height()) {
+                        type = 'h';
+                    }
+                    imgFace.on('load', function () {
+                        imgGallery.find('img').addClass(type)
+                        requestAnimationFrame(function () {
+                            imgGallery.addClass('center');
+                        });
+                    });
+                    imgFace.attr('src', $(this).attr('src'));
+
+                    imgFace.css({
+                        left: pos.left,
+                        top: pos.top,
+                        width: (type === 'w' || !type) ? pos.width : '',
+                        height: (type === 'h' || !type) ? pos.height : ''
+                    });
+                    $('.page_body_editor-imgGallery_btn', imgGallery).off('click').on('click', function () {
+                        if ($(this).hasClass("page_body_editor-imgGallery_next")) {
+                        index = Math.min(imgs.length - 1, index + 1);
+                        } else {
+                        index = Math.max(0, index - 1);
+                        }
+                        
+                        // if (!imgs.eq(index).length) {
+                        //     return false
+                        // };
+                        let pos = imgs.eq(index)[0].getBoundingClientRect();
+                        imgFace.attr('src', imgs.eq(index).attr('src'));
+
+                        imgFace.css({
+                            left: pos.left,
+                            top: pos.top,
+                            width: (type === 'w' || !type) ? pos.width : '',
+                            height: (type === 'h' || !type) ? pos.height : ''
+                        });
+
+                        return false;
+                    });
+                    imgFace.on('click', function () {
+                        return false;
+                    });
+
+                });
+                imgGallery.on('click', () => {
+                    imgGallery.find('img')
+                    imgGallery.removeClass('center');
+                    setTimeout(() => {
+                        imgGallery.removeClass('open');
+                        imgFace.css({
+                            left: '',
+                            top: '',
+                            width: '',
+                            height: ''
+                        });
+                    }, 1000);
+                })
+            }
+            if ($("#page_body_editor-wrapper .layout_group[data-img_gallery] img").length) {
+                image_gallary_handle()
+            }
         });
     }
 });
