@@ -93,7 +93,9 @@ let unit_layout_module = {
                 s = _defaultsDeep(s, {
                     attrs: {
                         module_center: false,
-
+                        img_gallery: {
+                            open: "0",
+                        },
                         bg: {
                             pc: {
                                 mask: "rgba(255,255,255,0)"

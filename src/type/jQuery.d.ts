@@ -1,7 +1,9 @@
+import "animejs";
 import "jquery";
 import Vue from "vue";
+
 interface JQuery {
-    Velocity(): JQuery;
+    velocity(): JQuery;
     masonry(): JQuery;
     slick(): JQuery;
     imagesLoaded(): JQuery;

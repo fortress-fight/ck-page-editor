@@ -17,6 +17,7 @@
             :data-window_height="item.attrs.window_height"
             :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
             :data-module_center="item.attrs.module_center"
+            :data-img_gallery="item.attrs.img_gallery.open == 1 ? JSON.stringify(item.attrs.img_gallery) : false"
             data-stick-parent
         >
             <div class="layout_group-editor_bar" v-if="can_editor" v-stick="0">
@@ -98,7 +99,7 @@
             </section>
             <section
                 class="layout_bg layout_bg_mo"
-                :style="'background-image: url('+(item.attrs.bg.pc.path || item.attrs.bg.pc.path)+')'"
+                :style="'background-image: url('+(item.attrs.bg.mo.path || item.attrs.bg.pc.path)+')'"
                 v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path"
                 :data-effect="item.attrs.bg.mo.effect"
                 :data-size="item.attrs.bg.mo.size"
