@@ -13,6 +13,7 @@
                             <i class="fa ic fa-navicon"></i>
                         </template>
                     </c-dragger>
+                    <div class="color_picker-close_btn dialog_close_btn" @click="color_picker_dialog_cancel"><i class="fa ifont ifont-close"></i></div>
                 </template>
             </c-color-picker>
         </template>
@@ -115,8 +116,16 @@ export default Vue.extend({
     }
 });
 </script>
-<style lang="scss" module>
-.wrapper {
-    // init
+<style lang="scss">
+.page-edit_page .wrapper-editor_app .color_picker-close_btn {
+    
+    height: 50px;
+    top: 0;
+    font-size: 15px;
+    right: 0;
+}
+.color_picker-close_btn.dialog_close_btn {
+top: 0;
+    height: 52px;
 }
 </style>

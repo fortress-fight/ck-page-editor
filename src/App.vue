@@ -10,6 +10,13 @@ import Vue from "vue";
 export default Vue.extend({
     data() {
         return {};
+    },
+    watch: {
+        $route(new_value, old_value) {
+            if(new_value) {
+                $("body").attr("data-router", (new_value as any).name);
+            }
+        }
     }
 });
 </script>

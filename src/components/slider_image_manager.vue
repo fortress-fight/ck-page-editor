@@ -31,7 +31,7 @@
                 </draggable>
             </template>
             <template v-else>
-                <div class="slider_image_manager-placeholder flex_center">
+                <div class="slider_image_manager-placeholder flex_center" @click="upload">
                     <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
                     <span class="text">请添加幻灯片</span>
                 </div>
@@ -98,6 +98,9 @@ export default Vue.extend({
         }
     },
     methods: {
+        upload() {
+            (this.$refs.upload_btn as any).$refs["el-upload"].$refs["upload-inner"].handleClick();
+        },
         sort() {
             (this as any).c_value = (this as any).c_value.sort(
                 (a, b) => a.order - b.order
@@ -155,7 +158,7 @@ export default Vue.extend({
     }
     &-placeholder {
         font-size: 15px;
-
+cursor: pointer;
         position: absolute;
         top: 0;
         left: 0;

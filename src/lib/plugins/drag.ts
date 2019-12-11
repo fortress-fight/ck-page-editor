@@ -1,6 +1,4 @@
-import $ from "jquery";
 import { getElDisPos, getPos, IGetPosResult } from "./linshi";
-(window as any).$ = $;
 
 interface IPos {
     x: number;

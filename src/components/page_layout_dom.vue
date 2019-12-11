@@ -12,28 +12,46 @@
             v-for="(item) in layout_groups"
             :style="{backgroundColor: item.attrs.background_color}"
             :key="item.id"
+            :data-key="item.attrs.key"
             :data-window_width="item.attrs.window_width"
             :data-window_height="item.attrs.window_height"
             :data-limit_width="item.attrs.window_width && item.attrs.limit_width"
+            :data-module_center="item.attrs.module_center"
+            :data-img_gallery="item.attrs.img_gallery.open == 1 ? JSON.stringify(item.attrs.img_gallery) : false"
+            data-stick-parent
         >
-            <div class="layout_group-editor_bar" v-if="can_editor">
+            <div class="layout_group-editor_bar" v-if="can_editor" v-stick="0">
+                <div class="item layout_group_name" title="布局">
+                    <span class="text">布局</span>
+                    <!-- <i class="fa fa-plus"></i> -->
+                </div>
                 <div
                     class="item"
                     data-key="add"
                     title="添加"
-                    @click="open_add_layout_group_dialog(item.id)"
+                    v-if="limit_modules != 1"
+                    @click.stop="open_add_layout_group_dialog(item.id)"
                 >
-                    <span class="text">添加</span>
+                    <!-- <span class="text">添加</span> -->
                     <i class="fa fa-plus"></i>
                 </div>
                 <div
                     class="item"
+                    data-key="add"
+                    title="替换"
+                    v-if="limit_modules == 1"
+                    @click.stop="replace_layout_group_dialog(item.id)"
+                >
+                    <span class="text">替换</span>
+                </div>
+                <div
+                    class="item"
                     data-key="editor"
-                    title="编辑"
+                    title="设置"
                     @click="open_editor_layout_group_dialog($event,item.id)"
                 >
-                    <span class="text">编辑</span>
-                    <i class="fa fa-pencil"></i>
+                    <span class="text">设置</span>
+                    <!-- <i class="fa fa-pencil"></i> -->
                 </div>
                 <div
                     class="item"
@@ -41,7 +59,7 @@
                     title="上移"
                     @click="move_layout_group(item.id, 'up')"
                 >
-                    <span class="text">上移</span>
+                    <!-- <span class="text">上移</span> -->
                     <i class="fa fa-arrow-up"></i>
                 </div>
                 <div
@@ -50,12 +68,12 @@
                     title="下移"
                     @click="move_layout_group(item.id, 'down')"
                 >
-                    <span class="text">下移</span>
+                    <!-- <span class="text">下移</span> -->
                     <i class="fa fa-arrow-down"></i>
                 </div>
                 <div class="item" data-key="copy" title="复制" @click="copy_layout_group(item.id)">
                     <span class="text">复制</span>
-                    <i class="fa fa-copy"></i>
+                    <!-- <i class="fa fa-copy"></i> -->
                 </div>
                 <div
                     class="item"
@@ -63,40 +81,47 @@
                     title="删除"
                     @click="open_delete_layout_group_dialog($event,item.id)"
                 >
-                    <span class="text">删除</span>
+                    <!-- <span class="text">删除</span> -->
                     <i class="fa fa-trash"></i>
                 </div>
             </div>
 
             <section
                 class="layout_bg layout_bg_pc"
-                :style=" `background-image: url(${item.attrs.bg.pc.path});`"
+                :style="'background-image: url('+item.attrs.bg.pc.path+')'"
                 v-if="item.attrs.bg.pc.path"
                 :data-effect="item.attrs.bg.pc.effect"
                 :data-size="item.attrs.bg.pc.size"
                 :data-pos="item.attrs.bg.pc.position"
             >
                 <img :src="item.attrs.bg.pc.path" style="opacity: 0" />
+                <div class="layout_bg-mask" :style="{backgroundColor: item.attrs.bg.pc.mask}"></div>
             </section>
             <section
                 class="layout_bg layout_bg_mo"
-                :style=" `background-image: url(${item.attrs.bg.mo.path || item.attrs.bg.pc.path});`"
+                :style="'background-image: url('+(item.attrs.bg.mo.path || item.attrs.bg.pc.path)+')'"
                 v-if="item.attrs.bg.mo.path || item.attrs.bg.pc.path"
                 :data-effect="item.attrs.bg.mo.effect"
                 :data-size="item.attrs.bg.mo.size"
                 :data-pos="item.attrs.bg.mo.position"
             >
                 <img :src="item.attrs.bg.mo.path || item.attrs.bg.pc.path" style="opacity: 0" />
+                <div class="layout_bg-mask" :style="{backgroundColor: item.attrs.bg.mo.mask}"></div>
             </section>
             <section class="layout_limit_wrapper">
                 <section class="layout_container">
-                    <section
+                    <!-- <section
                         :id="item.attrs.header.id"
                         v-show="item.attrs.header.open"
                         class="layout_header editor_wrapper"
                     >
-                        <section class="editor ck-content" v-html="item.attrs.header.container"></section>
-                    </section>
+                        <section
+                            class="editor ck-content"
+                            :class="{placehold: item.attrs.header.container.length === 0}"
+                            :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
+                            v-html="item.attrs.header.container"
+                        ></section>
+                    </section>-->
                     <section class="layout_body">
                         <section
                             :id="layout_item.id"
@@ -108,11 +133,17 @@
                             :data-justify_center="layout_item.x_align"
                             :data-align_center="layout_item.y_align"
                         >
+                            <div
+                                class="layout-margin_placeholder_top"
+                                :style="{paddingTop: (layout_item.margin_yt.value || 0) + layout_item.margin_yt.unit}"
+                            ></div>
                             <section
                                 class="row"
                                 :style="{width: layout_item.width.value ?layout_item.width.value + layout_item.width.unit : ''}"
                                 :data-animate="layout_item.animate"
+                                :data-key="layout_item.key"
                                 :data-col="layout_item.col_container.map((v) => v.col).join('_')"
+                                data-stick-parent
                             >
                                 <template
                                     v-for="(col_item, col_index) in layout_item.col_container"
@@ -122,12 +153,34 @@
                                         class="col editor_wrapper"
                                         :class="`col-${col_item.col}`"
                                         :key="col_item.id"
-                                        :style="{backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
+                                        :style="{
+                                            width: `calc(${calc_width(col_item.col)})`,
+                                            borderRadius: layout_item.type_detail==`custom` ? col_item.radius.value + col_item.radius.unit:false, backgroundColor: col_item.background_color, padding: (layout_item.padding_y.value || 0) + layout_item.padding_y.unit + ' ' +  (layout_item.padding_x.value || 0) + layout_item.padding_x.unit}"
                                         @animationend="col_animationend"
                                     >
+                                        <template v-if="item.id == oper_layout_groups_id">
+                                            <div
+                                                class="edit_top_holder"
+                                                :style="calc_edit_style(col_item.id, 'top', 'height',(layout_item.padding_y.value || 0), layout_item.padding_y.unit, layout_item.width.value)"
+                                            ></div>
+                                            <div
+                                                class="edit_left_holder"
+                                                :style="calc_edit_style( col_item.id, 'left', 'width',(layout_item.padding_x.value || 0), layout_item.padding_x.unit, layout_item.width.value)"
+                                            ></div>
+                                            <div
+                                                class="edit_right_holder"
+                                                :style="calc_edit_style(col_item.id, 'right', 'width',(layout_item.padding_x.value || 0), layout_item.padding_x.unit, layout_item.width.value)"
+                                            ></div>
+                                            <div
+                                                class="edit_bottom_holder"
+                                                :style="calc_edit_style( col_item.id, 'bottom', 'height',(layout_item.padding_y.value || 0), layout_item.padding_y.unit, layout_item.width.value)"
+                                            ></div>
+                                        </template>
                                         <template v-if="layout_item.type_detail==`custom`">
                                             <section
                                                 class="editor ck-content"
+                                                :class="{placehold: col_item.container.length === 0}"
+                                                :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
                                                 v-html="col_item.container"
                                             ></section>
                                         </template>
@@ -135,6 +188,7 @@
                                             <div
                                                 class="layout_slider"
                                                 :data-num="col_item.attrs.num"
+                                                :data-theme="col_item.attrs.theme"
                                                 :data-autoplay="col_item.attrs.autoplay"
                                                 :data-margin-size="col_item.attrs.margin_size"
                                             >
@@ -159,8 +213,16 @@
                                         <template v-if="layout_item.type_detail=='block'">
                                             <div
                                                 class="layout_block"
-                                                :data-size="layout_item.col_container[0].attrs.size"
-                                            ></div>
+                                                :data-type="layout_item.col_container[0].attrs.type"
+                                                :style="{paddingTop: layout_item.col_container[0].attrs.height.value + layout_item.col_container[0].attrs.height.unit,backgroundColor: layout_item.col_container[0].attrs.type == 'blank' ? layout_item.col_container[0].attrs.bg : ''}"
+                                            >
+                                                <div
+                                                    class="layout_block_line"
+                                                    v-if="layout_item.col_container[0].attrs.type == 'line'"
+                                                    :data-line-type="layout_item.col_container[0].attrs.line_type"
+                                                    :style="{height: layout_item.col_container[0].attrs.height,borderColor: layout_item.col_container[0].attrs.line_color}"
+                                                ></div>
+                                            </div>
                                         </template>
                                     </section>
                                     <span
@@ -170,73 +232,102 @@
                                         :key="col_item.col_index"
                                     ></span>
                                 </template>
-                                <div class="layout-editor_bar" v-if="can_editor">
-                                    <div
-                                        class="item"
-                                        data-key="editor"
-                                        title="编辑"
-                                        @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
-                                    >
-                                        <span class="text">编辑</span>
-                                        <i class="fa fa-pencil"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="add"
-                                        title="添加"
-                                        @click="open_add_layout_dialog(item.id, layout_item.id)"
-                                    >
-                                        <span class="text">添加</span>
-                                        <i class="fa fa-plus"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="up"
-                                        title="上移"
-                                        @click="move_layout(item.id, layout_item.id, 'up')"
-                                    >
-                                        <span class="text">上移</span>
-                                        <i class="fa fa-arrow-up"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="down"
-                                        title="下移"
-                                        @click="move_layout(item.id, layout_item.id, 'down')"
-                                    >
-                                        <span class="text">下移</span>
-                                        <i class="fa fa-arrow-down"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="copy"
-                                        title="复制"
-                                        @click="copy_layout(layout_item)"
-                                    >
-                                        <span class="text">复制</span>
-                                        <i class="fa fa-copy"></i>
-                                    </div>
-                                    <div
-                                        class="item"
-                                        data-key="delete"
-                                        title="删除"
-                                        @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
-                                    >
-                                        <span class="text">删除</span>
-                                        <i class="fa fa-trash"></i>
+                                <div
+                                    class="layout-editor_bar"
+                                    v-if="can_editor"
+                                    @click.self="show_layout_oper_btn($event,oper_layout_id)"
+                                >
+                                    <div class="layout-editor_bar-container">
+                                        <div class="item layout_name" title="内容">
+                                            <span class="text">内容</span>
+                                            <!-- <i class="fa fa-plus"></i> -->
+                                        </div>
+                                        <!-- <div
+                                            class="item"
+                                            title="隐藏面板"
+                                            @click="hide_layout_oper_btn"
+                                        >
+                                            <i class="fa fa-eye"></i>
+                                        </div>-->
+                                        <div
+                                            class="item"
+                                            data-key="add"
+                                            title="添加"
+                                            v-if="limit_modules != 1"
+                                            @click.stop="open_add_layout_dialog(item.id, layout_item.id)"
+                                        >
+                                            <!-- <span class="text">添加</span> -->
+                                            <i class="fa fa-plus"></i>
+                                        </div>
+
+                                        <div
+                                            class="item"
+                                            data-key="editor"
+                                            title="编辑"
+                                            @click="open_editor_layout_dialog($event, item.id, layout_item.id, layout_item.type)"
+                                        >
+                                            <span class="text">编辑</span>
+                                            <!-- <i class="fa fa-pencil"></i> -->
+                                        </div>
+
+                                        <div
+                                            class="item"
+                                            data-key="up"
+                                            title="上移"
+                                            @click="move_layout(item.id, layout_item.id, 'up')"
+                                        >
+                                            <!-- <span class="text">上移</span> -->
+                                            <i class="fa fa-arrow-up"></i>
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="down"
+                                            title="下移"
+                                            @click="move_layout(item.id, layout_item.id, 'down')"
+                                        >
+                                            <!-- <span class="text">下移</span> -->
+                                            <i class="fa fa-arrow-down"></i>
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="copy"
+                                            title="复制"
+                                            @click="copy_layout(layout_item)"
+                                        >
+                                            <span class="text">复制</span>
+                                            <!-- <i class="fa fa-copy"></i> -->
+                                        </div>
+                                        <div
+                                            class="item"
+                                            data-key="delete"
+                                            title="删除"
+                                            @click="open_delete_layout_dialog($event, item.id, layout_item.id)"
+                                        >
+                                            <!-- <span class="text">删除</span> -->
+                                            <i class="fa fa-trash"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </section>
+                            <div
+                                class="layout-margin_placeholder_bottom"
+                                :style="{paddingTop: (layout_item.margin_yb.value || 0) + layout_item.margin_yb.unit}"
+                            ></div>
                         </section>
                     </section>
 
-                    <section
+                    <!-- <section
                         class="layout_footer editor_wrapper"
                         v-show="item.attrs.footer.open"
                         :id="item.attrs.footer.id"
                     >
-                        <section class="editor ck-content" v-html="item.attrs.footer.container"></section>
-                    </section>
+                        <section
+                            class="editor ck-content"
+                            :class="{placehold: item.attrs.footer.container.length === 0}"
+                            :data-placeholder="can_editor ? '点击编辑后，可以输入内容...' : false"
+                            v-html="item.attrs.footer.container"
+                        ></section>
+                    </section>-->
                 </section>
             </section>
         </div>
@@ -271,27 +362,107 @@ export default Vue.extend({
         },
         oper_layout_id() {
             return (this as any).$store.state.layout_module.oper_layout_id;
+        },
+        limit_modules() {
+            return (this as any).$store.state.limit_modules;
         }
     },
     methods: {
+        calc_width(col: any) {
+            if (col && col.split && col.split("--").length) {
+                return (
+                    ((col.split("--")[0] / col.split("--")[1]) * 100).toFixed(
+                        2
+                    ) + "%"
+                );
+            }
+            return false;
+        },
         open_add_layout_group_dialog(layout_group_id) {
-            this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
-                turn_on: true,
-                type: "add_layout_group",
-                data: {
-                    layout_group_id
-                }
-            });
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout", "layout_group"],
+                        relate_data: {
+                            layout_group_id
+                        }
+                    }
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    turn_on: true,
+                    type: "add_layout_group",
+                    data: {
+                        layout_group_id
+                    }
+                });
+            }
+        },
+        replace_layout_group_dialog(layout_group_id) {
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout", "layout_group"],
+                        relate_data: {
+                            layout_group_id
+                        }
+                    }
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    turn_on: true,
+                    type: "add_layout_group",
+                    data: {
+                        layout_group_id
+                    }
+                });
+            }
         },
         open_add_layout_dialog(layout_group_id, layout_id) {
-            this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
-                turn_on: true,
-                type: "add_layout",
-                data: {
-                    layout_group_id,
-                    layout_id
-                }
-            });
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout"],
+                        relate_data: {
+                            layout_group_id,
+                            layout_id
+                        }
+                    }
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    turn_on: true,
+                    type: "add_layout",
+                    data: {
+                        layout_group_id,
+                        layout_id
+                    }
+                });
+            }
         },
         move_layout_group(layout_group_id, dir) {
             this.$store.dispatch("layout_module/move_layout_group", {
@@ -390,8 +561,62 @@ export default Vue.extend({
                 }
             });
         },
+        hide_layout_oper_btn(ev: any) {
+            $(".layout-editor_bar-container", this.$el).removeClass("show");
+        },
+        show_layout_oper_btn(ev: any, oper_layout_id) {
+            if (typeof oper_layout_id == "string") {
+                (this as any).$message({
+                    message: "请先保存当前编辑后再编辑其它版块",
+                    offset: -1,
+                    duration: 2000,
+                    type: "error"
+                });
+                return false;
+            }
+            $(".layout-editor_bar-container", this.$el).removeClass("show");
+            let current_target = ev.currentTarget;
+            let oper_bar = $(current_target).find(
+                ".layout-editor_bar-container"
+            )[0];
+            let pos = current_target.getBoundingClientRect();
+            let oper_bar_pos = oper_bar.getBoundingClientRect();
+
+            let x = ev.clientX - pos.left - oper_bar_pos.width / 2;
+            let y = ev.clientY - pos.top - oper_bar_pos.height / 2;
+            $(oper_bar)
+                .css({
+                    top: Math.max(0, y),
+                    left: Math.max(
+                        0,
+                        Math.min(x, pos.width - oper_bar_pos.width)
+                    ),
+                    right: "auto"
+                })
+                .addClass("show");
+        },
         col_animationend(ev: Event) {
             $(ev.currentTarget).removeClass("animated");
+        },
+        calc_edit_style(domId, className, style_key, value, unit, row_width) {
+            let col_width = row_width;
+            $(`#${domId} .edit_${className}_holder`).css({
+                [style_key]: function() {
+                    let result: string | number;
+                    if (unit === "px") {
+                        result = value + "px";
+                    } else {
+                        result =
+                            ($(this)
+                                .closest(".row")
+                                .width() *
+                                value) /
+                                100 +
+                            "px";
+                    }
+                    return result;
+                }
+            });
         }
     },
     props: {
@@ -455,6 +680,15 @@ export default Vue.extend({
         }
     }
 }
+.ck-content {
+    &.placehold:before {
+        content: attr(data-placeholder);
+        cursor: text;
+        pointer-events: none;
+
+        color: #707070;
+    }
+}
 #page_body_editor-wrapper {
     .ck-content {
         position: relative;
@@ -476,7 +710,7 @@ export default Vue.extend({
     .layout {
         &.is_oper {
             .layout_block {
-                min-height: 60px;
+                min-height: 40px;
             }
         }
         &[data-type-detail="block"] {
@@ -484,7 +718,7 @@ export default Vue.extend({
             .row {
                 &:hover {
                     .layout_block {
-                        min-height: 60px;
+                        min-height: 40px;
                     }
                 }
             }
@@ -494,5 +728,89 @@ export default Vue.extend({
 
 body {
     min-width: 1250px;
+}
+.is_oper.show_edit-layout_width .row {
+    &:before {
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        content: "";
+
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+
+.is_oper.show_edit-layout_space .col_space {
+    position: relative;
+    &:before {
+        position: absolute;
+        z-index: 100;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        content: "";
+
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+.is_oper.show_edit-layout_margin_yt {
+    .layout-margin_placeholder_top {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+.is_oper.show_edit-layout_margin_yb {
+    .layout-margin_placeholder_bottom {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+        repeat;
+    }
+}
+.is_oper.show_edit-layout_padding_y {
+    .edit_bottom_holder,
+    .edit_top_holder {
+        display: block;
+    }
+}
+.is_oper.show_edit-layout_padding_x {
+    .edit_left_holder,
+    .edit_right_holder {
+        display: block;
+    }
+}
+.edit_bottom_holder,
+.edit_top_holder,
+.edit_left_holder,
+.edit_right_holder {
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    display: none;
+
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQ1IDc5LjE2MzQ5OSwgMjAxOC8wOC8xMy0xNjo0MDoyMiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTkgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzI0MDRBQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzI0MDRCQkQ5MzExRTk4QTY3QkUxOUMyNDlDMUY5Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MEQzMjQwNDhCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MEQzMjQwNDlCRDkzMTFFOThBNjdCRTE5QzI0OUMxRjkiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5KOdg2AAAAq0lEQVR42rzV0Q3DIAwEULCyRLtXGRKm6gCdIakjESVpoFjx3Un8gZ7OAhFzzs8QwiPY8/mud0ppthwSJqblhIlpOWFidaQ0zAK6YJrJglm00rj9gmhWOk9NmFgPhGAtEIZdgVDsDMKxPbhiLzBWQRpWQRqm5eJZip3d801MywmrWZ3kMJgdsOHfwgsbAj2xv6A31gURWBNEYZcgEvsBCxg7gAxsA1mYZhFgAAYOqTeD2Nn7AAAAAElFTkSuQmCC)
+    repeat;
+}
+.edit_top_holder {
+    bottom: auto;
+}
+.edit_bottom_holder {
+    top: auto;
+}
+.edit_left_holder {
+    right: auto;
+}
+.edit_right_holder {
+    left: auto;
 }
 </style>

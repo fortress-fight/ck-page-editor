@@ -3,7 +3,19 @@
         <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
             <page-layout-dom :can_editor="can_editor"></page-layout-dom>
             <keep-alive>
-                <div v-if="can_editor" class="page-add_layout_btn" @click="add_layout">
+                <div
+                    v-if="can_editor && this.limit_modules != 1"
+                    class="page-add_layout_btn"
+                    @click.stop="add_layout"
+                >
+                    <span class="text">添加编辑板块</span>
+                    <i class="fa fa-plus"></i>
+                </div>
+                <div
+                    v-else-if="this.limit_modules == 1 && layout_groups.length<1"
+                    class="page-add_layout_btn"
+                    @click.stop="add_layout"
+                >
                     <span class="text">添加编辑板块</span>
                     <i class="fa fa-plus"></i>
                 </div>
@@ -14,6 +26,8 @@
             <editor-layout-group-panel></editor-layout-group-panel>
             <editor-layout-panel></editor-layout-panel>
             <ck-editor-picker></ck-editor-picker>
+            <ck-media-inser-panel></ck-media-inser-panel>
+            <ck-link-setting-panel></ck-link-setting-panel>
             <keep-alive>
                 <layout-editor v-if="can_editor" @editor_ready="editor_ready"></layout-editor>
             </keep-alive>
@@ -38,6 +52,8 @@ import page_layout_dom from "@/components/page_layout_dom.vue";
 
 import layout_editor from "@/components/layout_editor.vue";
 import ck_editor_picker from "@/components/ck_editor_picker.vue";
+import ck_media_inser_panel from "@/components/ck_media_inser_panel.vue";
+import ck_link_setting_panel from "@/components/ck_link_setting_panel.vue";
 export default Vue.extend({
     data() {
         return {
@@ -51,7 +67,9 @@ export default Vue.extend({
         "page-layout-dom": page_layout_dom,
         "editor-layout-panel": editor_layout_panel,
         "layout-editor": layout_editor,
-        "ck-editor-picker": ck_editor_picker
+        "ck-editor-picker": ck_editor_picker,
+        "ck-media-inser-panel": ck_media_inser_panel,
+        "ck-link-setting-panel": ck_link_setting_panel
     },
     computed: {
         is_load() {
@@ -65,14 +83,54 @@ export default Vue.extend({
         },
         can_editor() {
             return (this as any).$root.can_editor;
+        },
+
+        oper_layout_groups_id() {
+            return (this as any).$store.state.layout_module
+                .oper_layout_groups_id;
+        },
+        oper_layout_id() {
+            return (this as any).$store.state.layout_module.oper_layout_id;
+        },
+        limit_modules() {
+            return (this as any).$store.state.limit_modules;
+        },
+        layout_groups() {
+            return (this as any).$store.state.layout_module.all_layouts_data;
         }
     },
+
     methods: {
         add_layout() {
-            this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
-                type: "add_layout_group",
-                turn_on: true
-            });
+            if (!!this.oper_layout_groups_id || !!this.oper_layout_id) {
+                (this as any).$message({
+                    message: "请先保存当前编辑后再添加新版块",
+                    offset: -1,
+                    duration: 2000,
+                    type: "error"
+                });
+                return;
+            }
+            if (
+                this.$root.main_page_win &&
+                this.$root.main_page_win.VueComponentMainPage
+            ) {
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "control_panel/open_panel",
+                    "panel-modules"
+                );
+                this.$root.main_page_win.VueComponentMainPage.$store.commit(
+                    "modules_panel/show_type",
+                    {
+                        type: ["layout", "layout_group"]
+                    }
+                );
+            } else {
+                this.$store.dispatch("add_layout_dom_dialog_module/tab_show", {
+                    type: "add_layout_group",
+                    turn_on: true
+                });
+            }
         },
         editor_ready() {
             this.editor_is_ready = true;
@@ -97,7 +155,14 @@ body {
     user-select: none;
 
     background: #fff;
+    .ck-content {
+        min-height: 40px;
+    }
     .editor {
+        overflow: hidden;
+
+        min-height: 40px;
+
         user-select: initial;
     }
     #app {
@@ -109,8 +174,9 @@ body {
     width: 1200px;
     max-width: 100%;
     margin: 0 auto;
-    padding-top: 50px;
-    padding-bottom: 50px;
+    #page_body_editor-wrapper .layout_group .layout_bg {
+        height: 100%;
+    }
 }
 .page {
     &-add_layout_btn {
@@ -127,7 +193,7 @@ body {
         transition: 0.2s ease;
 
         color: #999;
-        border: 2px solid #eee;
+        border: 2px dotted #eee;
 
         justify-content: center;
         align-items: center;
@@ -162,8 +228,8 @@ body {
         &-add_layout_btn {
             border-color: rgba(211, 211, 211, 0.4);
             &:hover {
-                color: #fff;
-                border-color: #fff;
+                color: #c3c3c3;
+                border-color: #c3c3c3;
             }
         }
     }

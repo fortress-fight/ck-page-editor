@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
-
+const TerserPlugin = require("terser-webpack-plugin");
 // web: {
 //     entry: "src/pages/web/main.ts",
 //     template: "public/pages/web/web.html",
@@ -41,13 +41,7 @@ function get_pages_list() {
             entry: "src/pages/" + v.basename + ".ts",
             template: v.pathname + ".html",
             filename: v.basename + ".html",
-            chunks: [
-                "lib",
-                "public",
-                v.basename,
-                "page_editor",
-                "page_editor_css"
-            ]
+            chunks: ["lib", v.basename, "chunk-common", "chunk-vendors"]
         };
     });
     return result;
@@ -59,7 +53,7 @@ function create_pages_config() {
             entry: "src/app.ts",
             template: "public/index.html",
             filename: "index.html",
-            chunks: ["lib", "public", "index", "chunk-vendors"]
+            chunks: ["lib", "index", "chunk-common", "chunk-vendors"]
         },
         ...get_pages_list()
     };
@@ -84,7 +78,10 @@ module.exports = {
             }
         }
     },
-    publicPath:  process.env.NODE_ENV === 'production' ? '/templates/templates/editor_page/' : '',
+    publicPath:
+        process.env.NODE_ENV === "production"
+            ? "/templates/templates/editor_page/"
+            : "",
     chainWebpack: config => {},
     css: {
         loaderOptions: {
@@ -112,24 +109,6 @@ module.exports = {
         optimization: {
             splitChunks: {
                 cacheGroups: {
-                    page_editor: {
-                        test: /[\\/]page_editor[\\/].+\.js$/,
-                        name: "page_editor",
-                        priority: 20,
-                        minChunks: 1,
-                        minSize: 1000,
-                        chunks: "all",
-                        enforce: true
-                    },
-                    page_editor_css: {
-                        test: /[\\/]page_editor[\\/].+\.(scss|css)$/,
-                        name: "page_editor_css",
-                        priority: 20,
-                        minChunks: 1,
-                        minSize: 1000,
-                        chunks: "all",
-                        enforce: true
-                    },
                     lib: {
                         test: /[\\/]node_modules[\\/].+\.js$/,
                         name: "lib",
@@ -138,18 +117,24 @@ module.exports = {
                         minSize: 1000,
                         chunks: "all",
                         enforce: true
-                    },
-                    public: {
-                        test: /public\.(js|ts)$/,
-                        name: "public",
-                        priority: 5,
-                        minChunks: 1,
-                        minSize: 1000,
-                        chunks: "all",
-                        enforce: true
                     }
                 }
-            }
+            },
+            minimizer: [
+                new TerserPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: false, // Must be set to true if using source-maps in production
+                    parallel: false,
+                    terserOptions: {
+                        compress: {
+                            drop_console: true,
+                            drop_debugger: true
+                        }
+                        // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+                    }
+                })
+            ]
         },
         watchOptions: {
             // 不监听的 node_modules 目录下的文件
@@ -157,8 +142,6 @@ module.exports = {
         },
         plugins: [
             new webpack.ProvidePlugin({
-                $: "jquery",
-                jQuery: "jquery",
                 Velocity: "velocity-animate",
                 axios: "axios",
                 slick: "slick-carousel"

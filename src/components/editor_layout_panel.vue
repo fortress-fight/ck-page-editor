@@ -68,7 +68,11 @@
                             </div>
                         </div>
                         <div class="attr_set_group">
-                            <div class="attr_set_item flex_center">
+                            <div
+                                class="attr_set_item flex_center"
+                                @mouseenter="show_edit('layout_width')"
+                                @mouseleave="hide_edit('layout_width')"
+                            >
                                 <div class="item_header flex_fix">布局宽度</div>
                                 <div class="item_body flex_center flex_auto">
                                     <div class="value_input flex_auto flex_center">
@@ -93,6 +97,8 @@
                             <div
                                 class="attr_set_item flex_center"
                                 v-if="layout_data.col_container.length > 1"
+                                @mouseenter="show_edit('layout_space')"
+                                @mouseleave="hide_edit('layout_space')"
                             >
                                 <div class="item_header flex_fix">布局间距</div>
                                 <div class="item_body flex_center flex_auto">
@@ -114,7 +120,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="attr_set_item flex_center">
+                            <div
+                                class="attr_set_item flex_center"
+                                @mouseenter="show_edit('layout_padding_x', layout_data.padding_x.value + layout_data.padding_x.unit)"
+                                @mouseleave="hide_edit('layout_padding_x')"
+                            >
                                 <div class="item_header flex_fix">内侧间距</div>
                                 <div class="item_body flex_center flex_auto">
                                     <div class="value_input flex_auto flex_center">
@@ -136,7 +146,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="attr_set_item flex_center">
+                            <div
+                                class="attr_set_item flex_center"
+                                @mouseenter="show_edit('layout_padding_y') , layout_data.padding_y.value + layout_data.padding_y.unit"
+                                @mouseleave="hide_edit('layout_padding_y')"
+                            >
                                 <div class="item_header flex_fix">上下间距</div>
                                 <div class="item_body flex_center flex_auto">
                                     <div class="value_input flex_auto flex_center">
@@ -158,10 +172,77 @@
                                     </div>
                                 </div>
                             </div>
+                            <div
+                                class="attr_set_item flex_center"
+                                @mouseenter="show_edit('layout_margin_yt') , layout_data.margin_yt.value + layout_data.margin_yt.unit"
+                                @mouseleave="hide_edit('layout_margin_yt')"
+                            >
+                                <div class="item_header flex_fix">上外间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input
+                                            class="input"
+                                            v-model="layout_data.margin_yt.value"
+                                            placeholder="请输入上外间距"
+                                        ></c-input>
+                                        <span class="unit">{{layout_data.margin_yt.unit}}</span>
+                                    </div>
+
+                                    <div class="value_unit flex_fix">
+                                        <c-switch
+                                            active-value="%"
+                                            inactive-value="px"
+                                            v-model="layout_data.margin_yt.unit"
+                                            active-text="百分比"
+                                        ></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="attr_set_item flex_center"
+                                @mouseenter="show_edit('layout_margin_yb') , layout_data.margin_yb.value + layout_data.margin_yb.unit"
+                                @mouseleave="hide_edit('layout_margin_yb')"
+                            >
+                                <div class="item_header flex_fix">下外间距</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input
+                                            class="input"
+                                            v-model="layout_data.margin_yb.value"
+                                            placeholder="请输入下外间距"
+                                        ></c-input>
+                                        <span class="unit">{{layout_data.margin_yb.unit}}</span>
+                                    </div>
+
+                                    <div class="value_unit flex_fix">
+                                        <c-switch
+                                            active-value="%"
+                                            inactive-value="px"
+                                            v-model="layout_data.margin_yb.unit"
+                                            active-text="百分比"
+                                        ></c-switch>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
                 <template #layout_attr>
+                    <div class="attr_set_group" v-if="false">
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">布局标识</div>
+                            <div class="item_body flex_auto">
+                                <div class="value_input">
+                                    <c-input
+                                        class="input"
+                                        v-model="layout_data.key"
+                                        placeholder="请输入布局标识"
+                                        maxlength="20"
+                                    ></c-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="attr_set_group">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">分栏背景</div>
@@ -173,6 +254,37 @@
                                 ></c-color-picker-btn>
                             </div>
                         </div>
+                    </div>
+                    <div class="attr_set_group" v-if="layout_data.type_detail=='custom'">
+                        <template v-for="(item, key) in layout_data.col_container">
+                            <div
+                                class="attr_set_item flex_center"
+                                v-if="layout_data.col_container[key].radius"
+                                :key="key"
+                            >
+                                <div class="item_header flex_fix">分栏圆角</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input
+                                            class="input"
+                                            v-model="layout_data.col_container[key].radius.value"
+                                            placeholder="请输入圆角"
+                                        ></c-input>
+                                        <span
+                                            class="unit"
+                                        >{{layout_data.col_container[key].radius.unit}}</span>
+                                    </div>
+                                    <div class="value_unit flex_fix">
+                                        <c-switch
+                                            active-value="%"
+                                            inactive-value="px"
+                                            v-model="layout_data.col_container[key].radius.unit"
+                                            active-text="百分比"
+                                        ></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
                     </div>
                 </template>
                 <template #layout_animate>
@@ -203,6 +315,21 @@
                             <div class="item_header flex_fix">自动播放</div>
                             <div class="item_body flex_auto layout_grid layout_grid-col-3">
                                 <c-switch v-model="layout_data.col_container[0].attrs.autoplay"></c-switch>
+                            </div>
+                        </div>
+                        <div class="attr_set_item flex_center">
+                            <div class="item_header flex_fix">按钮颜色</div>
+                            <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.theme"
+                                    label="dark"
+                                >深色</c-radio>
+                                <c-radio
+                                    class="space_normal"
+                                    v-model="layout_data.col_container[0].attrs.theme"
+                                    label="white"
+                                >浅色</c-radio>
                             </div>
                         </div>
                         <div class="attr_set_item flex_center">
@@ -248,21 +375,83 @@
                     </div>
                 </template>
                 <template #block_container>
-                    <div class="attr_set_group">
-                        <div
-                            class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
-                        >
+                    <template v-for="(block, index) in layout_data.col_container">
+                        <div class="attr_set_group" :key="index">
                             <div
-                                class="animate_option"
-                                v-for="(item, key)  in block_layout_options"
-                                :class="{active: item.value === layout_data.col_container[0].attrs.size}"
-                                :key="key"
-                                @click="change_block_layout_size(item.value)"
+                                class="attr_set_item layout_grid layout_grid-col-2 layout_grid-rowspac-10 layout_grid-colspac-15"
                             >
-                                <div class="des">{{item.name}}</div>
+                                <div
+                                    class="animate_option"
+                                    v-for="(item, key)  in block_layout_options"
+                                    :class="{active: item.value === block.attrs.type}"
+                                    :key="key"
+                                    @click="change_block_layout_type(item.value)"
+                                >
+                                    <div class="des">{{item.name}}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="attr_set_group" :key="index + 'attr'">
+                            <div
+                                class="attr_set_item flex_center"
+                                @mouseenter="show_edit('layout_width')"
+                                @mouseleave="hide_edit('layout_width')"
+                            >
+                                <div class="item_header flex_fix">高度</div>
+                                <div class="item_body flex_center flex_auto">
+                                    <div class="value_input flex_auto flex_center">
+                                        <c-input
+                                            class="input"
+                                            v-model="block.attrs.height.value"
+                                            placeholder="请输入上外间距"
+                                        ></c-input>
+                                        <span class="unit">{{block.attrs.height.unit}}</span>
+                                    </div>
+
+                                    <div class="value_unit flex_fix">
+                                        <c-switch
+                                            active-value="%"
+                                            inactive-value="px"
+                                            v-model="block.attrs.height.unit"
+                                            active-text="百分比"
+                                        ></c-switch>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="attr_set_group" :key="index + 'bg'">
+                            <div class="attr_set_item flex_center">
+                                <div class="item_header flex_fix">颜色</div>
+                                <div class="item_body flex_auto layout_grid layout_grid-col-6">
+                                    <c-color-picker-btn
+                                        v-if="block.attrs.type == 'blank'"
+                                        v-model="block.attrs.bg"
+                                    ></c-color-picker-btn>
+                                    <c-color-picker-btn v-else v-model="block.attrs.line_color"></c-color-picker-btn>
+                                </div>
+                            </div>
+                            <div class="attr_set_item flex_center" v-if="block.attrs.type=='line'">
+                                <div class="item_header flex_fix">样式</div>
+                                <div class="item_body flex_auto layout_grid layout_grid-col-3">
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="block.attrs.line_type"
+                                        label="solid"
+                                    >实线</c-radio>
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="block.attrs.line_type"
+                                        label="dotted"
+                                    >点线</c-radio>
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="block.attrs.line_type"
+                                        label="dashed"
+                                    >虚线</c-radio>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </template>
             </c-tab-card>
 
@@ -328,12 +517,8 @@ export default Vue.extend({
             ],
             block_tab_cards: [
                 {
-                    nav: "分隔块",
+                    nav: "结构",
                     card_slot_name: "block_container"
-                },
-                {
-                    nav: "属性",
-                    card_slot_name: "layout_attr"
                 }
             ],
             dragger_option: {
@@ -359,16 +544,17 @@ export default Vue.extend({
             animate_options: [
                 { name: "无", value: 0 },
                 { name: "从上到下", value: 1 },
-                { name: "从右到左", value: 2 },
-                { name: "放大展示", value: 3 },
-                { name: "渐隐渐现", value: 4 }
+                { name: "从左到右", value: 2 },
+                { name: "从右到左", value: 3 },
+                { name: "放大展示", value: 4 },
+                { name: "渐隐渐现", value: 5 },
+                { name: "右旋入场", value: 6 },
+                { name: "左旋入场", value: 7 },
+                // { name: "旋转入场", value: 7 },
+                { name: "放大入场(下)", value: 8 },
+                { name: "放大入场(上)", value: 9 }
             ],
-            block_layout_options: [
-                { name: "大", value: "big" },
-                { name: "中", value: "medium" },
-                { name: "小", value: "small" },
-                { name: "线", value: "line" }
-            ]
+            block_layout_options: [{ name: "线", value: "line" }]
         };
     },
     computed: {
@@ -426,8 +612,11 @@ export default Vue.extend({
                 .find(".col")
                 .addClass("animated");
         },
-        change_block_layout_size(value) {
-            this.layout_data = { "col_container[0].attrs.size": value };
+        change_block_layout_type(value) {
+            this.layout_data = { "col_container[0].attrs.type": value };
+            this.$nextTick().then(() => {
+                this.$refs.tab_card.reset_ui();
+            });
         },
         layout_editor_cancel() {
             this.cancel_dialog.show = true;
@@ -454,6 +643,12 @@ export default Vue.extend({
         },
         cancel_change_cancel() {
             this.cancel_dialog.show = false;
+        },
+        show_edit(type, value) {
+            $("#" + this.layout_data.id).addClass("show_edit-" + type);
+        },
+        hide_edit(type) {
+            $("#" + this.layout_data.id).removeClass("show_edit-" + type);
         }
     },
     watch: {

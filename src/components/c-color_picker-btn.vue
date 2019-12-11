@@ -7,7 +7,7 @@
         >
             <c-color-picker-dialog
                 :is_show="show_panel"
-                :dialog_option="dialog_option"
+                :dialog_option="c_dialog_option"
                 v-model="c_value"
                 @color_picker_dialog_cancel="color_picker_dialog_cancel"
             ></c-color-picker-dialog>
@@ -22,7 +22,7 @@ export default Vue.extend({
     data() {
         interface data {
             show_panel: boolean;
-            dialog_option: Dialogoption;
+            default_dialog_option: Dialogoption;
         }
 
         interface Dialogoption {
@@ -30,7 +30,7 @@ export default Vue.extend({
         }
         let result: data = {
             show_panel: false,
-            dialog_option: {}
+            default_dialog_option: {}
         };
 
         return result;
@@ -38,36 +38,50 @@ export default Vue.extend({
     computed: {
         c_value: {
             get() {
-                return this.value;
+                return (this as any).value;
             },
             set(value) {
-                this.$emit("input", value);
+                (this as any).$emit("input", value);
             }
+        },
+        c_dialog_option() {
+            let result = $.extend(
+                true,
+                (this as any).default_dialog_option,
+                this.dialog_option
+            );
+            return result;
         }
     },
     props: {
         value: {
             type: String,
             default: "#fff"
+        },
+        dialog_option: {
+            type: Object,
+            default() {
+                return {};
+            }
         }
     },
     methods: {
         tab_show_panel(turn_show) {
             if (turn_show) {
-                this.show_panel = turn_show;
+                (this as any).show_panel = turn_show;
             }
         },
         color_picker_dialog_cancel() {
-            this.show_panel = false;
+            (this as any).show_panel = false;
         }
     },
     components: {
         "c-color-picker-dialog": c_color_picker_dialog
     },
     mounted() {
-        this.$nextTick().then(() => {
-            this.dialog_option = {
-                dialog_pos: this.$el
+        (this as any).$nextTick().then(() => {
+            (this as any).default_dialog_option = {
+                dialog_pos: (this as any).$el
             };
         });
     }

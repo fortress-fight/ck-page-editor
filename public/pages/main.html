@@ -5,6 +5,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="<%= BASE_URL %>./resource/script/modules.js"></script>
+        <script src="<%= BASE_URL %>./resource/script/jquery.min.js"></script>
         <title>Document</title>
         <style>
 body {
@@ -28,5 +30,21 @@ body {
     <body>
         <div class="editor_box"></div>
     </body>
+
+    <script>
+
+        $(function () {
+            $(".editor_box").each((i, dom) => {
+                let editor_component = Page_editor(dom, {
+                    remove_upload: true,
+                    editor_data: [],
+                    iframe_mounted() {
+                        window.EDITOR_CONFIG_MOUNTED(editor_component);
+                    }
+                }).init();
+            });
+        });
+
+    </script>
 
 </html>
