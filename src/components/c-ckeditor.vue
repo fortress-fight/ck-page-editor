@@ -140,6 +140,7 @@ function MyCustomUploadAdapterPlugin(editor) {
 export default Vue.extend({
     data() {
         return {
+            edit_handle: null,
             editors: (window as any).CKEDITOR,
             editorObj: null,
             // editor: BalloonEditor,
@@ -227,11 +228,11 @@ export default Vue.extend({
                         "imageTextAlternative",
                         "|",
                         "imageUpload",
-						"|",
-                        "imageAutoSize",                     
+                        "|",
+                        "imageAutoSize",
                         "imageScaleSize",
                         "removeImageSize",
-						"|",
+                        "|",
                         "imageStyle:full",
                         "imageStyle:alignLeft",
                         "imageStyle:alignCenter",
@@ -464,11 +465,31 @@ export default Vue.extend({
             default: "BalloonEditor"
         }
     },
+    computed: {
+        save(this: any) {
+            return this.$store.state.layout_editor_manage_module.save;
+        }
+    },
+    watch: {
+        save() {
+            var value = this.edit_handle.getData();
+            console.log("value:", value);
+            if (window.getSelection) {
+                // 获取选中
+                var selection = window.getSelection();
+                // 清除选中
+                window.getSelection().removeAllRanges();
+            }
+
+            this.$emit("input", value);
+        }
+    },
     methods: {
         onEditorInput(value: any, ev: any, editor: any) {
             this.$emit("onEditorInput", value, ev, editor);
         },
         onEditorReady(editor: any) {
+            this.edit_handle = editor;
             this.$emit("onEditorReady", editor);
         },
         onEditorBlur(ev: any, editor: any) {
@@ -485,6 +506,7 @@ export default Vue.extend({
             // this.$store.commit("hideControlPanel", false);
         },
         onEditorFocus(ev: any, editor: any) {
+            this.$emit("onEditorFocus");
             this.$emit("onEditorFocus", ev, editor);
         }
     }
@@ -512,101 +534,108 @@ body {
         }
     }
     .ck .ck-widget_with-resizer {
-				position: relative
-			}
+        position: relative;
+    }
 
-			.ck .ck-widget__resizer {
-				display: none;
-				position: absolute;
-				pointer-events: none;
-				left: 0;
-				top: 0;
-				outline: 1px solid var(--ck-color-resizer)
-			}
+    .ck .ck-widget__resizer {
+        display: none;
+        position: absolute;
+        pointer-events: none;
+        left: 0;
+        top: 0;
+        outline: 1px solid var(--ck-color-resizer);
+    }
 
-			.ck-focused .ck-widget_with-resizer.ck-widget_selected>.ck-widget__resizer {
-				display: block
-			}
+    .ck-focused
+        .ck-widget_with-resizer.ck-widget_selected
+        > .ck-widget__resizer {
+        display: block;
+    }
 
-			.ck .ck-widget__resizer__handle {
-				position: absolute;
-				pointer-events: all;
-				width: var(--ck-resizer-size);
-				height: var(--ck-resizer-size);
-				background: var(--ck-color-focus-border);
-				border: var(--ck-resizer-border-width) solid #fff;
-				border-radius: var(--ck-resizer-border-radius)
-			}
+    .ck .ck-widget__resizer__handle {
+        position: absolute;
+        pointer-events: all;
+        width: var(--ck-resizer-size);
+        height: var(--ck-resizer-size);
+        background: var(--ck-color-focus-border);
+        border: var(--ck-resizer-border-width) solid #fff;
+        border-radius: var(--ck-resizer-border-radius);
+    }
 
-			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-left {
-				top: var(--ck-resizer-offset);
-				left: var(--ck-resizer-offset);
-				cursor: nwse-resize
-			}
+    .ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-left {
+        top: var(--ck-resizer-offset);
+        left: var(--ck-resizer-offset);
+        cursor: nwse-resize;
+    }
 
-			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-right {
-				top: var(--ck-resizer-offset);
-				right: var(--ck-resizer-offset);
-				cursor: nesw-resize
-			}
+    .ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-right {
+        top: var(--ck-resizer-offset);
+        right: var(--ck-resizer-offset);
+        cursor: nesw-resize;
+    }
 
-			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-right {
-				bottom: var(--ck-resizer-offset);
-				right: var(--ck-resizer-offset);
-				cursor: nwse-resize
-			}
+    .ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-right {
+        bottom: var(--ck-resizer-offset);
+        right: var(--ck-resizer-offset);
+        cursor: nwse-resize;
+    }
 
-			.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-left {
-				bottom: var(--ck-resizer-offset);
-				left: var(--ck-resizer-offset);
-				cursor: nesw-resize
-			}
-            /*
+    .ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-left {
+        bottom: var(--ck-resizer-offset);
+        left: var(--ck-resizer-offset);
+        cursor: nesw-resize;
+    }
+    /*
 			* Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
 			* For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 			*/
 
-			:root {
-				--ck-insert-table-dropdown-padding: 10px;
-				--ck-insert-table-dropdown-box-height: 11px;
-				--ck-insert-table-dropdown-box-width: 12px;
-				--ck-insert-table-dropdown-box-margin: 1px;
-				--ck-insert-table-dropdown-box-border-color: hsl(0, 0%, 75%);
-				--ck-insert-table-dropdown-box-border-active-color: hsl(208, 73%, 61%);
-				--ck-insert-table-dropdown-box-active-background: hsl(208, 100%, 89%);
-			}
+    :root {
+        --ck-insert-table-dropdown-padding: 10px;
+        --ck-insert-table-dropdown-box-height: 11px;
+        --ck-insert-table-dropdown-box-width: 12px;
+        --ck-insert-table-dropdown-box-margin: 1px;
+        --ck-insert-table-dropdown-box-border-color: hsl(0, 0%, 75%);
+        --ck-insert-table-dropdown-box-border-active-color: hsl(208, 73%, 61%);
+        --ck-insert-table-dropdown-box-active-background: hsl(208, 100%, 89%);
+    }
 
-			.ck .ck-insert-table-dropdown__grid {
-				display: flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				/* The width of a container should match 10 items in a row so there will be a 10x10 grid. */
-				width: calc(var(--ck-insert-table-dropdown-box-width) * 10 + var(--ck-insert-table-dropdown-box-margin) * 20 + var(--ck-insert-table-dropdown-padding) * 2);
-				padding: var(--ck-insert-table-dropdown-padding) var(--ck-insert-table-dropdown-padding) 0;
-			}
+    .ck .ck-insert-table-dropdown__grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /* The width of a container should match 10 items in a row so there will be a 10x10 grid. */
+        width: calc(
+            var(--ck-insert-table-dropdown-box-width) * 10 +
+                var(--ck-insert-table-dropdown-box-margin) * 20 +
+                var(--ck-insert-table-dropdown-padding) * 2
+        );
+        padding: var(--ck-insert-table-dropdown-padding)
+            var(--ck-insert-table-dropdown-padding) 0;
+    }
 
-			.ck .ck-insert-table-dropdown__label {
-				text-align: center;
-			}
+    .ck .ck-insert-table-dropdown__label {
+        text-align: center;
+    }
 
-			.ck .ck-insert-table-dropdown-grid-box {
-				width: var(--ck-insert-table-dropdown-box-width);
-				height: var(--ck-insert-table-dropdown-box-height);
-				margin: var(--ck-insert-table-dropdown-box-margin);
-				border: 1px solid var(--ck-insert-table-dropdown-box-border-color);
-				border-radius: 1px;
+    .ck .ck-insert-table-dropdown-grid-box {
+        width: var(--ck-insert-table-dropdown-box-width);
+        height: var(--ck-insert-table-dropdown-box-height);
+        margin: var(--ck-insert-table-dropdown-box-margin);
+        border: 1px solid var(--ck-insert-table-dropdown-box-border-color);
+        border-radius: 1px;
+    }
 
-			}
-
-			.ck .ck-insert-table-dropdown-grid-box.ck-on {
-				border-color: var(--ck-insert-table-dropdown-box-border-active-color);
-				background: var(--ck-insert-table-dropdown-box-active-background);
-			}
-             .ck-font-size-dropdown .ck.ck-list__item .ck-button .ck-button__label {
-                font-size: 14px !important;
-            }
-             .ck-font-size-dropdown .ck-list {
-                padding: 0;
-            }
+    .ck .ck-insert-table-dropdown-grid-box.ck-on {
+        border-color: var(--ck-insert-table-dropdown-box-border-active-color);
+        background: var(--ck-insert-table-dropdown-box-active-background);
+    }
+    .ck-font-size-dropdown .ck.ck-list__item .ck-button .ck-button__label {
+        font-size: 14px !important;
+    }
+    .ck-font-size-dropdown .ck-list {
+        padding: 0;
+    }
 }
+
 </style>
