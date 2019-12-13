@@ -1135,6 +1135,7 @@ const layout_editor_manage_module = {
     state() {
         return {
             type: "",
+            save: false,
             data: [
                 { type: "ck_0", container: "", id: "" },
                 { type: "ck_1", container: "", id: "" },
@@ -1170,26 +1171,29 @@ const layout_editor_manage_module = {
                 state.type == "layout_group"
                     ? "editor_layout_group_dialog_module/change_data"
                     : "editor_layout_dialog_module/change_data";
-            state.data.forEach(v => {
-                if (v.path) {
-                    dispatch(
-                        target,
-                        {
-                            path: v.path,
-                            value: v.container
-                        },
-                        { root: true }
-                    );
-                }
-                v.path = "";
-                v.id = "";
-                v => {
-                    setTimeout(() => {
-                        v.container = "";
-                    }, 300);
-                };
+            state.save = !state.save;
+            setTimeout(() => {
+                state.data.forEach(v => {
+                    if (v.path) {
+                        dispatch(
+                            target,
+                            {
+                                path: v.path,
+                                value: v.container
+                            },
+                            { root: true }
+                        );
+                    }
+                    v.path = "";
+                    v.id = "";
+                    v => {
+                        setTimeout(() => {
+                            v.container = "";
+                        }, 300);
+                    };
+                });
+                state.type = "";
             });
-            state.type = "";
         },
         cancel_editor({ state }) {
             state.data.forEach(v => {
