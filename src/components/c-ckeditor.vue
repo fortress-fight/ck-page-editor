@@ -254,7 +254,9 @@ export default Vue.extend({
                 },
                 img_upload: {
                     url:
-                        "/service/editorUpload.php?action=uploadimage&encode=utf-8",
+                        process.env.NODE_ENV === "development"
+                            ? "/service"
+                            : "/service/editorUpload.php?action=uploadimage&encode=utf-8",
                     max_size: 2 * 1024 * 1024
                 },
                 mediaEmbed: {

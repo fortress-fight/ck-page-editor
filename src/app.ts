@@ -33,6 +33,7 @@ const Component = new Vue({
             img_upload: {
                 name: "Filedata",
                 action:
+                    // "/service/editorUpload.php?action=uploadimage&encode=utf-8"
                     process.env.NODE_ENV === "development"
                         ? "/service"
                         : "/service/editorUpload.php?action=uploadimage&encode=utf-8"
@@ -74,8 +75,8 @@ const Component = new Vue({
         };
         window.get_data = () => {
             return {
-                data: (this as any).$store.getters["layout_module/layout_dom"].$el
-                    .outerHTML,
+                data: (this as any).$store.getters["layout_module/layout_dom"]
+                    .$el.outerHTML,
                 store: _cloneDeep(
                     (this as any).$store.state.layout_module.all_layouts_data
                 ),
