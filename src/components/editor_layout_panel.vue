@@ -453,6 +453,16 @@
                         </div>
                     </template>
                 </template>
+                <template #form_controller>
+                    <template v-for="(form, index) in layout_data.col_container">
+                        <form-controller :key="index" v-model="form.container"></form-controller>
+                    </template>
+                </template>
+                <template #form_setting>
+                    <template v-for="(form, index) in layout_data.col_container">
+                        <form-setting :key="index" v-model="form.attrs"></form-setting>
+                    </template>
+                </template>
             </c-tab-card>
 
             <c-dialog
@@ -478,6 +488,8 @@ import Vue from "vue";
 import tab_card from "@/components/c-tab_card.vue";
 import dialog from "@/components/c-dialog.vue";
 import c_color_picker_btn from "@/components/c-color_picker-btn.vue";
+import form_controller from "@/components/form_controller.vue";
+import form_setting from "@/components/form_setting.vue";
 import c_dragger from "@/components/c-dragger.vue";
 import slider_image_manager from "@/components/slider_image_manager.vue";
 export default Vue.extend({
@@ -513,6 +525,20 @@ export default Vue.extend({
                 {
                     nav: "动效",
                     card_slot_name: "layout_animate"
+                }
+            ],
+            form_tab_cards: [
+                {
+                    nav: "表单",
+                    card_slot_name: "form_controller"
+                },
+                {
+                    nav: "设置",
+                    card_slot_name: "form_setting"
+                },
+                {
+                    nav: "结构",
+                    card_slot_name: "layout_dom"
                 }
             ],
             block_tab_cards: [
@@ -601,6 +627,7 @@ export default Vue.extend({
                     break;
 
                 default:
+                    // result = this["form_tab_cards"]
                     result = this.custom_tab_cards;
                     break;
             }
@@ -663,7 +690,9 @@ export default Vue.extend({
         "c-tab-card": tab_card,
         "c-color-picker-btn": c_color_picker_btn,
         "c-dragger": c_dragger,
-        "slider-image-manager": slider_image_manager
+        "slider-image-manager": slider_image_manager,
+        "form-controller": form_controller,
+        "form-setting": form_setting
     }
 });
 </script>

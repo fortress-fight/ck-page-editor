@@ -94,7 +94,7 @@ let unit_layout_module = {
                     attrs: {
                         module_center: false,
                         img_gallery: {
-                            open: "0",
+                            open: "0"
                         },
                         bg: {
                             pc: {
@@ -306,6 +306,101 @@ let unit_layout_module = {
                                     bg: "rgba(255,255,255,0)",
                                     line_color: "rgba(153, 153, 153, 0.5)",
                                     line_type: "solid"
+                                }
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
+
+                    case "form":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                container: [
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "input",
+                                        name: "姓名",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "radio",
+                                        name: "性别",
+                                        require: "1",
+                                        option: ["男", "女"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "select",
+                                        name: "年级",
+                                        require: "1",
+                                        option: ["一年级", "二年级"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "checkbox",
+                                        name: "爱好",
+                                        require: "1",
+                                        option: ["游泳", "跑步"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "date",
+                                        name: "时间",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "input",
+                                        name: "邮箱",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "line",
+                                        name: "区域一",
+                                        show_line: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "textarea",
+                                        name: "留言",
+                                        require: "0",
+                                        des: ""
+                                    }
+                                ],
+                                id: stringRandom(16, {
+                                    numbers: false
+                                }),
+                                attrs: {
+                                    name: "表单",
+                                    submit_text: "提交",
+                                    theme: "white",
+                                    pos: "left"
                                 }
                             }
                         ];
@@ -1088,11 +1183,11 @@ const layout_editor_manage_module = {
                 }
                 v.path = "";
                 v.id = "";
-                (v) => {
+                v => {
                     setTimeout(() => {
                         v.container = "";
                     }, 300);
-                }
+                };
             });
             state.type = "";
         },
@@ -1100,11 +1195,11 @@ const layout_editor_manage_module = {
             state.data.forEach(v => {
                 v.path = "";
                 v.id = "";
-                (v) => {
+                v => {
                     setTimeout(() => {
                         v.container = "";
                     }, 300);
-                }
+                };
             });
         }
     }

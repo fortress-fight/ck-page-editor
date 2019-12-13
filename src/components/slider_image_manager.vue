@@ -99,7 +99,9 @@ export default Vue.extend({
     },
     methods: {
         upload() {
-            (this.$refs.upload_btn as any).$refs["el-upload"].$refs["upload-inner"].handleClick();
+            (this.$refs.upload_btn as any).$refs["el-upload"].$refs[
+                "upload-inner"
+            ].handleClick();
         },
         sort() {
             (this as any).c_value = (this as any).c_value.sort(
@@ -158,13 +160,15 @@ export default Vue.extend({
     }
     &-placeholder {
         font-size: 15px;
-cursor: pointer;
+
         position: absolute;
         top: 0;
         left: 0;
 
         width: 100%;
         height: 100%;
+
+        cursor: pointer;
 
         color: #ccd5db;
         .ic {

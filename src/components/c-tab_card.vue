@@ -38,9 +38,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { get_el_dis_pos } from "@/lib/plugins/unit";
-interface JQuery {
-    velocity(): JQuery;
-}
+import "velocity-animate";
 export default Vue.extend({
     data() {
         return {
