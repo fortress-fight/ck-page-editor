@@ -312,6 +312,101 @@ let unit_layout_module = {
                         result.col = value || "100";
                         break;
 
+                    case "form":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                container: [
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "input",
+                                        name: "姓名",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "radio",
+                                        name: "性别",
+                                        require: "1",
+                                        option: ["男", "女"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "select",
+                                        name: "年级",
+                                        require: "1",
+                                        option: ["一年级", "二年级"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "checkbox",
+                                        name: "爱好",
+                                        require: "1",
+                                        option: ["游泳", "跑步"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "date",
+                                        name: "时间",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "input",
+                                        name: "邮箱",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "line",
+                                        name: "区域一",
+                                        show_line: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "textarea",
+                                        name: "留言",
+                                        require: "0",
+                                        des: ""
+                                    }
+                                ],
+                                id: stringRandom(16, {
+                                    numbers: false
+                                }),
+                                attrs: {
+                                    name: "表单",
+                                    submit_text: "提交",
+                                    theme: "white",
+                                    pos: "left"
+                                }
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
+
                     default:
                         break;
                 }

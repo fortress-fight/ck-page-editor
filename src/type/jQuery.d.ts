@@ -1,7 +1,7 @@
 import "jquery";
 import Vue from "vue";
+
 interface JQuery {
-    Velocity(): JQuery;
     masonry(): JQuery;
     slick(): JQuery;
     imagesLoaded(): JQuery;
@@ -21,7 +21,6 @@ declare global {
         set_theme(string): void;
         set_agent(string): void;
         download_page_data(string): void;
-        Velocity: any;
         VueComponentMainPage: Vue;
         VueComponentEditorPage: Vue;
     }
