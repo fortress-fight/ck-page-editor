@@ -77,8 +77,9 @@ class Page_editor {
             alert("请先关闭当前编辑");
         } else {
             this.initial_editor_frame_data.editor_data = _cloneDeep(store);
-            this.option.confirm_editor.call(this, data, store, encrypt_data);
-            callback && callback();
+            this.option.confirm_editor.call(this, data, store, encrypt_data) &&
+                callback &&
+                callback();
         }
     }
 
@@ -435,11 +436,9 @@ class Page_editor {
             <div class="page_editor-body">
                 <div id="page_editor-control_panel"></div>
                 <div id="wrapper-editor_iframe">
-                    <iframe id="editor_iframe" data-path="${__webpack_public_path__}" src="${
-            __webpack_public_path__ !== "/"
-                ? __webpack_public_path__ + "index.html"
-                : "/index.html"
-        }"></iframe>
+                    <iframe id="editor_iframe" data-path="${this.option
+                        .iframe_url || "/"}" src="${(this.option.iframe_url ||
+            "") + "/index.html"}"></iframe>
                 </div>
             </div>
         `);

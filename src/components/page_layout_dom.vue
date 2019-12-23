@@ -198,14 +198,13 @@
                                                         v-for="(slider_item) in col_item.container"
                                                         :key="slider_item.order"
                                                     >
-                                                        <img :src="slider_item.img" alt srcset />
+                                                        <img :src="slider_item.img" alt />
                                                     </div>
                                                 </template>
                                                 <div class="slider_item" v-else>
                                                     <img
                                                         src="@/assets/1200x400.png"
                                                         title="占位图片"
-                                                        srcset
                                                     />
                                                 </div>
                                             </div>

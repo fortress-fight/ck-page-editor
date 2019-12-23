@@ -80,8 +80,8 @@ module.exports = {
     },
     publicPath:
         process.env.NODE_ENV === "production"
-            ? "/templates/templates/editor_page/"
-            : "",
+            ? "/views/13450/pc/editor_page/bc/"
+            : "/",
     chainWebpack: config => {},
     css: {
         loaderOptions: {

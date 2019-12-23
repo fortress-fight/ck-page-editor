@@ -253,7 +253,7 @@ export default Vue.extend({
                 },
                 img_upload: {
                     url:
-                        "/manage/page/editor_upload.php?action=uploadimage&encode=utf-8",
+                        "/api/upload_img.html",
                     max_size: 2 * 1024 * 1024
                 },
                 mediaEmbed: {

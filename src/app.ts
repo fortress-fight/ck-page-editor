@@ -35,7 +35,7 @@ const Component = new Vue({
                 action:
                     process.env.NODE_ENV === "development"
                         ? "/service"
-                        : "/manage/page/editor_upload.php?action=uploadimage&encode=utf-8"
+                        : "/api/upload_img.html"
             },
             main_page_win: window.parent
         };
@@ -80,13 +80,13 @@ const Component = new Vue({
                     {
                         removeAttributeQuotes: true,
                         removeComments: true,
-                        minifyCSS: {
-                            level: {
-                                1: {
-                                    removeQuotes: true
-                                }
-                            }
-                        }
+                        // minifyCSS: {
+                        //     level: {
+                        //         1: {
+                        //             removeQuotes: true
+                        //         }
+                        //     }
+                        // }
                     }
                 ),
                 store: _cloneDeep(
