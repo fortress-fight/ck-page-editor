@@ -15,8 +15,18 @@
                         <div class="item_header flex_fix">按钮主题</div>
 
                         <div class="item_body flex_auto layout_grid layout_grid-col-3">
-                            <c-radio class="space_normal" v-model="value.style" label="white">白色</c-radio>
-                            <c-radio class="space_normal" v-model="value.style" label="black">黑色</c-radio>
+                            <c-radio
+                                class="space_normal"
+                                @click="clear"
+                                v-model="value.style"
+                                label="white"
+                            >白色</c-radio>
+                            <c-radio
+                                class="space_normal"
+                                @click="clear"
+                                v-model="value.style"
+                                label="black"
+                            >黑色</c-radio>
                         </div>
                     </div>
                     <div class="attr_set_item flex_yt">
@@ -118,7 +128,7 @@
                                         :data-style="value.style"
                                         :data-layout="value.layout"
                                         :data-before-outline="value.before.outline"
-                                        :style="{color: ['#fff','#ffffff', '#333', '#333333'].includes(value.before.color) ? false : value.before.color, backgroundColor: ['#f0f0f0', '#333', '#333333'].includes(value.before.bg) ? false : value.before.bg,  borderColor: ['#f0f0f0', '#333', '#333333'].includes(value.before.bg) ? false : value.before.bg}"
+                                        :style="{color: value.before.color, backgroundColor: value.before.bg,  borderColor: value.before.bg}"
                                     >按钮</a>
                                 </div>
                             </div>
@@ -129,7 +139,7 @@
                                         :data-style="value.style"
                                         :data-layout="value.layout"
                                         :data-before-outline="value.after.outline"
-                                        :style="{color: ['#fff','#ffffff', '#333', '#333333'].includes(value.after.color) ? false : value.after.color, backgroundColor: ['#f0f0f0', '#333', '#333333'].includes(value.after.bg)? false : value.after.bg,  borderColor: ['#f0f0f0', '#333', '#333333'].includes(value.after.bg) ? false : value.after.bg}"
+                                        :style="{color: value.after.color, backgroundColor: value.after.bg,  borderColor: value.after.bg}"
                                     >按钮</a>
                                 </div>
                             </div>
@@ -150,16 +160,28 @@ import "@/style/fonts.scss";
 export default Vue.extend({
     data() {
         return {
-            value: {
+            empty_value: {
                 before: {
-                    bg: "#f0f0f0",
+                    bg: "",
                     outline: "0",
-                    color: "#333"
+                    color: ""
                 },
                 after: {
-                    bg: "#f0f0f0",
+                    bg: "",
                     outline: "0",
-                    color: "#333"
+                    color: ""
+                }
+            },
+            value: {
+                before: {
+                    bg: "",
+                    outline: "0",
+                    color: ""
+                },
+                after: {
+                    bg: "",
+                    outline: "0",
+                    color: ""
                 },
                 layout: "0",
                 style: "white"
@@ -183,7 +205,11 @@ export default Vue.extend({
             ckLinkSettingCallback: function(value) {}
         };
     },
+    watch: {},
     methods: {
+        clear() {
+            $.extend(true, this.value, this.empty_value);
+        },
         refresh_config() {
             this.reset_color();
         },

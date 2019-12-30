@@ -38,7 +38,7 @@ export default Vue.extend({
     computed: {
         c_value: {
             get() {
-                return (this as any).value;
+                return (this as any).value || "#fff";
             },
             set(value) {
                 (this as any).$emit("input", value);

@@ -1,5 +1,10 @@
 <template>
-    <div class="body_container" :data-agent="agent" :data-theme="theme">
+    <div
+        class="body_container"
+        :data-agent="agent"
+        :data-theme="theme"
+        :class="agent == 'pc' ? 'agent-pc agent_pc' : 'agent-mobile'"
+    >
         <div id="page_body_editor" class="page_body_editor" :class="{has_border: can_editor}">
             <page-layout-dom :can_editor="can_editor"></page-layout-dom>
             <keep-alive>

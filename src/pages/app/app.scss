@@ -1172,7 +1172,7 @@ body #page_body_editor-wrapper .layout_group {
             background: #333;
         }
         &[data-before-outline="1"] {
-            background-color: transparent;
+            background-color: transparent !important;
         }
     }
 
@@ -1914,7 +1914,9 @@ body #page_body_editor-wrapper .layout_group {
             }
 
             &[data-animate="0"] {
-                animation-name: none;
+                .col {
+                    animation-name: none;
+                }
             }
             &[data-animate="1"],
             &[data-animate="3"],
@@ -2067,6 +2069,7 @@ body #page_body_editor-wrapper .layout_group {
 
 // * 电脑独有样式
 .agent-pc,
+.agent_pc,
 .body_container[data-agent="pc"] {
     #page_body_editor-wrapper {
         .layout_bg {
@@ -3344,12 +3347,68 @@ body #page_body_editor-wrapper .layout_group {
     .layout_form-submit_row {
         display: flex;
 
-        justify-content: flex-start;
+        flex-wrap: wrap;
         &[data-pos="center"] {
             justify-content: center;
         }
         &[data-pos="right"] {
             justify-content: flex-end;
+        }
+        .fa-spinner {
+            font-size: 20px;
+
+            position: absolute;
+            right: 12px;
+
+            display: none;
+
+            vertical-align: middle;
+            vertical-align: middle;
+        }
+        .layout_form-button {
+            position: relative;
+        }
+        .form-err_msg {
+            display: block;
+
+            width: 100%;
+        }
+
+        &.form-submit_loading {
+            .fa-spinner {
+                display: inline-block;
+
+                animation: fa-spin 2s infinite linear;
+                &:before {
+                    content: "\f110";
+                }
+            }
+        }
+
+        &.form-submit_suc {
+            animation: none;
+            .fa-spinner {
+                animation: none;
+                &:before {
+                    display: inline-block;
+
+                    content: "\f058";
+
+                    color: #1d9d74;
+                }
+            }
+        }
+        &.form-submit_err {
+            .fa-spinner {
+                animation: none;
+                &:before {
+                    display: inline-block;
+
+                    content: "\f057";
+
+                    color: #ff5151;
+                }
+            }
         }
     }
     .layout_form-row_body {
@@ -3372,6 +3431,9 @@ body #page_body_editor-wrapper .layout_group {
         textarea {
             resize: vertical;
         }
+        select {
+            background: rgba(250, 250, 250, 0.1);
+        }
         textarea,
         input {
             font-size: 14px;
@@ -3389,16 +3451,11 @@ body #page_body_editor-wrapper .layout_group {
             box-shadow: none;
         }
         textarea {
-            
-
             -webkit-appearance: none;
         }
         input {
-
             &[type="text"] {
-                
-
-            -webkit-appearance: none;
+                -webkit-appearance: none;
             }
             &[type="checkbox"],
             &[type="radio"] {
@@ -3438,5 +3495,15 @@ body #page_body_editor-wrapper .layout_group {
         color: #777;
         border: 1px solid rgba(0, 0, 0, 0.2);
         background: rgba(250, 250, 250, 0.1);
+    }
+    .form-err_msg {
+        padding-top: 10px;
+
+        color: #ff3737;
+        &:before {
+            padding-right: 5px;
+
+            content: "*";
+        }
     }
 }
