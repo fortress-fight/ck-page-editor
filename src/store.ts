@@ -312,6 +312,101 @@ let unit_layout_module = {
                         result.col = value || "100";
                         break;
 
+                    case "form":
+                        result.col_container = [
+                            {
+                                col: 100,
+                                container: [
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "input",
+                                        name: "姓名",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "radio",
+                                        name: "性别",
+                                        require: "1",
+                                        option: ["男", "女"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "select",
+                                        name: "年级",
+                                        require: "1",
+                                        option: ["一年级", "二年级"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "checkbox",
+                                        name: "爱好",
+                                        require: "1",
+                                        option: ["游泳", "跑步"],
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "date",
+                                        name: "时间",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "input",
+                                        name: "邮箱",
+                                        require: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "line",
+                                        name: "区域一",
+                                        show_line: "1",
+                                        des: ""
+                                    },
+                                    {
+                                        id: stringRandom(16, {
+                                            numbers: false
+                                        }),
+                                        type: "textarea",
+                                        name: "留言",
+                                        require: "0",
+                                        des: ""
+                                    }
+                                ],
+                                id: stringRandom(16, {
+                                    numbers: false
+                                }),
+                                attrs: {
+                                    name: "表单",
+                                    submit_text: "提交",
+                                    theme: "white",
+                                    pos: "left"
+                                }
+                            }
+                        ];
+                        result.col = value || "100";
+                        break;
+
                     default:
                         break;
                 }
@@ -1040,6 +1135,7 @@ const layout_editor_manage_module = {
     state() {
         return {
             type: "",
+            save: false,
             data: [
                 { type: "ck_0", container: "", id: "" },
                 { type: "ck_1", container: "", id: "" },
@@ -1075,36 +1171,39 @@ const layout_editor_manage_module = {
                 state.type == "layout_group"
                     ? "editor_layout_group_dialog_module/change_data"
                     : "editor_layout_dialog_module/change_data";
-            state.data.forEach(v => {
-                if (v.path) {
-                    dispatch(
-                        target,
-                        {
-                            path: v.path,
-                            value: v.container
-                        },
-                        { root: true }
-                    );
-                }
-                v.path = "";
-                v.id = "";
-                (v) => {
-                    setTimeout(() => {
-                        v.container = "";
-                    }, 300);
-                }
+            state.save = !state.save;
+            setTimeout(() => {
+                state.data.forEach(v => {
+                    if (v.path) {
+                        dispatch(
+                            target,
+                            {
+                                path: v.path,
+                                value: v.container
+                            },
+                            { root: true }
+                        );
+                    }
+                    v.path = "";
+                    v.id = "";
+                    v => {
+                        setTimeout(() => {
+                            v.container = "";
+                        }, 300);
+                    };
+                });
+                state.type = "";
             });
-            state.type = "";
         },
         cancel_editor({ state }) {
             state.data.forEach(v => {
                 v.path = "";
                 v.id = "";
-                (v) => {
+                v => {
                     setTimeout(() => {
                         v.container = "";
                     }, 300);
-                }
+                };
             });
         }
     }

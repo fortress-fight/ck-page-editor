@@ -68,11 +68,15 @@ module.exports = {
         }
     },
     devServer: {
-        port: 80,
         disableHostCheck: true,
         proxy: {
+            "/templates/upload": {
+                target: "https://resources.jsmo.xin/",
+                changeOrigin: true, // target是域名的话，需要这个参数，
+                secure: false // 设置支持https协议的代理
+            },
             "/service": {
-                target: "http://127.0.0.1:3003/",
+                target: "http://moue5.jsmo.xin/",
                 changeOrigin: true, // target是域名的话，需要这个参数，
                 secure: false // 设置支持https协议的代理
             }
