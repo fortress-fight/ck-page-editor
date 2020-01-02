@@ -6,6 +6,14 @@
     >
         <div class="wrapper-control_panel">
             <div class="sidebar-control_panel">
+                <a
+                    href="./user/user.html"
+                    class="item-control_panel_side"
+                    target="_blank"
+                    style="font-size: 17px;"
+                >
+                    <i class="fa fa-user-o" aria-hidden="true"></i>
+                </a>
                 <div
                     class="item-control_panel_side"
                     :class="{select:'panel-modules' === open_control_panel}"
