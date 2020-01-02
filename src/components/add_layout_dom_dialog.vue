@@ -21,17 +21,36 @@
                                 v-for="(item, key) in custom_options"
                                 :key="key"
                                 class="item layout_grid"
-                                :class="[`layout_grid-col-${item.grid_col}`, {'layout_grid-colspac-3': item.grid_col > 1}, {'active': type=='custom' && value == item.value}]"
+                                :class="[
+                                    `layout_grid-col-${item.grid_col}`,
+                                    {
+                                        'layout_grid-colspac-3':
+                                            item.grid_col > 1
+                                    },
+                                    {
+                                        active:
+                                            type == 'custom' &&
+                                            value == item.value
+                                    }
+                                ]"
                                 :data-value="item.value"
-                                @click="type='custom'; value = item.value"
+                                @click="
+                                    type = 'custom';
+                                    value = item.value;
+                                "
                             >
                                 <div
-                                    v-for="(son_item, son_key) in item.value.split('_')"
+                                    v-for="(son_item,
+                                    son_key) in item.value.split('_')"
                                     class="item_son"
-                                    :class="item.item_col[son_key] ? `layout_grid-item_clo-${item.item_col[son_key]}` : ''"
+                                    :class="
+                                        item.item_col[son_key]
+                                            ? `layout_grid-item_clo-${item.item_col[son_key]}`
+                                            : ''
+                                    "
                                     :key="son_key"
                                 >
-                                    <div class="des">{{son_item}}</div>
+                                    <div class="des">{{ son_item }}</div>
                                 </div>
                             </div>
                         </div>
@@ -46,12 +65,17 @@
                                 v-for="(item, key) in fun_options"
                                 :key="key"
                                 class="item layout_grid layout_grid-col-1"
-                                :class="{'active': type=='fun' && value == item.value}"
+                                :class="{
+                                    active: type == 'fun' && value == item.value
+                                }"
                                 :data-value="item.value"
-                                @click="type='fun'; value = item.value"
+                                @click="
+                                    type = 'fun';
+                                    value = item.value;
+                                "
                             >
                                 <div class="item_son">
-                                    <div class="des">{{item.name}}</div>
+                                    <div class="des">{{ item.name }}</div>
                                 </div>
                             </div>
                         </div>
@@ -64,14 +88,23 @@
                             v-if="whitch_dialog == 'add_layout_group'"
                         >
                             <div
-                                v-for="(layout_group, key) in initial_layouts.layout_group"
+                                v-for="(layout_group,
+                                key) in initial_layouts.layout_group"
                                 :key="key"
                                 class="item layout_grid layout_grid-col-1"
-                                :class="{'active': type=='template' && initial_layouts.select == key}"
-                                @click="template_layout_select(layout_group, key)"
+                                :class="{
+                                    active:
+                                        type == 'template' &&
+                                        initial_layouts.select == key
+                                }"
+                                @click="
+                                    template_layout_select(layout_group, key)
+                                "
                             >
                                 <div class="item_son">
-                                    <div class="des">{{layout_group.name}}</div>
+                                    <div class="des">
+                                        {{ layout_group.name }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -83,11 +116,15 @@
                                 v-for="(layout, key) in initial_layouts.layout"
                                 :key="key"
                                 class="item layout_grid layout_grid-col-1"
-                                :class="{'active': type=='template' && initial_layouts.select == key}"
+                                :class="{
+                                    active:
+                                        type == 'template' &&
+                                        initial_layouts.select == key
+                                }"
                                 @click="template_layout_select(layout, key)"
                             >
                                 <div class="item_son">
-                                    <div class="des">{{layout.name}}</div>
+                                    <div class="des">{{ layout.name }}</div>
                                 </div>
                             </div>
                         </div>
@@ -95,14 +132,19 @@
                 </template>
                 <template #fix_layout>
                     <div class="page_editor-layout" data-pop="body">
-                        <div class="page_editor-layout_options layout_grid layout_grid-col-1">
+                        <div
+                            class="page_editor-layout_options layout_grid layout_grid-col-1"
+                        >
                             <c-input
                                 type="textarea"
                                 :rows="10"
                                 placeholder="请输入复制的板块内容"
                                 v-model="code"
                                 resize="none"
-                                @change="type='code';value = code"
+                                @change="
+                                    type = 'code';
+                                    value = code;
+                                "
                             ></c-input>
                         </div>
                     </div>
@@ -179,6 +221,10 @@ export default Vue.extend({
                 {
                     name: "幻灯",
                     value: "slider"
+                },
+                {
+                    name: "表单",
+                    value: "form"
                 },
                 {
                     name: "线",

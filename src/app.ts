@@ -29,10 +29,11 @@ const Component = new Vue({
             resource_link:
                 process.env.NODE_ENV === "development"
                     ? "http://127.0.0.1:3003/"
-                    : "",
+                    : "http://resources.jsmo.xin",
             img_upload: {
                 name: "Filedata",
                 action:
+                    // "/service/editorUpload.php?action=uploadimage&encode=utf-8"
                     process.env.NODE_ENV === "development"
                         ? "/service"
                         : "/api/upload_img.html"
@@ -79,7 +80,7 @@ const Component = new Vue({
                         .outerHTML,
                     {
                         removeAttributeQuotes: true,
-                        removeComments: true,
+                        removeComments: true
                         // minifyCSS: {
                         //     level: {
                         //         1: {

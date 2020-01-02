@@ -209,6 +209,168 @@
                                                 </div>
                                             </div>
                                         </template>
+                                        <template v-if="layout_item.type_detail=='form'">
+                                            <form
+                                                action="/"
+                                                class="layout_form"
+                                                :data-theme="layout_item.col_container[0].attrs.theme"
+                                            >
+                                                <div class="layout_form-fields">
+                                                    <div
+                                                        class="layout_form-row"
+                                                        :data-require="form_field.require"
+                                                        v-for="(form_field, index) in layout_item.col_container[0].container"
+                                                        :data-type="form_field.type"
+                                                        :key="index"
+                                                        :data-ruler="(form_field.require == 1 ? 'require,':'') + form_field.type "
+                                                    >
+                                                        <div class="layout_form-row_head">
+                                                            <div
+                                                                class="layout_form-row_name"
+                                                            >{{form_field.name}}</div>
+                                                            <div
+                                                                class="layout_form-row_des"
+                                                            >{{form_field.des}}</div>
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-if="['input', 'number', 'email'].includes(form_field.type)"
+                                                        >
+                                                            <input
+                                                                type="text"
+                                                                :name="form_field.name"
+                                                                :data-type="form_field.type"
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'date'"
+                                                        >
+                                                            <input
+                                                                type="text"
+                                                                :name="form_field.name"
+                                                                placeholder="2018-09-10 21:09"
+                                                                :data-type="form_field.type"
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'phone'"
+                                                        >
+                                                            <input
+                                                                type="tel"
+                                                                :name="form_field.name"
+                                                                :data-type="form_field.type"
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'select'"
+                                                        >
+                                                            <select :name="form_field.name">
+                                                                <option
+                                                                    v-for="(option, index) in form_field.option"
+                                                                    :key="index"
+                                                                    :value="option"
+                                                                >{{option}}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'radio'"
+                                                        >
+                                                            <div
+                                                                class="layout_form-option"
+                                                                v-for="(option, index) in form_field.option"
+                                                                :key="index"
+                                                            >
+                                                                <input
+                                                                    type="radio"
+                                                                    :checked="index == 0"
+                                                                    :name="form_field.name"
+                                                                    :id="option"
+                                                                    :value="option"
+                                                                />
+                                                                <label :for="option">{{option}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'checkbox'"
+                                                        >
+                                                            <div
+                                                                class="layout_form-option"
+                                                                v-for="(option, index) in form_field.option"
+                                                                :key="index"
+                                                            >
+                                                                <input
+                                                                    type="checkbox"
+                                                                    :name="form_field.name"
+                                                                    :id="option"
+                                                                    :value="option"
+                                                                />
+                                                                <label :for="option">{{option}}</label>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'textarea'"
+                                                        >
+                                                            <textarea
+                                                                :name="form_field.name"
+                                                                rows="16"
+                                                            ></textarea>
+                                                        </div>
+                                                        <div
+                                                            class="layout_form-row_body"
+                                                            v-else-if="form_field.type ==  'line'"
+                                                            :data-show_line="form_field.show_line"
+                                                        ></div>
+                                                    </div>
+
+                                                    <div
+                                                        class="layout_form-row layout_form-row_ver_code"
+                                                        data-require="1"
+                                                        data-ruler="require"
+                                                    >
+                                                        <div class="layout_form-row_head">
+                                                            <div class="layout_form-row_name">验证码</div>
+                                                        </div>
+                                                        <div class="layout_form-row_body flex">
+                                                            <input
+                                                                type="text"
+                                                                name="code"
+                                                                data-type="code"
+                                                            />
+                                                            <img
+                                                                class="form-code_img"
+                                                                data-src="/message/code"
+                                                                src="http://mo005-8390.mo5.line1.jsmo.xin/message/code?1576147606962"
+                                                                alt
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <input
+                                                        type="hidden"
+                                                        name="type"
+                                                        value="editor_form"
+                                                    />
+                                                </div>
+
+                                                <div
+                                                    class="layout_form-submit_row"
+                                                    :data-pos="layout_item.col_container[0].attrs.pos"
+                                                >
+                                                    <div class="layout_form-button">
+                                                        {{layout_item.col_container[0].attrs.submit_text}}
+                                                        <i
+                                                            class="icon fa fa-spinner"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </template>
                                         <template v-if="layout_item.type_detail=='block'">
                                             <div
                                                 class="layout_block"

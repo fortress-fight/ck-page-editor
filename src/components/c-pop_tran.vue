@@ -5,6 +5,7 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
+import "velocity-animate";
 export default Vue.extend({
     props: {
         pos: {

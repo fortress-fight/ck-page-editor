@@ -6,6 +6,14 @@
     >
         <div class="wrapper-control_panel">
             <div class="sidebar-control_panel">
+                <a
+                    href="./user/user.html"
+                    class="item-control_panel_side"
+                    target="_blank"
+                    style="font-size: 17px;"
+                >
+                    <i class="fa fa-user-o" aria-hidden="true"></i>
+                </a>
                 <div
                     class="item-control_panel_side"
                     :class="{select:'panel-modules' === open_control_panel}"
@@ -158,6 +166,15 @@
                                         >
                                             <div class="item_son">
                                                 <div class="des">幻灯</div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            data-value="block"
+                                            class="item layout_grid layout_grid-col-1"
+                                            @click="add_handle_module('form')"
+                                        >
+                                            <div class="item_son">
+                                                <div class="des">表单</div>
                                             </div>
                                         </div>
                                         <div

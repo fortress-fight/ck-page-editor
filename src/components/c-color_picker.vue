@@ -140,7 +140,7 @@ export default Vue.extend({
     },
     methods: {
         set_color(color) {
-            this.color_picker.color = color;
+            this.color_picker.color = color || "#fff";
         }
     },
     computed: {
