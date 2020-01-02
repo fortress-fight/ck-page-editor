@@ -145,7 +145,7 @@ export default Vue.extend({
             editorObj: null,
             // editor: BalloonEditor,
             editorConfig: {
-                placeholder: "点击编辑后，可以输入内容...",
+                placeholder: "添加内容",
                 fontFamily: {
                     options: [
                         "default",
@@ -636,6 +636,9 @@ body {
     .ck-font-size-dropdown .ck-list {
         padding: 0;
     }
+    .ck.ck-placeholder:before,
+    .ck .ck-placeholder:before {
+        color: rgba(#999, 0.5);
+    }
 }
-
 </style>

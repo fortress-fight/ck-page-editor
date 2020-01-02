@@ -286,7 +286,7 @@ export default Vue.extend({
                 case "select":
                 case "checkbox":
                 case "radio":
-                    result = { arr: [] };
+                    result = { option: [] };
                     break;
                 case "line":
                     result = {

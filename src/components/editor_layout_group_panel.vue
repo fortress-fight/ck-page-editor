@@ -76,7 +76,7 @@
                     </div>
                 </template>
                 <template #layout_attr>
-                    <div class="attr_set_group" v-if="false">
+                    <div class="attr_set_group">
                         <div class="attr_set_item flex_center">
                             <div class="item_header flex_fix">布局标识</div>
                             <div class="item_body flex_auto">

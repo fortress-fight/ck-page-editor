@@ -222,6 +222,7 @@
                                                         v-for="(form_field, index) in layout_item.col_container[0].container"
                                                         :data-type="form_field.type"
                                                         :key="index"
+                                                        :data-ruler="(form_field.require == 1 ? 'require,':'') + form_field.type "
                                                     >
                                                         <div class="layout_form-row_head">
                                                             <div
@@ -285,6 +286,7 @@
                                                             >
                                                                 <input
                                                                     type="radio"
+                                                                    :checked="index == 0"
                                                                     :name="form_field.name"
                                                                     :id="option"
                                                                     :value="option"
@@ -329,6 +331,7 @@
                                                     <div
                                                         class="layout_form-row layout_form-row_ver_code"
                                                         data-require="1"
+                                                        data-ruler="require"
                                                     >
                                                         <div class="layout_form-row_head">
                                                             <div class="layout_form-row_name">验证码</div>
@@ -340,20 +343,31 @@
                                                                 data-type="code"
                                                             />
                                                             <img
+                                                                class="form-code_img"
+                                                                data-src="/message/code"
                                                                 src="http://mo005-8390.mo5.line1.jsmo.xin/message/code?1576147606962"
                                                                 alt
                                                             />
                                                         </div>
                                                     </div>
+                                                    <input
+                                                        type="hidden"
+                                                        name="type"
+                                                        value="editor_form"
+                                                    />
                                                 </div>
 
                                                 <div
                                                     class="layout_form-submit_row"
                                                     :data-pos="layout_item.col_container[0].attrs.pos"
                                                 >
-                                                    <div
-                                                        class="layout_form-button"
-                                                    >{{layout_item.col_container[0].attrs.submit_text}}</div>
+                                                    <div class="layout_form-button">
+                                                        {{layout_item.col_container[0].attrs.submit_text}}
+                                                        <i
+                                                            class="icon fa fa-spinner"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </template>
