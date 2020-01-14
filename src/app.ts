@@ -29,7 +29,7 @@ const Component = new Vue({
             resource_link:
                 process.env.NODE_ENV === "development"
                     ? "http://127.0.0.1:3003/"
-                    : "http://resources.jsmo.xin",
+                    : "",
             img_upload: {
                 name: "Filedata",
                 action:

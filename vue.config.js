@@ -98,18 +98,20 @@ module.exports = {
             sass: {
                 // @/ 是 src/ 的别名
                 // 所以这里假设你有 `src/variables.scss` 这个文件
-                data: `@import "@/style/mixin.scss"; @import "@/style/reset.scss";`,
-                use: [
-                    "vue-style-loader",
-                    {
-                        loader: "css-loader",
-                        options: {
-                            modules: true
-                        }
-                    },
-                    { loader: "resolve-url-loader" },
-                    "sass-loader"
-                ]
+                prependData: `@import "@/style/mixin.scss"; @import "@/style/reset.scss";`,
+                sassOptions: {
+                    use: [
+                        "vue-style-loader",
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: true
+                            }
+                        },
+                        { loader: "resolve-url-loader" },
+                        "sass-loader"
+                    ]
+                }
             }
         }
     },

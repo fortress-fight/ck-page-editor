@@ -94,7 +94,7 @@ let unit_layout_module = {
                     attrs: {
                         module_center: false,
                         img_gallery: {
-                            open: "0",
+                            open: "0"
                         },
                         bg: {
                             pc: {
@@ -664,7 +664,7 @@ const layout_module = {
             });
         },
         add_new_layout_module(
-            { state, getters, actions, rootState },
+            { state, getters, rootState },
             { data, relate_data, callback = (vue, data) => {} }
         ) {
             if (!data) throw new Error("缺少数据");

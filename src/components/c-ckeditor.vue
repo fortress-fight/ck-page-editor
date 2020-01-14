@@ -144,12 +144,14 @@ export default Vue.extend({
             editors: (window as any).CKEDITOR,
             editorObj: null,
             // editor: BalloonEditor,
-            editorConfig: {
+            editorConfig: window.ck_editor_config || {
                 placeholder: "添加内容",
                 fontFamily: {
                     options: [
                         "default",
                         "微软雅黑",
+                        "思源黑体 极细",
+                        "思源黑体 特粗",
                         "宋体",
                         "Arial",
                         "HELVETICANEUELTPRO-THEX",
@@ -253,8 +255,7 @@ export default Vue.extend({
                     ]
                 },
                 img_upload: {
-                    url:
-                        "/api/upload_img.html",
+                    url: "/api/upload_img.html",
                     max_size: 2 * 1024 * 1024
                 },
                 mediaEmbed: {
