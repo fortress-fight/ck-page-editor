@@ -7,6 +7,7 @@
         <div class="wrapper-control_panel">
             <div class="sidebar-control_panel">
                 <a
+                    v-if="$root.is_uemo"
                     href="./user/user.html"
                     class="item-control_panel_side"
                     target="_blank"

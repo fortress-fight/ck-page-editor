@@ -21,14 +21,21 @@ const Component = new Vue({
     router,
     data() {
         return {
+            is_uemo: process.env.VUE_APP_TARGET == "MO005",
             load_timer: 0,
             is_load: false,
             can_editor: false,
             theme: "white",
             agent: "pc",
+            upload_url:
+                process.env.VUE_APP_TARGET == "MO005"
+                    ? process.env.VUE_APP_TPL_UPLOAD_URL
+                    : process.env.VUE_APP_UPLOAD_URL,
             resource_link:
                 process.env.NODE_ENV === "development"
                     ? "http://127.0.0.1:3003/"
+                    : process.env.VUE_APP_TARGET == "MO005"
+                    ? "http://resources.jsmo.xin"
                     : "",
             img_upload: {
                 name: "Filedata",
@@ -36,7 +43,9 @@ const Component = new Vue({
                     // "/service/editorUpload.php?action=uploadimage&encode=utf-8"
                     process.env.NODE_ENV === "development"
                         ? "/service"
-                        : "/api/upload_img.html"
+                        : process.env.VUE_APP_TARGET == "MO005"
+                        ? process.env.VUE_APP_TPL_UPLOAD_URL
+                        : process.env.VUE_APP_UPLOAD_URL
             },
             main_page_win: window.parent
         };
@@ -75,21 +84,27 @@ const Component = new Vue({
         };
         window.get_data = () => {
             return {
-                data: minify(
-                    (this as any).$store.getters["layout_module/layout_dom"].$el
-                        .outerHTML,
-                    {
-                        removeAttributeQuotes: true,
-                        removeComments: true
-                        // minifyCSS: {
-                        //     level: {
-                        //         1: {
-                        //             removeQuotes: true
-                        //         }
-                        //     }
-                        // }
-                    }
-                ),
+                data:
+                    process.env.TARGET == "MO005"
+                        ? (this as any).$store.getters[
+                              "layout_module/layout_dom"
+                          ].$el.outerHTML
+                        : minify(
+                              (this as any).$store.getters[
+                                  "layout_module/layout_dom"
+                              ].$el.outerHTML,
+                              {
+                                  removeAttributeQuotes: true,
+                                  removeComments: true
+                                  // minifyCSS: {
+                                  //     level: {
+                                  //         1: {
+                                  //             removeQuotes: true
+                                  //         }
+                                  //     }
+                                  // }
+                              }
+                          ),
                 store: _cloneDeep(
                     (this as any).$store.state.layout_module.all_layouts_data
                 ),

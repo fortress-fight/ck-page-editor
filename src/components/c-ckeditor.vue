@@ -150,8 +150,6 @@ export default Vue.extend({
                     options: [
                         "default",
                         "微软雅黑",
-                        "思源黑体 极细",
-                        "思源黑体 特粗",
                         "宋体",
                         "Arial",
                         "HELVETICANEUELTPRO-THEX",
@@ -255,7 +253,7 @@ export default Vue.extend({
                     ]
                 },
                 img_upload: {
-                    url: "/api/upload_img.html",
+                    url: this.$root.upload_url,
                     max_size: 2 * 1024 * 1024
                 },
                 mediaEmbed: {
@@ -498,6 +496,10 @@ export default Vue.extend({
             this.$emit("onEditorFocus");
             this.$emit("onEditorFocus", ev, editor);
         }
+    },
+    mounted() {
+        console.log("this.$root:", process.env);
+        // alert(this.$root.upload_url);
     }
 });
 </script>
