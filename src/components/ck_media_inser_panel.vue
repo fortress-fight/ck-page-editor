@@ -43,16 +43,25 @@
                                         <div
                                             class="share_icons"
                                             v-for="(item, index) in share_icon"
-                                            :class="{active: (item.link.length > 0 || editor_share == index)}"
+                                            :class="{
+                                                active:
+                                                    item.link.length > 0 ||
+                                                    editor_share == index
+                                            }"
                                             :key="index"
                                             @click="editor_share = index"
                                         >
-                                            <i class="share_ifont ifont" :class="item.icon"></i>
+                                            <i
+                                                class="share_ifont ifont"
+                                                :class="item.icon"
+                                            ></i>
                                             <i
                                                 v-show="item.link.length > 0"
                                                 class="select_ifont ifont ifont-right"
                                             ></i>
-                                            <span class="name">{{item.name}}</span>
+                                            <span class="name">{{
+                                                item.name
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -61,26 +70,77 @@
                         <div class="attr_set_group">
                             <div class="attr_set_item flex flex_yc">
                                 <div class="item_header flex_fix">选择主题</div>
-                                <div class="item_body flex_auto layout_grid layout_grid-col-5">
-                                    <c-radio class="space_normal" v-model="theme" label="black">深色</c-radio>
-                                    <c-radio class="space_normal" v-model="theme" label="white">浅色</c-radio>
+                                <div
+                                    class="item_body flex_auto layout_grid layout_grid-col-5"
+                                >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="theme"
+                                        label="black"
+                                        >深色</c-radio
+                                    >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="theme"
+                                        label="white"
+                                        >浅色</c-radio
+                                    >
                                 </div>
                             </div>
                             <div class="attr_set_item flex flex_yc">
                                 <div class="item_header flex_fix">选择位置</div>
-                                <div class="item_body flex_auto layout_grid layout_grid-col-5">
-                                    <c-radio class="space_normal" v-model="pos" label="left">居左</c-radio>
-                                    <c-radio class="space_normal" v-model="pos" label="center">居中</c-radio>
-                                    <c-radio class="space_normal" v-model="pos" label="right">局右</c-radio>
+                                <div
+                                    class="item_body flex_auto layout_grid layout_grid-col-5"
+                                >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="pos"
+                                        label="left"
+                                        >居左</c-radio
+                                    >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="pos"
+                                        label="center"
+                                        >居中</c-radio
+                                    >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="pos"
+                                        label="right"
+                                        >局右</c-radio
+                                    >
                                 </div>
                             </div>
                             <div class="attr_set_item flex flex_yc">
                                 <div class="item_header flex_fix">选择样式</div>
-                                <div class="item_body flex_auto layout_grid layout_grid-col-5">
-                                    <c-radio class="space_normal" v-model="style" label="one">样式一</c-radio>
-                                    <c-radio class="space_normal" v-model="style" label="two">样式二</c-radio>
-                                    <c-radio class="space_normal" v-model="style" label="three">样式三</c-radio>
-                                    <c-radio class="space_normal" v-model="style" label="four">样式四</c-radio>
+                                <div
+                                    class="item_body flex_auto layout_grid layout_grid-col-5"
+                                >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="style"
+                                        label="one"
+                                        >样式一</c-radio
+                                    >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="style"
+                                        label="two"
+                                        >样式二</c-radio
+                                    >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="style"
+                                        label="three"
+                                        >样式三</c-radio
+                                    >
+                                    <c-radio
+                                        class="space_normal"
+                                        v-model="style"
+                                        label="four"
+                                        >样式四</c-radio
+                                    >
                                 </div>
                             </div>
                         </div>
@@ -91,12 +151,20 @@
                                     <div class="value_input">
                                         <c-input
                                             class="input"
-                                            v-model="share_icon[editor_share].link"
-                                            :placeholder="share_icon[editor_share].placeholder"
+                                            v-model="
+                                                share_icon[editor_share].link
+                                            "
+                                            :placeholder="
+                                                share_icon[editor_share]
+                                                    .placeholder
+                                            "
                                         ></c-input>
 
                                         <c-upload
-                                            v-if="share_icon[editor_share].name == '微信'"
+                                            v-if="
+                                                share_icon[editor_share].name ==
+                                                    '微信'
+                                            "
                                             class="share_image-upload_btn"
                                             :name="img_upload.name"
                                             :action="img_upload.action"
@@ -109,7 +177,9 @@
                                         >
                                             <div>
                                                 <i class="ic fa fa-plus"></i>
-                                                <span class="text">上传图片</span>
+                                                <span class="text"
+                                                    >上传图片</span
+                                                >
                                             </div>
                                         </c-upload>
                                     </div>
@@ -121,7 +191,9 @@
                                     <div class="value_input">
                                         <c-input
                                             class="input"
-                                            v-model="share_icon[editor_share].title"
+                                            v-model="
+                                                share_icon[editor_share].title
+                                            "
                                             placeholder="请输入说明文字"
                                         ></c-input>
                                     </div>
@@ -133,7 +205,9 @@
                         <div class="ck_other">
                             <div class="attr_set_group">
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">视频地址</div>
+                                    <div class="item_header flex_fix">
+                                        视频地址
+                                    </div>
                                     <div class="item_body flex_auto">
                                         <div class="value_input">
                                             <c-input
@@ -147,7 +221,9 @@
                             </div>
                             <div class="attr_set_group">
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">封面地址</div>
+                                    <div class="item_header flex_fix">
+                                        封面地址
+                                    </div>
                                     <div class="item_body flex_auto">
                                         <div class="value_input">
                                             <c-input
@@ -159,12 +235,21 @@
                                     </div>
                                 </div>
                                 <div class="attr_set_item">
-                                    <div class="upload-placeholder flex_center" @click="upload">
-                                        <i class="ic fa fa-fw fa-arrow-circle-o-up"></i>
+                                    <div
+                                        class="upload-placeholder flex_center"
+                                        @click="upload"
+                                    >
+                                        <i
+                                            class="ic fa fa-fw fa-arrow-circle-o-up"
+                                        ></i>
                                         <span class="text">添加视频封面</span>
                                         <div
                                             class="placeholder-image"
-                                            :style="{backgroundImage: `url('${video_data.poster}')`}"
+                                            :style="{
+                                                backgroundImage: `url('${
+                                                    video_data.poster
+                                                }')`
+                                            }"
                                         ></div>
                                     </div>
                                     <c-upload
@@ -179,7 +264,9 @@
                                     >
                                         <div>
                                             <i class="ic fa fa-plus"></i>
-                                            <span class="text">添加视频封面</span>
+                                            <span class="text"
+                                                >添加视频封面</span
+                                            >
                                         </div>
                                     </c-upload>
                                 </div>
@@ -190,7 +277,9 @@
                         <div class="ck_other">
                             <div class="attr_set_group">
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">地点名称</div>
+                                    <div class="item_header flex_fix">
+                                        地点名称
+                                    </div>
                                     <div class="item_body flex_auto">
                                         <div class="value_input">
                                             <c-input
@@ -202,7 +291,9 @@
                                     </div>
                                 </div>
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">地点描述</div>
+                                    <div class="item_header flex_fix">
+                                        地点描述
+                                    </div>
                                     <div class="item_body flex_auto">
                                         <div class="value_input">
                                             <c-input
@@ -214,7 +305,9 @@
                                     </div>
                                 </div>
                                 <div class="attr_set_item flex">
-                                    <div class="item_header flex_fix">地点坐标</div>
+                                    <div class="item_header flex_fix">
+                                        地点坐标
+                                    </div>
                                     <div class="item_body flex_auto">
                                         <div class="value_input">
                                             <c-input
@@ -228,14 +321,17 @@
                                                 class="red-tip"
                                                 target="_blank"
                                                 href="http://api.map.baidu.com/lbsapi/getpoint/index.html"
-                                            >点击此处</a>获取坐标，查看右上角的坐标，复制并粘贴到此处
+                                                >点击此处</a
+                                            >获取坐标，查看右上角的坐标，复制并粘贴到此处
                                         </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="attr_set_group">
                                 <div class="attr_set_item flex_yc">
-                                    <div class="item_header flex_fix">地图宽度</div>
+                                    <div class="item_header flex_fix">
+                                        地图宽度
+                                    </div>
                                     <div class="item_body flex_yc">
                                         <div class="value_input flex_center">
                                             <c-input
@@ -244,7 +340,9 @@
                                                 placeholder="请输入地图宽度"
                                                 style="width: 100px"
                                             ></c-input>
-                                            <span class="unit">{{map_data.width.unit}}</span>
+                                            <span class="unit">{{
+                                                map_data.width.unit
+                                            }}</span>
                                         </div>
                                         <div class="value_unit flex_fix">
                                             <c-switch
@@ -257,60 +355,78 @@
                                     </div>
                                 </div>
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">地图位置</div>
-                                    <div class="item_body flex_auto layout_grid layout_grid-col-5">
+                                    <div class="item_header flex_fix">
+                                        地图位置
+                                    </div>
+                                    <div
+                                        class="item_body flex_auto layout_grid layout_grid-col-5"
+                                    >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.pos"
                                             label="left"
-                                        >居左</c-radio>
+                                            >居左</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.pos"
                                             label="center"
-                                        >居中</c-radio>
+                                            >居中</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.pos"
                                             label="right"
-                                        >局右</c-radio>
+                                            >局右</c-radio
+                                        >
                                     </div>
                                 </div>
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">尺寸比例</div>
+                                    <div class="item_header flex_fix">
+                                        尺寸比例
+                                    </div>
 
-                                    <div class="item_body flex_auto layout_grid layout_grid-col-5">
+                                    <div
+                                        class="item_body flex_auto layout_grid layout_grid-col-5"
+                                    >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.ratio"
                                             label="16-9"
-                                        >16:9</c-radio>
+                                            >16:9</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.ratio"
                                             label="9-16"
-                                        >9:16</c-radio>
+                                            >9:16</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.ratio"
                                             label="4-3"
-                                        >4:3</c-radio>
+                                            >4:3</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.ratio"
                                             label="3-4"
-                                        >3:4</c-radio>
+                                            >3:4</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.ratio"
                                             label="1-1"
-                                        >1:1</c-radio>
+                                            >1:1</c-radio
+                                        >
                                     </div>
                                 </div>
                             </div>
                             <div class="attr_set_group">
                                 <div class="attr_set_item flex_center">
-                                    <div class="item_header flex_fix">禁止缩放</div>
+                                    <div class="item_header flex_fix">
+                                        禁止缩放
+                                    </div>
                                     <div class="item_body flex_auto">
                                         <c-switch
                                             active-value="off"
@@ -320,7 +436,9 @@
                                     </div>
                                 </div>
                                 <div class="attr_set_item flex">
-                                    <div class="item_header flex_fix">展示形式</div>
+                                    <div class="item_header flex_fix">
+                                        展示形式
+                                    </div>
                                     <div
                                         class="item_body flex_auto layout_grid layout_grid-col-5 layout_grid-rowspac-5"
                                         style="padding-top: 7px;"
@@ -329,32 +447,38 @@
                                             class="space_normal"
                                             v-model="map_data.theme"
                                             label="normal"
-                                        >常规</c-radio>
+                                            >常规</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.theme"
                                             label="light"
-                                        >清新蓝</c-radio>
+                                            >清新蓝</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.theme"
                                             label="dark"
-                                        >黑夜</c-radio>
+                                            >黑夜</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.theme"
                                             label="googlelite"
-                                        >精简</c-radio>
+                                            >精简</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.theme"
                                             label="bluish"
-                                        >清新蓝绿</c-radio>
+                                            >清新蓝绿</c-radio
+                                        >
                                         <c-radio
                                             class="space_normal"
                                             v-model="map_data.theme"
                                             label="grayscale"
-                                        >高端灰</c-radio>
+                                            >高端灰</c-radio
+                                        >
                                     </div>
                                 </div>
                             </div>
@@ -464,6 +588,20 @@ export default Vue.extend({
                     link: "",
                     title: "",
                     placeholder: "请输入twitter分享链接"
+                },
+                facebook: {
+                    name: "facebook",
+                    icon: "ifont-facebook",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入facebook分享链接"
+                },
+                youtube: {
+                    name: "youtube",
+                    icon: "ifont-youtube",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入youtube分享链接"
                 },
                 download: {
                     name: "下载",
@@ -713,6 +851,20 @@ export default Vue.extend({
                     title: "",
                     placeholder: "请输入twitter分享链接"
                 },
+                facebook: {
+                    name: "facebook",
+                    icon: "ifont-facebook",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入facebook分享链接"
+                },
+                youtube: {
+                    name: "youtube",
+                    icon: "ifont-youtube",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入youtube分享链接"
+                },
                 download: {
                     name: "下载",
                     icon: "ifont-download",
@@ -813,7 +965,7 @@ export default Vue.extend({
     }
 });
 </script>
-<style lang="scss" >
+<style lang="scss">
 .ck_control_panel_header {
     font-size: 16px;
 }
