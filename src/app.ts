@@ -85,7 +85,7 @@ const Component = new Vue({
         window.get_data = () => {
             return {
                 data:
-                    process.env.TARGET == "MO005"
+                    process.env.VUE_APP_TARGET == "MO005"
                         ? (this as any).$store.getters[
                               "layout_module/layout_dom"
                           ].$el.outerHTML

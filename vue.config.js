@@ -68,6 +68,7 @@ module.exports = {
         }
     },
     devServer: {
+        port: 8081,
         disableHostCheck: true,
         proxy: {
             "/templates/upload": {
@@ -87,10 +88,12 @@ module.exports = {
             }
         }
     },
-    
+
     publicPath:
         process.env.NODE_ENV === "production"
-            ? (process.env.VUE_APP_TARGET ==="MO005" ? "/templates/templates/editor_page/" : "/views/13450/pc/editor_page/bc/")
+            ? process.env.VUE_APP_TARGET === "MO005"
+                ? "/templates/templates/editor_page/"
+                : "/views/13450/pc/editor_page/bc/"
             : "/",
     chainWebpack: config => {},
     css: {

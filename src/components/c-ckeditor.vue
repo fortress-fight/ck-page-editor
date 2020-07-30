@@ -265,11 +265,12 @@ export default Vue.extend({
                             url: /^(http|https):\/\/(.*)\.mp4$/,
                             html: (match, poster) => {
                                 const url = match[0];
+                                console.log(poster, "poster");
                                 return (
                                     '<section class="post_video">' +
                                     `<video controls preload src="${url}" style="width:100%;" ${'poster="' +
-                                        (poster || "") +
-                                        '"'}>` +
+                                        (poster.poster || "") +
+                                        '"'}  x5-video-player-type="h5">` +
                                     "</section>"
                                 );
                             }

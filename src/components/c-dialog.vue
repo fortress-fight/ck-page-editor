@@ -366,6 +366,33 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss">
+
+
+// 绘制三角
+@mixin triangle($width: 5px, $height: $width, $dir: top, $color: #000) {
+    width: 0;
+    height: 0;
+
+    border: 1px solid transparent;
+    border-width: $height $width;
+
+    @if ($dir==top) {
+        border-bottom-color: $color;
+    }
+
+    @else if ($dir==right) {
+        border-left-color: $color;
+    }
+
+    @else if ($dir==bottom) {
+        border-top-color: $color;
+    }
+
+    @else if ($dir==left) {
+        border-right-color: $color;
+    }
+}
+
 .page-edit_page {
 .dialog_wrapper {
     position: fixed;
