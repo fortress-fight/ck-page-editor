@@ -68,7 +68,6 @@ module.exports = {
         }
     },
     devServer: {
-        port: 8081,
         disableHostCheck: true,
         proxy: {
             "/templates/upload": {
@@ -102,7 +101,7 @@ module.exports = {
             sass: {
                 // @/ 是 src/ 的别名
                 // 所以这里假设你有 `src/variables.scss` 这个文件
-                prependData: `@import "@/style/mixin.scss"; @import "@/style/reset.scss";`,
+                prependData: `@import "@/style/mixin.scss"; `,
                 sassOptions: {
                     use: [
                         "vue-style-loader",

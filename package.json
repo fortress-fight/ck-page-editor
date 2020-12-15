@@ -72,7 +72,7 @@
     "husky": {
         "hooks": {
             "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-            "post-commit": "git-branch-is master && git push origin master || true"
+            "post-commit": "git push origin --all && git push uemo --all"
         }
     }
 }

@@ -1,8 +1,10 @@
 import ControlPanel from "@/ControlPanel.vue";
 import Page_editor from "@/lib/page_editor/page_editor";
 import store from "@/pages/main/store";
-import "@/public";
 import Vue from "vue";
+import "font-awesome/css/font-awesome.css";
+import "@/style/reset.scss";
+import "@/style/fonts.scss";
 import "../plugins/element.js";
 import "./main/style.scss";
 

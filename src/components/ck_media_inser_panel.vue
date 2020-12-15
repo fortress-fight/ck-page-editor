@@ -163,7 +163,9 @@
                                         <c-upload
                                             v-if="
                                                 share_icon[editor_share].name ==
-                                                    '微信'
+                                                    '微信' ||
+                                                    share_icon[editor_share]
+                                                        .name == '抖音'
                                             "
                                             class="share_image-upload_btn"
                                             :name="img_upload.name"
@@ -603,6 +605,13 @@ export default Vue.extend({
                     title: "",
                     placeholder: "请输入youtube分享链接"
                 },
+                tiktok: {
+                    name: "抖音",
+                    icon: "ifont-tiktok",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入抖音分享链接"
+                },
                 download: {
                     name: "下载",
                     icon: "ifont-download",
@@ -864,6 +873,13 @@ export default Vue.extend({
                     link: "",
                     title: "",
                     placeholder: "请输入youtube分享链接"
+                },
+                tiktok: {
+                    name: "抖音",
+                    icon: "ifont-tiktok",
+                    link: "",
+                    title: "",
+                    placeholder: "请输入抖音二维码图片链接"
                 },
                 download: {
                     name: "下载",
